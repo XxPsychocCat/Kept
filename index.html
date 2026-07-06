@@ -303,7 +303,7 @@
 <body>
 
 <div id="authGate" class="hidden">
-  <div class="auth-box">
+  <div class="auth-box" id="authBoxSignIn">
     <h1>Kept</h1>
     <p class="sub">Sign in to sync your archive to your own Supabase project. Nobody else can read it.</p>
     <div class="auth-err" id="authErr"></div>
@@ -311,6 +311,24 @@
     <input type="password" id="authPassword" placeholder="Password" autocomplete="current-password">
     <button class="primary" id="authSignIn">Sign in</button>
     <button class="ghost" id="authSignUp">First time here? Create an account</button>
+    <button class="ghost" id="authForgotLink">Forgot your password?</button>
+  </div>
+
+  <div class="auth-box hidden" id="authBoxReset">
+    <h1>Reset password</h1>
+    <p class="sub">Enter your email and we'll send you a link to set a new password.</p>
+    <div class="auth-err" id="authResetErr"></div>
+    <input type="email" id="authResetEmail" placeholder="Email" autocomplete="username">
+    <button class="primary" id="authSendReset">Send reset link</button>
+    <button class="ghost" id="authBackToSignIn">Back to sign in</button>
+  </div>
+
+  <div class="auth-box hidden" id="authBoxNewPassword">
+    <h1>Set a new password</h1>
+    <p class="sub">You followed a reset link — choose a new password below.</p>
+    <div class="auth-err" id="authNewPassErr"></div>
+    <input type="password" id="authNewPassword" placeholder="New password" autocomplete="new-password">
+    <button class="primary" id="authSaveNewPassword">Save new password</button>
   </div>
 </div>
 
@@ -3071,17 +3089,36 @@ async function boot(){
     return;
   }
   const authGate = document.getElementById('authGate');
+  const boxSignIn = document.getElementById('authBoxSignIn');
+  const boxReset = document.getElementById('authBoxReset');
+  const boxNewPassword = document.getElementById('authBoxNewPassword');
   const authErr = document.getElementById('authErr');
   const emailEl = document.getElementById('authEmail');
   const passEl = document.getElementById('authPassword');
+  const resetErr = document.getElementById('authResetErr');
+  const resetEmailEl = document.getElementById('authResetEmail');
+  const newPassErr = document.getElementById('authNewPassErr');
+  const newPassEl = document.getElementById('authNewPassword');
+
+  function showPanel(panel){
+    [boxSignIn, boxReset, boxNewPassword].forEach(p=>p.classList.add('hidden'));
+    panel.classList.remove('hidden');
+  }
+
+  let appStarted = false;
+  async function enterApp(user){
+    if(appStarted) return;
+    appStarted = true;
+    currentUser = user;
+    await startApp();
+  }
 
   async function trySignIn(){
     authErr.textContent = '';
     try{
       const { data, error } = await sb.auth.signInWithPassword({ email: emailEl.value.trim(), password: passEl.value });
       if(error){ authErr.textContent = error.message; return; }
-      currentUser = data.user;
-      await startApp();
+      await enterApp(data.user);
     }catch(err){ authErr.textContent = err.message || String(err); }
   }
   async function trySignUp(){
@@ -3090,24 +3127,61 @@ async function boot(){
       const { data, error } = await sb.auth.signUp({ email: emailEl.value.trim(), password: passEl.value });
       if(error){ authErr.textContent = error.message; return; }
       if(data.session){
-        currentUser = data.user;
-        await startApp();
+        await enterApp(data.user);
       } else {
         authErr.textContent = 'Account created — check your email to confirm, then sign in.';
       }
     }catch(err){ authErr.textContent = err.message || String(err); }
   }
+  async function trySendReset(){
+    resetErr.textContent = '';
+    try{
+      const redirectTo = window.location.href.split('#')[0];
+      const { error } = await sb.auth.resetPasswordForEmail(resetEmailEl.value.trim(), { redirectTo });
+      if(error){ resetErr.textContent = error.message; return; }
+      resetErr.style.color = '#6B7A5E';
+      resetErr.textContent = 'Check your email for a reset link.';
+    }catch(err){ resetErr.textContent = err.message || String(err); }
+  }
+  async function trySaveNewPassword(){
+    newPassErr.textContent = '';
+    try{
+      const { data, error } = await sb.auth.updateUser({ password: newPassEl.value });
+      if(error){ newPassErr.textContent = error.message; return; }
+      await enterApp(data.user);
+    }catch(err){ newPassErr.textContent = err.message || String(err); }
+  }
+
   document.getElementById('authSignIn').addEventListener('click', trySignIn);
   document.getElementById('authSignUp').addEventListener('click', trySignUp);
   passEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySignIn(); });
+  document.getElementById('authForgotLink').addEventListener('click', ()=>{ resetErr.style.color=''; resetErr.textContent=''; showPanel(boxReset); });
+  document.getElementById('authBackToSignIn').addEventListener('click', ()=>showPanel(boxSignIn));
+  document.getElementById('authSendReset').addEventListener('click', trySendReset);
+  document.getElementById('authSaveNewPassword').addEventListener('click', trySaveNewPassword);
+  newPassEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySaveNewPassword(); });
 
-  const { data: { session } } = await sb.auth.getSession();
-  if(session){
-    currentUser = session.user;
-    await startApp();
-  } else {
-    authGate.classList.remove('hidden');
-  }
+  // Drive everything off onAuthStateChange rather than a one-off getSession()
+  // call: this is what correctly catches the special PASSWORD_RECOVERY event
+  // fired when someone arrives via a "reset your password" email link,
+  // instead of just logging them straight into the app with their old password.
+  let sawInitialSession = false;
+  sb.auth.onAuthStateChange((event, session)=>{
+    if(event === 'PASSWORD_RECOVERY'){
+      showPanel(boxNewPassword);
+      authGate.classList.remove('hidden');
+      return;
+    }
+    if(event === 'INITIAL_SESSION'){
+      sawInitialSession = true;
+      if(session){ enterApp(session.user); }
+      else { authGate.classList.remove('hidden'); }
+      return;
+    }
+    if(event === 'SIGNED_IN' && session && sawInitialSession && !appStarted){
+      enterApp(session.user);
+    }
+  });
   }catch(err){
     showBootError(err.message || String(err));
     // Even if something failed, don't leave the person staring at a
