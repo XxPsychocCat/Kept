@@ -15,9 +15,11 @@
   .auth-box p.sub{ color:#71765F; font-size:0.85rem; margin:0 0 18px; }
   .auth-box input{ width:100%; font-size:0.9rem; padding:10px; margin-bottom:10px; border:1px solid #DEE2CF; border-radius:5px; background:#F7F5EC; box-sizing:border-box; }
   .auth-box button{ width:100%; font-weight:600; font-size:0.9rem; padding:10px; border-radius:5px; border:none; cursor:pointer; margin-bottom:8px; }
+  .auth-box button:disabled{ opacity:0.6; cursor:default; }
   .auth-box button.primary{ background:#31352C; color:#F7F5EC; }
   .auth-box button.ghost{ background:none; color:#71765F; text-decoration:underline; }
   .auth-box .auth-err{ color:#B5677A; font-size:0.8rem; margin-bottom:10px; min-height:1em; }
+  .auth-box .auth-err.ok{ color:#6B7A5E; }
 </style>
 <style>
   :root{
@@ -354,7 +356,7 @@
   .lightbox{ position:fixed; inset:0; background:rgba(20,18,15,0.94); z-index:200; display:flex; align-items:center; justify-content:center; flex-direction:column; }
   .lightbox img{ max-width:92vw; max-height:78vh; object-fit:contain; border-radius:4px; transition:transform 0.2s ease; cursor:zoom-in; }
   .lightbox img.zoomed{ transform:scale(1.9); cursor:zoom-out; }
-  .lightbox-bar{ display:flex; align-items:center; gap:18px; margin-top:14px; }
+  .lightbox-bar{ display:flex; align-items:center; gap:18px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
   .lightbox-bar button{ font-family:'Inter',sans-serif; font-size:0.9rem; color:#fff; background:rgba(255,255,255,0.12); border:none; border-radius:20px; padding:8px 16px; cursor:pointer; }
   .lightbox-bar button:hover{ background:rgba(255,255,255,0.22); }
   .lightbox-close{ position:absolute; top:16px; right:18px; font-size:1.4rem; color:#fff; background:none; border:none; cursor:pointer; }
@@ -388,6 +390,7 @@
   /* ---- load more ---- */
   .load-more-btn{ display:block; width:100%; text-align:center; font-family:'Inter',sans-serif; font-size:0.8rem; color:var(--ink-soft); background:var(--card); border:1px dashed var(--line); border-radius:6px; padding:9px; cursor:pointer; margin-top:10px; }
   .load-more-btn:hover{ color:var(--ink); }
+  .gallery-grid .load-more-btn{ flex-basis:100%; }
 </style>
 </head>
 <body>
@@ -418,7 +421,7 @@
     <p class="sub">Your archive will be private to this account only.</p>
     <div class="auth-err" id="authUpErr"></div>
     <input type="email" id="authUpEmail" placeholder="Email" autocomplete="username">
-    <input type="password" id="authUpPassword" placeholder="Password" autocomplete="new-password">
+    <input type="password" id="authUpPassword" placeholder="Password (6+ characters)" autocomplete="new-password">
     <button class="primary" id="authSignUp">Create account</button>
     <button class="ghost" id="authGoLogin2">Already have an account? Log in</button>
   </div>
@@ -436,8 +439,9 @@
     <h1>Set a new password</h1>
     <p class="sub">You followed a reset link — choose a new password below.</p>
     <div class="auth-err" id="authNewPassErr"></div>
-    <input type="password" id="authNewPassword" placeholder="New password" autocomplete="new-password">
+    <input type="password" id="authNewPassword" placeholder="New password (6+ characters)" autocomplete="new-password">
     <button class="primary" id="authSaveNewPassword">Save new password</button>
+    <button class="ghost" id="authCancelNewPassword">Cancel</button>
   </div>
 </div>
 
@@ -724,6 +728,10 @@
       <label>Date taken (optional)</label>
       <input type="date" id="photoEditDate">
     </div>
+    <div class="modal-actions" style="justify-content:flex-start;margin-top:0;">
+      <button type="button" class="btn ghost" id="photoMoveLeft">← Earlier</button>
+      <button type="button" class="btn ghost" id="photoMoveRight">Later →</button>
+    </div>
     <div class="modal-actions">
       <button type="button" class="btn ghost" id="photoFavBtn">♡ Favorite</button>
       <button type="button" class="btn ghost" id="photoSetCover">Set as cover</button>
@@ -737,14 +745,14 @@
 <div class="overlay hidden" id="momentOverlay">
   <div class="modal">
     <h2 id="momentTitle">Add a moment</h2>
-    <form id="momentForm">
+    <form id="momentForm" novalidate>
       <div class="field">
         <label>What happened</label>
-        <input type="text" id="m-title" maxlength="70" required>
+        <input type="text" id="m-title" maxlength="70">
       </div>
       <div class="field">
         <label>Date</label>
-        <input type="date" id="m-date" required>
+        <input type="date" id="m-date">
       </div>
       <div class="field">
         <label>The story (optional)</label>
@@ -916,6 +924,13 @@
 </div>
 
 <script>
+// Captured immediately, before the Supabase client (which also reads and then
+// clears the URL hash) gets a chance to touch it. Tells us if this page load
+// came from a "reset your password" or an expired-link email.
+const OPENED_URL_PARTS = (location.hash || '') + '&' + (location.search || '');
+const OPENED_VIA_RECOVERY_LINK = /type=recovery/.test(OPENED_URL_PARTS);
+const OPENED_VIA_EXPIRED_LINK = /error_code=otp_expired|error=access_denied/.test(OPENED_URL_PARTS);
+
 const INDEX_KEY = 'kept-index';
 const LEGACY_KEY = 'kept-entries';
 const CONN_KEY = 'kept-connections';
@@ -926,6 +941,7 @@ const CIRCLES_KEY = 'kept-circles';
 const PROFILE_KEY = 'kept-profile';
 const SETTINGS_KEY = 'kept-settings';
 const CUSTOM_CATS_KEY = 'kept-custom-categories';
+const VIEWED_KEY = 'kept-viewed';
 const entryKey = id => 'kept-entry:' + id;
 const MAX_ENTRY_MB = 4.5;
 
@@ -944,6 +960,14 @@ let profileData = { name:'', dob:'', gender:'', pronouns:'', bio:'' };
 // "days with" stat: null/'auto' = pick the longest automatically, otherwise an entry id
 let statsPersonId = null;
 let statsDayType = 'together'; // 'together' | 'dating' — only matters when the featured person is an advanced partner
+
+// when each person was last opened, kept in one small key instead of rewriting
+// a whole person's data (and risking overwriting edits from another device)
+// every time you open their page
+let viewedMap = {};
+const saveViewedDebounced = debounce(()=>{
+  storage.set(VIEWED_KEY, JSON.stringify(viewedMap), false).catch(()=>{});
+}, 1500);
 
 // social web
 let circles = [];
@@ -1003,6 +1027,8 @@ const PHOTO_URL_TTL = 60 * 60 * 24 * 7; // signed photo URLs last 7 days, refres
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
 const sb = supabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 let currentUser = null;
+let appStarted = false;
+let signingOut = false;
 
 /* ---------- storage layer ----------
    window.storage only exists inside a Claude.ai artifact preview. Outside
@@ -1091,18 +1117,34 @@ async function signedPhotoUrl(path){
   if(error) throw error;
   return data.signedUrl;
 }
-async function deletePhotoBlob(path){
-  if(!path) return;
-  try{ await sb.storage.from(PHOTO_BUCKET).remove([path]); }catch(e){ /* ignore */ }
+// One request per 100 photos instead of one request per photo.
+async function signedPhotoUrls(paths){
+  const out = {};
+  for(let i = 0; i < paths.length; i += 100){
+    const chunk = paths.slice(i, i + 100);
+    const { data, error } = await sb.storage.from(PHOTO_BUCKET).createSignedUrls(chunk, PHOTO_URL_TTL);
+    if(error) throw error;
+    (data || []).forEach(r=>{ if(r && r.path && r.signedUrl) out[r.path] = r.signedUrl; });
+  }
+  return out;
 }
-// Refresh in-memory `src` for every photo on an entry from its stored `path`.
-async function hydratePhotoUrls(entry){
-  if(!supabaseConfigured || !entry.photos || !entry.photos.length) return;
-  await Promise.all(entry.photos.map(async p=>{
-    if(p.path){
-      try{ p.src = await signedPhotoUrl(p.path); }catch(e){ /* leave old src if refresh fails */ }
-    }
-  }));
+async function deletePhotoBlobs(paths){
+  const list = (paths || []).filter(Boolean);
+  if(!list.length) return;
+  try{ await sb.storage.from(PHOTO_BUCKET).remove(list); }catch(e){ /* ignore */ }
+}
+async function deletePhotoBlob(path){ return deletePhotoBlobs([path]); }
+// Refresh in-memory `src` for every photo on one entry (or a list of entries)
+// from its stored `path`, in as few requests as possible.
+async function hydratePhotoUrls(entryOrList){
+  if(!supabaseConfigured) return;
+  const list = Array.isArray(entryOrList) ? entryOrList : [entryOrList];
+  const photos = list.flatMap(e => e.photos || []).filter(p => p.path);
+  if(!photos.length) return;
+  try{
+    const map = await signedPhotoUrls([...new Set(photos.map(p => p.path))]);
+    photos.forEach(p=>{ if(map[p.path]) p.src = map[p.path]; });
+  }catch(e){ console.warn('could not refresh photo links', e); }
 }
 
 function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
@@ -1130,28 +1172,48 @@ function showToast(msg){
   clearTimeout(t._hideTimer);
   t._hideTimer = setTimeout(()=>{ t.style.display='none'; }, 6000);
 }
-function todayStr(){ return new Date().toISOString().slice(0,10); }
-function escapeHtml(s){ const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+/* ---------- dates (always the person's LOCAL calendar day, never UTC) ---------- */
+function ymd(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function todayStr(){ return ymd(new Date()); }
+// Parse "YYYY-MM-DD" as a local midnight (new Date('YYYY-MM-DD') would be UTC midnight,
+// which lands on the wrong day in some time zones).
+function parseLocalDate(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s));
+  if(m) return new Date(+m[1], +m[2]-1, +m[3]);
+  const d = new Date(s); d.setHours(0,0,0,0); return d;
+}
+// An ISO timestamp (e.g. addedAt/updatedAt) → the local "YYYY-MM-DD" it fell on.
+function localDateFromIso(iso){
+  if(!iso) return null;
+  const d = new Date(iso);
+  return isNaN(d) ? null : ymd(d);
+}
+function escapeHtml(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, ch => (
+    { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]
+  ));
+}
 function daysBetween(a,b){
   const MS = 86400000;
-  const d1 = new Date(a); d1.setHours(0,0,0,0);
-  const d2 = new Date(b); d2.setHours(0,0,0,0);
-  return Math.max(0, Math.round((d2-d1)/MS));
+  return Math.max(0, Math.round((parseLocalDate(b) - parseLocalDate(a)) / MS));
 }
 function formatDate(str){
   if(!str) return '';
-  const d = new Date(str+'T00:00:00');
+  const d = parseLocalDate(str);
   return d.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
 }
 function formatShort(iso){
   if(!iso) return '';
-  const d = new Date(iso);
+  const d = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? parseLocalDate(iso) : new Date(iso);
   return d.toLocaleDateString('en-US', { month:'numeric', day:'numeric', year:'2-digit' });
 }
 function entrySizeMB(entry){ return new Blob([JSON.stringify(entry)]).size / (1024*1024); }
 function computeAge(birthday){
   if(!birthday) return null;
-  const b = new Date(birthday+'T00:00:00');
+  const b = parseLocalDate(birthday);
   const t = new Date();
   let age = t.getFullYear() - b.getFullYear();
   const m = t.getMonth() - b.getMonth();
@@ -1161,7 +1223,7 @@ function computeAge(birthday){
 function monthDay(dateStr){ return (dateStr || '').slice(5); }
 function formatMonthDay(dateStr){
   if(!dateStr) return '';
-  const d = new Date(dateStr+'T00:00:00');
+  const d = parseLocalDate(dateStr);
   return d.toLocaleDateString('en-US', { month:'short', day:'numeric' });
 }
 
@@ -1180,20 +1242,19 @@ function computeBirthdayYears(e){
   // ("date we met" vs. anniversary vs. "since"), so anchor to whichever one
   // is earliest — that's the real "since we met" point.
   const candidateYears = [];
-  if(e.metDate) candidateYears.push(new Date(e.metDate+'T00:00:00').getFullYear());
-  if(e.anniversaryDate) candidateYears.push(new Date(e.anniversaryDate+'T00:00:00').getFullYear());
-  if(e.startDate) candidateYears.push(new Date(e.startDate+'T00:00:00').getFullYear());
+  if(e.metDate) candidateYears.push(parseLocalDate(e.metDate).getFullYear());
+  if(e.anniversaryDate) candidateYears.push(parseLocalDate(e.anniversaryDate).getFullYear());
+  if(e.startDate) candidateYears.push(parseLocalDate(e.startDate).getFullYear());
   const anchorYear = candidateYears.length ? Math.min(...candidateYears) : birthYear;
   const fromYear = Math.max(birthYear, anchorYear);
 
   let toYear;
   if(e.endDate){
-    const endYear = new Date(e.endDate+'T00:00:00').getFullYear();
+    const endYear = parseLocalDate(e.endDate).getFullYear();
     const endMD = monthDay(e.endDate);
     toYear = (bMD <= endMD) ? endYear : endYear - 1;
   } else {
-    const today = new Date();
-    const todayY = today.getFullYear();
+    const todayY = new Date().getFullYear();
     const todayMD = monthDay(todayStr());
     toYear = (bMD <= todayMD) ? todayY : todayY - 1;
   }
@@ -1218,12 +1279,11 @@ function computeAnniversaryYears(e){
 
   let toYear;
   if(e.endDate){
-    const endYear = new Date(e.endDate+'T00:00:00').getFullYear();
+    const endYear = parseLocalDate(e.endDate).getFullYear();
     const endMD = monthDay(e.endDate);
     toYear = (aMD <= endMD) ? endYear : endYear - 1;
   } else {
-    const today = new Date();
-    const todayY = today.getFullYear();
+    const todayY = new Date().getFullYear();
     const todayMD = monthDay(todayStr());
     toYear = (aMD <= todayMD) ? todayY : todayY - 1;
   }
@@ -1244,7 +1304,7 @@ function computeMemoryOfDay(e){
   let best = null;
   (e.timeline||[]).forEach(m=>{
     if(m.isBirthday || !m.photoId || !m.date || monthDay(m.date) !== todayMD) return;
-    const yr = new Date(m.date+'T00:00:00').getFullYear();
+    const yr = parseLocalDate(m.date).getFullYear();
     if(yr >= todayYear) return;
     const photo = photoById(m.photoId);
     if(photo) best = { src: photo.src, caption: m.title, yearsAgo: todayYear - yr };
@@ -1252,9 +1312,9 @@ function computeMemoryOfDay(e){
   if(best) return best;
 
   (e.photos||[]).forEach(p=>{
-    const d = p.takenDate || (p.addedAt ? p.addedAt.slice(0,10) : null);
+    const d = p.takenDate || localDateFromIso(p.addedAt);
     if(!d || monthDay(d) !== todayMD) return;
-    const yr = new Date(d+'T00:00:00').getFullYear();
+    const yr = parseLocalDate(d).getFullYear();
     if(yr >= todayYear) return;
     best = { src: p.src, caption: 'a photo from that day', yearsAgo: todayYear - yr };
   });
@@ -1270,18 +1330,32 @@ function renderChips(container, options, inputEl){
 
 /* ---------- storage ---------- */
 
+// Photos that live in the bucket are saved as just their `path`; the signed
+// `src` link is temporary and gets regenerated on every load, so it should
+// never be persisted (it only bloated the saved data and went stale).
+function entryForStorage(entry){
+  if(!entry.photos || !entry.photos.some(p => p.path)) return entry;
+  return { ...entry, photos: entry.photos.map(p=>{
+    if(!p.path) return p;
+    const { src, ...rest } = p;
+    return rest;
+  }) };
+}
+
 async function saveEntry(entry){
   try{
-    const ok = await storage.set(entryKey(entry.id), JSON.stringify(entry), false);
+    const ok = await storage.set(entryKey(entry.id), JSON.stringify(entryForStorage(entry)), false);
     if(!ok) throw new Error('no result');
   }catch(e){
     console.error('save failed', e);
     // Note: we deliberately don't use alert() here — some embedded/sandboxed
-    // browser views (e.g. viewing this file inside another app's built-in
-    // reader) silently swallow alert(), which made saves look like they were
-    // just "bugging" with no explanation. Throwing instead lets every save
-    // path show the real reason inline, right in the form the user is using.
-    const friendly = new Error("Couldn't save — this person's saved photos and notes have gotten too large for your browser to store. Try removing an older photo, then try again.");
+    // browser views silently swallow alert(). Throwing lets every save path
+    // show the real reason inline, right where the person is working.
+    const raw = (e && e.message) ? e.message : 'unknown error';
+    const isQuota = (e && e.name === 'QuotaExceededError') || /quota/i.test(raw);
+    const friendly = new Error(isQuota
+      ? "Couldn't save — your browser's storage is full. Try removing an older photo, then try again."
+      : "Couldn't save: " + raw);
     friendly.cause = e;
     throw friendly;
   }
@@ -1367,13 +1441,17 @@ async function loadAll(){
     try{ await storage.set(INDEX_KEY, JSON.stringify(ids), false); }catch(e){}
   }
 
-  for(const id of ids){
+  // Load everyone at the same time instead of one request after another
+  // (order is preserved), then refresh all photo links in one batch.
+  const loaded = await Promise.all(ids.map(async id=>{
     try{
       const r = await storage.get(entryKey(id), false);
-      if(r && r.value) entries.push(normalizePartnerAnniversary(migrateAnniversaryFields(JSON.parse(r.value))));
+      if(r && r.value) return normalizePartnerAnniversary(migrateAnniversaryFields(JSON.parse(r.value)));
     }catch(e){ /* entry missing, skip it */ }
-  }
-  await Promise.all(entries.map(hydratePhotoUrls));
+    return null;
+  }));
+  entries = loaded.filter(Boolean);
+  await hydratePhotoUrls(entries);
 
   try{
     const cr = await storage.get(CONN_KEY, false);
@@ -1394,6 +1472,11 @@ async function loadAll(){
     const sd = await storage.get(STATS_DAYTYPE_KEY, false);
     statsDayType = (sd && sd.value === 'dating') ? 'dating' : 'together';
   }catch(e){ statsDayType = 'together'; }
+
+  try{
+    const vm = await storage.get(VIEWED_KEY, false);
+    viewedMap = vm && vm.value ? JSON.parse(vm.value) : {};
+  }catch(e){ viewedMap = {}; }
 
   try{
     const cr = await storage.get(CIRCLES_KEY, false);
@@ -1423,7 +1506,6 @@ async function loadAll(){
 // Merges user-defined categories into CAT_META so tabs, cat-choice pickers,
 // and dots all pick them up automatically.
 function applyCustomCategories(){
-  DEFAULT_CAT_IDS.forEach(id=>{}); // defaults always stay put
   customCategories.forEach((c, i)=>{
     CAT_META[c.id] = { label: c.label, color: c.color || CUSTOM_CAT_COLORS[i % CUSTOM_CAT_COLORS.length], soft: (c.color || CUSTOM_CAT_COLORS[i % CUSTOM_CAT_COLORS.length]) + '33' };
   });
@@ -1512,7 +1594,7 @@ function matchesTab(e, tab){
 // romantic, years from the breakup onward are friendship.
 function anniversaryTypeForYear(e, year){
   if(e.category === 'partner' && e.advancedMode && e.datingEndDate){
-    const breakupYear = new Date(e.datingEndDate+'T00:00:00').getFullYear();
+    const breakupYear = parseLocalDate(e.datingEndDate).getFullYear();
     return year >= breakupYear ? 'friendship' : 'romantic';
   }
   return e.anniversaryType;
@@ -1786,7 +1868,7 @@ function computeRememberToday(){
       items.push({ icon:'🎂', text:`${e.name}'s birthday`, entryId:e.id });
     }
     if(e.anniversaryDate && monthDay(e.anniversaryDate) === todayMD){
-      const annivYear = new Date(e.anniversaryDate+'T00:00:00').getFullYear();
+      const annivYear = parseLocalDate(e.anniversaryDate).getFullYear();
       const n = todayYear - annivYear;
       if(n > 0){
         const word = e.anniversaryType === 'friendship' ? 'years of friendship with' : 'years with';
@@ -1794,9 +1876,9 @@ function computeRememberToday(){
       }
     }
     (e.photos||[]).forEach(p=>{
-      const d = p.takenDate || (p.addedAt ? p.addedAt.slice(0,10) : null);
+      const d = p.takenDate || localDateFromIso(p.addedAt);
       if(!d || monthDay(d) !== todayMD) return;
-      const yr = new Date(d+'T00:00:00').getFullYear();
+      const yr = parseLocalDate(d).getFullYear();
       const n = todayYear - yr;
       if(n > 0) items.push({ icon:'📷', text:`${n} year${n===1?'':'s'} ago today, with ${e.name}`, entryId:e.id });
     });
@@ -1886,7 +1968,7 @@ function renderProfileAccountSection(){
       <p class="sub" style="margin:0 0 14px;">Your archive only lives in this browser right now. Add an email and password to save it permanently and sync it to other devices.</p>
       <div class="auth-err" id="linkErr"></div>
       <input type="email" id="linkEmail" placeholder="Email" autocomplete="username">
-      <input type="password" id="linkPassword" placeholder="Password" autocomplete="new-password">
+      <input type="password" id="linkPassword" placeholder="Password (6+ characters)" autocomplete="new-password">
       <button class="primary" id="linkAccountBtn" type="button">Save archive to an account</button>
       <button class="ghost" id="profileSignOutBtn" type="button">Sign out</button>
     `;
@@ -1903,18 +1985,31 @@ function renderProfileAccountSection(){
 
 async function tryLinkAccount(){
   const errEl = document.getElementById('linkErr');
+  const btn = document.getElementById('linkAccountBtn');
   const email = document.getElementById('linkEmail').value.trim();
   const password = document.getElementById('linkPassword').value;
-  errEl.style.color = '';
+  errEl.classList.remove('ok');
   errEl.textContent = '';
+  if(!email){ errEl.textContent = 'Enter an email address.'; return; }
+  if(password.length < 6){ errEl.textContent = 'Use a password with at least 6 characters.'; return; }
+  if(btn.disabled) return;
+  btn.disabled = true;
   try{
-    const { data, error } = await sb.auth.updateUser({ email, password });
+    const redirectTo = location.origin + location.pathname;
+    const { data, error } = await sb.auth.updateUser({ email, password }, { emailRedirectTo: redirectTo });
     if(error){ errEl.textContent = error.message; return; }
     currentUser = data.user;
-    errEl.style.color = '#6B7A5E';
-    errEl.textContent = "Saved! This archive is now tied to that email — log in with it on any device.";
-    renderProfileAccountSection();
-  }catch(err){ errEl.textContent = err.message || String(err); }
+    // The email change isn't final until the person clicks the link we just
+    // emailed them, so don't claim it's saved yet (and don't re-render this
+    // section — that would wipe this message off the screen).
+    errEl.classList.add('ok');
+    errEl.textContent = "Almost there — check your email and confirm it. Your archive stays on this device until you do.";
+    document.getElementById('linkPassword').value = '';
+  }catch(err){
+    errEl.textContent = err.message || String(err);
+  }finally{
+    btn.disabled = false;
+  }
 }
 
 async function trySignOut(){
@@ -1922,7 +2017,8 @@ async function trySignOut(){
     const ok = confirm("You're browsing as a guest — signing out means you'll lose access to this archive for good unless you've already saved it to an account. Sign out anyway?");
     if(!ok) return;
   }
-  await sb.auth.signOut();
+  signingOut = true;
+  try{ await sb.auth.signOut(); }catch(e){ /* reload either way */ }
   location.reload();
 }
 
@@ -1954,7 +2050,11 @@ async function saveProfileForm(){
   try{
     await storage.set(PROFILE_KEY, JSON.stringify(profileData), false);
     closeProfileModal();
-  }catch(err){ document.getElementById('profileErr').textContent = err.message || "Couldn't save that."; }
+  }catch(err){
+    const el = document.getElementById('profileErr');
+    el.textContent = err.message || "Couldn't save that.";
+    el.style.display = 'block';
+  }
 }
 document.getElementById('profileBtn').addEventListener('click', openProfileModal);
 document.getElementById('profileCancelBtn').addEventListener('click', closeProfileModal);
@@ -1993,7 +2093,10 @@ function passesFilters(e){
     if(f === 'hasPhotos' && !(e.photos && e.photos.length)) return false;
     if(f === 'noPhotos' && (e.photos && e.photos.length)) return false;
     if(f === 'birthdayToday' && !(e.birthday && monthDay(e.birthday) === monthDay(todayStr()))) return false;
-    if(f === 'recent' && !(e.updatedAt && daysBetween(e.updatedAt.slice(0,10), todayStr()) <= 30)) return false;
+    if(f === 'recent'){
+      const u = localDateFromIso(e.updatedAt);
+      if(!(u && daysBetween(u, todayStr()) <= 30)) return false;
+    }
   }
   return true;
 }
@@ -2005,7 +2108,7 @@ function sortEntries(list){
     case 'alpha': return arr.sort((a,b)=> a.name.localeCompare(b.name));
     case 'longest': return arr.sort((a,b)=> daysFor(b) - daysFor(a));
     case 'updated': return arr.sort((a,b)=> (b.updatedAt||'').localeCompare(a.updatedAt||''));
-    case 'viewed': return arr.sort((a,b)=> (b.lastViewedAt||'').localeCompare(a.lastViewedAt||''));
+    case 'viewed': return arr.sort((a,b)=> (viewedMap[b.id]||b.lastViewedAt||'').localeCompare(viewedMap[a.id]||a.lastViewedAt||''));
     default: return arr; // 'manual' — whatever order the person arranged
   }
 }
@@ -2143,7 +2246,7 @@ async function moveEntry(id, direction){
   const idxB = entries.findIndex(e=>e.id===otherId);
   [entries[idxA], entries[idxB]] = [entries[idxB], entries[idxA]];
   renderGrid();
-  await saveIndex();
+  try{ await saveIndex(); }catch(err){ showToast(err.message || "Couldn't save that order."); }
 }
 
 /* ---------- person add/edit form ---------- */
@@ -2158,7 +2261,7 @@ let openDetailAfterCreate = null;
 
 function updateStatusSuggestions(cat){
   const list = STATUS_SUGGESTIONS[cat] || [];
-  statusOptions.innerHTML = list.map(s=>`<option value="${s}">`).join('');
+  statusOptions.innerHTML = list.map(s=>`<option value="${escapeHtml(s)}">`).join('');
   renderChips(document.getElementById('statusChips'), list, document.getElementById('f-status'));
 }
 
@@ -2521,8 +2624,8 @@ function openDetail(id, jumpToSection){
   if(jumpToSection) openSections[jumpToSection] = true;
   const e = entries.find(x=>x.id===id);
   if(e){
-    e.lastViewedAt = new Date().toISOString();
-    saveEntry(e).catch(()=>{}); // best-effort, don't block opening the view on it
+    viewedMap[id] = new Date().toISOString();
+    saveViewedDebounced(); // tiny separate write — never touches the person's own data
   }
   renderDetail(id);
   detailOverlay.classList.remove('hidden');
@@ -2714,7 +2817,7 @@ function setupDetailEditForm(e){
 
   function updateStatusOpts(cat){
     const list = STATUS_SUGGESTIONS[cat]||[];
-    statusOptionsEl.innerHTML = list.map(s=>`<option value="${s}">`).join('');
+    statusOptionsEl.innerHTML = list.map(s=>`<option value="${escapeHtml(s)}">`).join('');
     renderChips(document.getElementById('de-statusChips'), list, document.getElementById('de-status'));
   }
   updateStatusOpts(e.category);
@@ -2963,6 +3066,7 @@ let draggedPhotoId = null;
 
 function renderGallery(e){
   const grid = document.getElementById('galleryGrid');
+  if(!grid) return; // detail view was closed while something was still saving
   const tabsEl = document.getElementById('galleryTabs');
   if(tabsEl){
     tabsEl.querySelectorAll('.gallery-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab === galleryTab));
@@ -2998,12 +3102,14 @@ function renderGallery(e){
         <div class="cap">${cap}</div>
       </div>
     `;
-  }).join('') + (photos.length > visibleCount ? `<button type="button" class="load-more-btn" id="galleryLoadMore" style="grid-column:1/-1;">Load more (${photos.length - visibleCount} more)</button>` : '');
+  }).join('') + (photos.length > visibleCount ? `<button type="button" class="load-more-btn" id="galleryLoadMore">Load more (${photos.length - visibleCount} more)</button>` : '');
 
   const items = Array.from(grid.querySelectorAll('.gallery-item'));
   items.forEach(item=>{
     const pid = item.dataset.photo;
     item.addEventListener('click', ()=>openLightbox(e.id, pid));
+    // Drag-to-reorder works with a mouse; on a phone use "← Earlier / Later →"
+    // in the photo editor (HTML5 drag-and-drop doesn't fire on touch screens).
     item.addEventListener('dragstart', ()=>{ draggedPhotoId = pid; item.classList.add('dragging'); });
     item.addEventListener('dragend', ()=>{ item.classList.remove('dragging'); draggedPhotoId = null; });
     item.addEventListener('dragover', (ev)=>{ ev.preventDefault(); });
@@ -3040,7 +3146,7 @@ function openLightbox(entryId, photoId){
     lightboxEl.innerHTML = `
       <button class="lightbox-close" id="lbClose" type="button">✕</button>
       <img id="lbImg" src="${p.src}" alt="">
-      <div class="lightbox-cap">${p.takenDate ? formatDate(p.takenDate) : `added ${formatDate((p.addedAt||'').slice(0,10))}`}${pool.length>1 ? ` · ${idx+1} of ${pool.length}` : ''}</div>
+      <div class="lightbox-cap">${p.takenDate ? formatDate(p.takenDate) : `added ${formatDate(localDateFromIso(p.addedAt) || '')}`}${pool.length>1 ? ` · ${idx+1} of ${pool.length}` : ''}</div>
       <div class="lightbox-bar">
         ${pool.length>1 ? '<button id="lbPrev" type="button">‹ Prev</button>' : ''}
         <button id="lbFav" type="button">${p.favorite?'♥ Favorited':'♡ Favorite'}</button>
@@ -3153,7 +3259,7 @@ function openPhotoEdit(entryId, photoId){
   photoEditCtx = { entryId, photoId };
   document.getElementById('photoEditImg').src = p.src;
   document.getElementById('photoEditDate').value = p.takenDate || '';
-  document.getElementById('photoAddedNote').textContent = `Added to the archive ${formatDate(p.addedAt.slice(0,10))}.`;
+  document.getElementById('photoAddedNote').textContent = `Added to the archive ${formatDate(localDateFromIso(p.addedAt) || '')}.`;
   document.getElementById('photoFavBtn').textContent = p.favorite ? '♥ Favorited' : '♡ Favorite';
   photoEditOverlay.classList.remove('hidden');
 }
@@ -3181,6 +3287,18 @@ document.getElementById('photoSetCover').addEventListener('click', async ()=>{
     photoEditOverlay.classList.add('hidden');
   }catch(err){ showToast(err.message || "Couldn't save that."); }
 });
+// Touch-friendly reordering: shift this photo one place earlier/later.
+async function movePhoto(delta){
+  if(!photoEditCtx) return;
+  const e = entries.find(x=>x.id===photoEditCtx.entryId);
+  const i = e.photos.findIndex(x=>x.id===photoEditCtx.photoId);
+  const j = i + delta;
+  if(i < 0 || j < 0 || j >= e.photos.length) return;
+  [e.photos[i], e.photos[j]] = [e.photos[j], e.photos[i]];
+  try{ await persistEntry(e); }catch(err){ showToast(err.message || "Couldn't save that order."); }
+}
+document.getElementById('photoMoveLeft').addEventListener('click', ()=>movePhoto(-1));
+document.getElementById('photoMoveRight').addEventListener('click', ()=>movePhoto(1));
 document.getElementById('photoDeleteBtn').addEventListener('click', ()=>{
   if(!photoEditCtx) return;
   photoEditOverlay.classList.add('hidden');
@@ -3194,6 +3312,7 @@ document.getElementById('photoEditDone').addEventListener('click', ()=>{
 /* timeline */
 function renderTimeline(e){
   const list = document.getElementById('timelineList');
+  if(!list) return;
   const real = (e.timeline||[]).map(m=>({ ...m, isBirthday:false }));
 
   let birthdayItems = [];
@@ -3386,6 +3505,11 @@ function closeMomentForm(){
 }
 document.getElementById('momentCancel').addEventListener('click', closeMomentForm);
 
+// NOTE: this form has `novalidate` and no `required` attributes on purpose.
+// When you edit a birthday/anniversary memory the title and date fields are
+// hidden, and the browser refuses to submit a form with an empty hidden
+// required field (silently — it just looked like Save did nothing).
+// The checks below do the validating instead, only when those fields apply.
 momentForm.addEventListener('submit', async (ev)=>{
   ev.preventDefault();
   const errEl = document.getElementById('momentErr');
@@ -3464,6 +3588,7 @@ function otherPersonId(conn, selfId){ return conn.aId === selfId ? conn.bId : co
 
 function renderConnections(e){
   const container = document.getElementById('connectionsList');
+  if(!container) return;
   const mine = connections.filter(c => c.aId === e.id || c.bId === e.id);
   if(!mine.length){
     container.innerHTML = `<div class="connections-empty">No one's connected here yet — link them to family or friends you've also kept.</div>`;
@@ -3574,8 +3699,13 @@ connectionForm.addEventListener('submit', async (ev)=>{
   } else {
     connections.push(conn);
   }
-  await persistConnections();
-  closeConnectionForm();
+  try{
+    await persistConnections();
+    closeConnectionForm();
+  }catch(err){
+    errEl.textContent = err.message || "Couldn't save that connection. Try again.";
+    errEl.style.display = 'block';
+  }
 });
 
 /* ---------- generic delete confirm ---------- */
@@ -3959,14 +4089,14 @@ window.addEventListener('resize', ()=>{
   if(!socialWebView.classList.contains('hidden')) renderWebCanvas();
 });
 
-const CAT_LABELS = { partner:'Partner', friend:'Friend', family:'Family', other:'Other' };
+// "Move to…" lists the four built-ins plus any custom categories.
 function openMoveOverlay(entryId){
   const e = entries.find(x=>x.id===entryId);
   if(!e) return;
   const opts = document.getElementById('moveOptions');
-  opts.innerHTML = Object.keys(CAT_LABELS).map(c=>
+  opts.innerHTML = Object.keys(CAT_META).map(c=>
     `<button type="button" class="stat-pick-item ${e.category===c?'active':''}" data-cat="${c}">
-      <span>${CAT_LABELS[c]}</span>${e.category===c ? '<span class="days-hint">current</span>' : ''}
+      <span>${escapeHtml(CAT_META[c].label)}</span>${e.category===c ? '<span class="days-hint">current</span>' : ''}
     </button>`
   ).join('');
   opts.querySelectorAll('[data-cat]').forEach(btn=>{
@@ -4002,34 +4132,58 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', async ()=>
   confirmOverlay.classList.add('hidden');
   deleteContext = null;
 
-  if(type === 'person'){
-    entries = entries.filter(e=>e.id !== entryId);
-    await deleteEntryStorage(entryId);
-    await saveIndex();
-    connections = connections.filter(c => c.aId !== entryId && c.bId !== entryId);
-    await saveConnections();
-    if(currentDetailId === entryId) closeDetail();
-    refreshAll();
-  } else if(type === 'photo'){
-    const e = entries.find(x=>x.id===entryId);
-    const removed = e.photos.find(p=>p.id === id);
-    e.photos = e.photos.filter(p=>p.id !== id);
-    if(e.coverId === id) e.coverId = e.photos.length ? e.photos[0].id : null;
-    try{
+  try{
+    if(type === 'person'){
+      const gone = entries.find(e=>e.id === entryId);
+      entries = entries.filter(e=>e.id !== entryId);
+      await deleteEntryStorage(entryId);
+      await saveIndex();
+      connections = connections.filter(c => c.aId !== entryId && c.bId !== entryId);
+      await saveConnections();
+
+      // Tidy up everything else that pointed at this person, so nothing is
+      // left behind (circle memberships, the "days with" pick, view history).
+      let circlesChanged = false;
+      circles.forEach(c=>{
+        if(c.memberIds.includes(entryId)){ c.memberIds = c.memberIds.filter(x=>x !== entryId); circlesChanged = true; }
+        if(c.memberTiers && entryId in c.memberTiers){ delete c.memberTiers[entryId]; circlesChanged = true; }
+      });
+      if(circlesChanged) await saveCircles();
+      if(statsPersonId === entryId){
+        statsPersonId = null;
+        try{ await storage.delete(STATS_PERSON_KEY, false); }catch(e){}
+      }
+      if(entryId in viewedMap){ delete viewedMap[entryId]; saveViewedDebounced(); }
+
+      // …and the photo files themselves, which used to stay in the bucket forever.
+      if(gone && supabaseConfigured){
+        await deletePhotoBlobs((gone.photos || []).map(p => p.path));
+      }
+
+      if(currentDetailId === entryId) closeDetail();
+      refreshAll();
+      if(!socialWebView.classList.contains('hidden')) renderWebCanvas();
+    } else if(type === 'photo'){
+      const e = entries.find(x=>x.id===entryId);
+      const removed = e.photos.find(p=>p.id === id);
+      e.photos = e.photos.filter(p=>p.id !== id);
+      if(e.coverId === id) e.coverId = e.photos.length ? e.photos[0].id : null;
       await persistEntry(e);
       if(removed && removed.path) await deletePhotoBlob(removed.path);
-    }catch(err){ showToast(err.message || "Couldn't save that."); }
-  } else if(type === 'moment'){
-    const e = entries.find(x=>x.id===entryId);
-    e.timeline = e.timeline.filter(m=>m.id !== id);
-    try{ await persistEntry(e); }catch(err){ showToast(err.message || "Couldn't save that."); }
-  } else if(type === 'connection'){
-    connections = connections.filter(c => c.id !== id);
-    await persistConnections();
-  } else if(type === 'circle'){
-    circles = circles.filter(c => c.id !== id);
-    if(activeCircleId === id) activeCircleId = circles.length ? circles[0].id : null;
-    await persistCircles();
+    } else if(type === 'moment'){
+      const e = entries.find(x=>x.id===entryId);
+      e.timeline = e.timeline.filter(m=>m.id !== id);
+      await persistEntry(e);
+    } else if(type === 'connection'){
+      connections = connections.filter(c => c.id !== id);
+      await persistConnections();
+    } else if(type === 'circle'){
+      circles = circles.filter(c => c.id !== id);
+      if(activeCircleId === id) activeCircleId = circles.length ? circles[0].id : null;
+      await persistCircles();
+    }
+  }catch(err){
+    showToast(err.message || "Couldn't finish deleting that.");
   }
 });
 
@@ -4044,7 +4198,10 @@ function showBootError(msg){
   }
   el.textContent = 'Something went wrong loading Kept: ' + msg;
 }
-window.addEventListener('error', ev=>showBootError(ev.message));
+window.addEventListener('error', ev=>{
+  if(/ResizeObserver/i.test(ev.message || '')) return; // harmless browser noise
+  showBootError(ev.message);
+});
 window.addEventListener('unhandledrejection', ev=>showBootError((ev.reason && ev.reason.message) || String(ev.reason)));
 
 async function startApp(){
@@ -4064,134 +4221,207 @@ async function startApp(){
 
 async function boot(){
   try{
-  if(!supabaseConfigured){
-    // No Supabase project wired up yet — run as before, on localStorage.
-    await startApp();
-    return;
-  }
-  const authGate = document.getElementById('authGate');
-  const boxWelcome = document.getElementById('authBoxWelcome');
-  const boxSignIn = document.getElementById('authBoxSignIn');
-  const boxSignUp = document.getElementById('authBoxSignUp');
-  const boxReset = document.getElementById('authBoxReset');
-  const boxNewPassword = document.getElementById('authBoxNewPassword');
-  const welcomeErr = document.getElementById('authWelcomeErr');
-  const authErr = document.getElementById('authErr');
-  const emailEl = document.getElementById('authEmail');
-  const passEl = document.getElementById('authPassword');
-  const upErr = document.getElementById('authUpErr');
-  const upEmailEl = document.getElementById('authUpEmail');
-  const upPassEl = document.getElementById('authUpPassword');
-  const resetErr = document.getElementById('authResetErr');
-  const resetEmailEl = document.getElementById('authResetEmail');
-  const newPassErr = document.getElementById('authNewPassErr');
-  const newPassEl = document.getElementById('authNewPassword');
-  const allPanels = [boxWelcome, boxSignIn, boxSignUp, boxReset, boxNewPassword];
+    if(!supabaseConfigured){
+      // No Supabase project wired up yet — run as before, on localStorage.
+      await startApp();
+      return;
+    }
+    const authGate = document.getElementById('authGate');
+    const boxWelcome = document.getElementById('authBoxWelcome');
+    const boxSignIn = document.getElementById('authBoxSignIn');
+    const boxSignUp = document.getElementById('authBoxSignUp');
+    const boxReset = document.getElementById('authBoxReset');
+    const boxNewPassword = document.getElementById('authBoxNewPassword');
+    const welcomeErr = document.getElementById('authWelcomeErr');
+    const authErr = document.getElementById('authErr');
+    const emailEl = document.getElementById('authEmail');
+    const passEl = document.getElementById('authPassword');
+    const upErr = document.getElementById('authUpErr');
+    const upEmailEl = document.getElementById('authUpEmail');
+    const upPassEl = document.getElementById('authUpPassword');
+    const resetErr = document.getElementById('authResetErr');
+    const resetEmailEl = document.getElementById('authResetEmail');
+    const newPassErr = document.getElementById('authNewPassErr');
+    const newPassEl = document.getElementById('authNewPassword');
+    const allPanels = [boxWelcome, boxSignIn, boxSignUp, boxReset, boxNewPassword];
 
-  function showPanel(panel){
-    allPanels.forEach(p=>p.classList.add('hidden'));
-    panel.classList.remove('hidden');
-  }
+    // Where email links (confirm / reset) should send people back to: this page,
+    // without any leftover #tokens. This exact URL must be listed under
+    // Supabase → Authentication → URL Configuration → Redirect URLs.
+    const appUrl = location.origin + location.pathname;
 
-  let appStarted = false;
-  async function enterApp(user){
-    if(appStarted) return;
-    appStarted = true;
-    currentUser = user;
-    await startApp();
-  }
+    function showPanel(panel){
+      allPanels.forEach(p=>p.classList.add('hidden'));
+      panel.classList.remove('hidden');
+    }
+    function setMsg(el, text, ok){
+      el.classList.toggle('ok', !!ok);
+      el.textContent = text || '';
+    }
+    // Runs an auth action with the button locked (no double-submits) and any
+    // error shown in the right place instead of silently swallowed.
+    async function busy(btn, errEl, fn){
+      if(btn.disabled) return;
+      btn.disabled = true;
+      setMsg(errEl, '');
+      try{ await fn(); }
+      catch(err){ setMsg(errEl, (err && err.message) || String(err)); }
+      finally{ btn.disabled = false; }
+    }
 
-  async function trySignIn(){
-    authErr.textContent = '';
-    try{
-      const { data, error } = await sb.auth.signInWithPassword({ email: emailEl.value.trim(), password: passEl.value });
-      if(error){ authErr.textContent = error.message; return; }
-      await enterApp(data.user);
-    }catch(err){ authErr.textContent = err.message || String(err); }
-  }
-  async function trySignUp(){
-    upErr.textContent = '';
-    try{
-      const { data, error } = await sb.auth.signUp({ email: upEmailEl.value.trim(), password: upPassEl.value });
-      if(error){ upErr.textContent = error.message; return; }
-      if(data.session){
-        await enterApp(data.user);
-      } else {
-        upErr.style.color = '#6B7A5E';
-        upErr.textContent = 'Account created — check your email to confirm, then log in.';
-      }
-    }catch(err){ upErr.textContent = err.message || String(err); }
-  }
-  async function tryAnon(){
-    welcomeErr.textContent = '';
-    try{
-      const { data, error } = await sb.auth.signInAnonymously();
-      if(error){ welcomeErr.textContent = error.message; return; }
-      await enterApp(data.user);
-    }catch(err){ welcomeErr.textContent = err.message || String(err); }
-  }
-  async function trySendReset(){
-    resetErr.textContent = '';
-    try{
-      const redirectTo = window.location.href.split('#')[0];
-      const { error } = await sb.auth.resetPasswordForEmail(resetEmailEl.value.trim(), { redirectTo });
-      if(error){ resetErr.textContent = error.message; return; }
-      resetErr.style.color = '#6B7A5E';
-      resetErr.textContent = 'Check your email for a reset link.';
-    }catch(err){ resetErr.textContent = err.message || String(err); }
-  }
-  async function trySaveNewPassword(){
-    newPassErr.textContent = '';
-    try{
-      const { data, error } = await sb.auth.updateUser({ password: newPassEl.value });
-      if(error){ newPassErr.textContent = error.message; return; }
-      await enterApp(data.user);
-    }catch(err){ newPassErr.textContent = err.message || String(err); }
-  }
-
-  document.getElementById('authGoLogin').addEventListener('click', ()=>showPanel(boxSignIn));
-  document.getElementById('authGoRegister').addEventListener('click', ()=>showPanel(boxSignUp));
-  document.getElementById('authGoAnon').addEventListener('click', tryAnon);
-  document.getElementById('authGoRegister2').addEventListener('click', ()=>showPanel(boxSignUp));
-  document.getElementById('authGoLogin2').addEventListener('click', ()=>showPanel(boxSignIn));
-  document.getElementById('authSignIn').addEventListener('click', trySignIn);
-  document.getElementById('authSignUp').addEventListener('click', trySignUp);
-  passEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySignIn(); });
-  upPassEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySignUp(); });
-  document.getElementById('authForgotLink').addEventListener('click', ()=>{ resetErr.style.color=''; resetErr.textContent=''; showPanel(boxReset); });
-  document.getElementById('authBackToSignIn').addEventListener('click', ()=>showPanel(boxSignIn));
-  document.getElementById('authSendReset').addEventListener('click', trySendReset);
-  document.getElementById('authSaveNewPassword').addEventListener('click', trySaveNewPassword);
-  newPassEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySaveNewPassword(); });
-
-  // Drive everything off onAuthStateChange rather than a one-off getSession()
-  // call: this is what correctly catches the special PASSWORD_RECOVERY event
-  // fired when someone arrives via a "reset your password" email link,
-  // instead of just logging them straight into the app with their old password.
-  let sawInitialSession = false;
-  sb.auth.onAuthStateChange((event, session)=>{
-    if(event === 'PASSWORD_RECOVERY'){
+    // recovering = this visit came from a "reset your password" email.
+    // While true we must NOT auto-enter the app just because a session exists
+    // (a recovery link does create a session) — they need to set a new password first.
+    let recovering = OPENED_VIA_RECOVERY_LINK;
+    if(recovering){
       showPanel(boxNewPassword);
       authGate.classList.remove('hidden');
-      return;
     }
-    if(event === 'INITIAL_SESSION'){
-      sawInitialSession = true;
-      if(session){ enterApp(session.user); }
-      else { showPanel(boxWelcome); authGate.classList.remove('hidden'); }
-      return;
+
+    async function enterApp(user){
+      if(appStarted) return;
+      appStarted = true;
+      currentUser = user;
+      try{
+        await startApp();
+      }catch(err){
+        // Loading failed (network, missing table, etc.) — don't leave a blank page.
+        appStarted = false;
+        currentUser = null;
+        showBootError((err && err.message) || String(err));
+        showPanel(boxSignIn);
+        authGate.classList.remove('hidden');
+      }
     }
-    if(event === 'SIGNED_IN' && session && sawInitialSession && !appStarted){
-      enterApp(session.user);
-    }
-  });
+
+    const btnSignIn = document.getElementById('authSignIn');
+    const btnSignUp = document.getElementById('authSignUp');
+    const btnAnon = document.getElementById('authGoAnon');
+    const btnSendReset = document.getElementById('authSendReset');
+    const btnSaveNewPassword = document.getElementById('authSaveNewPassword');
+
+    const trySignIn = () => busy(btnSignIn, authErr, async ()=>{
+      const email = emailEl.value.trim();
+      if(!email || !passEl.value) throw new Error('Enter your email and password.');
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: passEl.value });
+      if(error) throw error;
+      await enterApp(data.user);
+    });
+    const trySignUp = () => busy(btnSignUp, upErr, async ()=>{
+      const email = upEmailEl.value.trim();
+      if(!email) throw new Error('Enter your email address.');
+      if(upPassEl.value.length < 6) throw new Error('Use a password with at least 6 characters.');
+      const { data, error } = await sb.auth.signUp({
+        email, password: upPassEl.value, options: { emailRedirectTo: appUrl }
+      });
+      if(error) throw error;
+      // Supabase answers "success" with no error for an email that already has
+      // an account (to avoid leaking who's registered) — but the user it hands
+      // back has no identities. Don't tell them an account was created.
+      if(data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0){
+        throw new Error('That email already has an account. Try logging in, or use "Forgot your password?".');
+      }
+      if(data.session){ await enterApp(data.user); return; }
+      setMsg(upErr, 'Account created. Check your email to confirm it, then log in.', true);
+    });
+    const tryAnon = () => busy(btnAnon, welcomeErr, async ()=>{
+      const { data, error } = await sb.auth.signInAnonymously();
+      if(error) throw error;
+      await enterApp(data.user);
+    });
+    const trySendReset = () => busy(btnSendReset, resetErr, async ()=>{
+      const email = resetEmailEl.value.trim();
+      if(!email) throw new Error('Enter your email address.');
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: appUrl });
+      if(error) throw error;
+      setMsg(resetErr, 'Check your email for a reset link.', true);
+    });
+    const trySaveNewPassword = () => busy(btnSaveNewPassword, newPassErr, async ()=>{
+      if(newPassEl.value.length < 6) throw new Error('Use a password with at least 6 characters.');
+      const { data, error } = await sb.auth.updateUser({ password: newPassEl.value });
+      if(error){
+        if(/session/i.test(error.message)){
+          throw new Error('This reset link has expired or was already used. Request a new one from "Forgot your password?".');
+        }
+        throw error;
+      }
+      recovering = false;
+      try{ history.replaceState(null, '', location.pathname); }catch(e){}
+      await enterApp(data.user);
+    });
+
+    document.getElementById('authGoLogin').addEventListener('click', ()=>showPanel(boxSignIn));
+    document.getElementById('authGoRegister').addEventListener('click', ()=>showPanel(boxSignUp));
+    btnAnon.addEventListener('click', tryAnon);
+    document.getElementById('authGoRegister2').addEventListener('click', ()=>showPanel(boxSignUp));
+    document.getElementById('authGoLogin2').addEventListener('click', ()=>showPanel(boxSignIn));
+    btnSignIn.addEventListener('click', trySignIn);
+    btnSignUp.addEventListener('click', trySignUp);
+    emailEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') passEl.focus(); });
+    passEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySignIn(); });
+    upEmailEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') upPassEl.focus(); });
+    upPassEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySignUp(); });
+    resetEmailEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySendReset(); });
+    document.getElementById('authForgotLink').addEventListener('click', ()=>{ setMsg(resetErr, ''); showPanel(boxReset); });
+    document.getElementById('authBackToSignIn').addEventListener('click', ()=>showPanel(boxSignIn));
+    btnSendReset.addEventListener('click', trySendReset);
+    btnSaveNewPassword.addEventListener('click', trySaveNewPassword);
+    newPassEl.addEventListener('keydown', ev=>{ if(ev.key==='Enter') trySaveNewPassword(); });
+    document.getElementById('authCancelNewPassword').addEventListener('click', async ()=>{
+      recovering = false;
+      try{ history.replaceState(null, '', location.pathname); }catch(e){}
+      signingOut = true;
+      try{ await sb.auth.signOut(); }catch(e){}
+      signingOut = false;
+      showPanel(boxSignIn);
+    });
+
+    // Drive everything off onAuthStateChange rather than a one-off getSession()
+    // call. IMPORTANT: Supabase can deadlock if you await other Supabase calls
+    // (like loading the archive) directly inside this callback, so the real work
+    // is deferred with setTimeout.
+    sb.auth.onAuthStateChange((event, session)=>{
+      setTimeout(()=>{
+        if(event === 'PASSWORD_RECOVERY'){
+          recovering = true;
+          showPanel(boxNewPassword);
+          authGate.classList.remove('hidden');
+          return;
+        }
+        if(event === 'USER_UPDATED' && session){
+          currentUser = session.user; // e.g. a guest just confirmed their email
+          return;
+        }
+        if(event === 'SIGNED_OUT'){
+          // signed out here or in another tab: start clean rather than keep
+          // an app on screen whose saves will now silently fail
+          if(appStarted && !signingOut) location.reload();
+          return;
+        }
+        if(recovering) return; // finish setting the new password first
+        if(event === 'INITIAL_SESSION'){
+          if(session){ enterApp(session.user); }
+          else {
+            if(OPENED_VIA_EXPIRED_LINK){
+              setMsg(resetErr, 'That link has expired or was already used. Enter your email to get a new one.');
+              showPanel(boxReset);
+            } else {
+              showPanel(boxWelcome);
+            }
+            authGate.classList.remove('hidden');
+          }
+          return;
+        }
+        if(event === 'SIGNED_IN' && session && !appStarted) enterApp(session.user);
+      }, 0);
+    });
   }catch(err){
     showBootError(err.message || String(err));
     // Even if something failed, don't leave the person staring at a
     // silently broken page — show the login form so they have something
     // actionable, unless the app already started.
     const authGate = document.getElementById('authGate');
-    if(authGate) authGate.classList.remove('hidden');
+    if(authGate && !appStarted) authGate.classList.remove('hidden');
   }
 }
 boot();
