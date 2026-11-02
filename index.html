@@ -7,17 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>try{var __t=localStorage.getItem('kept-theme');if(__t==='lotus'||__t==='pandan')document.documentElement.setAttribute('data-theme',__t);}catch(e){}</script>
 <style>
-  #authGate{ position:fixed; inset:0; background:#F7F5EC; z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
+  #authGate{ position:fixed; inset:0; background:var(--paper); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
   #authGate.hidden{ display:none !important; }
-  .auth-box{ background:#FFFFFF; max-width:340px; width:100%; padding:26px; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,0.16); font-family:'Inter',sans-serif; }
+  .auth-box{ color:var(--ink); background:var(--card); max-width:340px; width:100%; padding:26px; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,0.16); font-family:'Inter',sans-serif; }
   .auth-box h1{ font-family:'Fraunces',serif; font-size:1.6rem; margin:0 0 4px; }
-  .auth-box p.sub{ color:#71765F; font-size:0.85rem; margin:0 0 18px; }
-  .auth-box input{ width:100%; font-size:0.9rem; padding:10px; margin-bottom:10px; border:1px solid #DEE2CF; border-radius:5px; background:#F7F5EC; box-sizing:border-box; }
+  .auth-box p.sub{ color:var(--ink-soft); font-size:0.85rem; margin:0 0 18px; }
+  .auth-box input{ width:100%; font-size:0.9rem; padding:10px; margin-bottom:10px; border:1px solid var(--line); border-radius:5px; background:var(--paper); color:var(--ink); box-sizing:border-box; }
   .auth-box button{ width:100%; font-weight:600; font-size:0.9rem; padding:10px; border-radius:5px; border:none; cursor:pointer; margin-bottom:8px; }
   .auth-box button:disabled{ opacity:0.6; cursor:default; }
-  .auth-box button.primary{ background:#31352C; color:#F7F5EC; }
-  .auth-box button.ghost{ background:none; color:#71765F; text-decoration:underline; }
+  .auth-box button.primary{ background:var(--ink); color:var(--paper); }
+  .auth-box button.ghost{ background:none; color:var(--ink-soft); text-decoration:underline; }
   .auth-box .auth-err{ color:#B5677A; font-size:0.8rem; margin-bottom:10px; min-height:1em; }
   .auth-box .auth-err.ok{ color:#6B7A5E; }
 
@@ -39,6 +40,7 @@
   .acct-body p.hint{ color:var(--ink-soft); font-size:0.8rem; margin:0 0 12px; line-height:1.45; }
   .acct-body input[type=text], .acct-body input[type=email], .acct-body input[type=password], .acct-body input[type=number], .acct-body select, .acct-body textarea{
     width:100%; box-sizing:border-box; font-family:'Inter',sans-serif; font-size:0.9rem; padding:9px 10px; border:1px solid var(--line); border-radius:5px; background:var(--card); color:var(--ink); }
+  .acct-body input[type=date]{ width:100%; }
   .acct-body textarea{ resize:vertical; min-height:70px; }
   .acct-body input:disabled, .acct-body textarea:disabled, .acct-body select:disabled{ background:var(--paper-dark); color:var(--ink-soft); }
   .acct-body .field label{ display:block; font-size:0.76rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
@@ -112,6 +114,32 @@
   .bar i{ display:block; height:100%; background:var(--rose); }
   @media (max-width:640px){ .rel-two{ grid-template-columns:1fr; } .acct-body{ padding:14px 12px 60px; } }
   .top-dot{ display:inline-block; min-width:16px; height:16px; line-height:16px; text-align:center; border-radius:8px; background:var(--rose); color:#fff; font-size:0.65rem; font-weight:700; margin-left:5px; padding:0 4px; vertical-align:middle; }
+
+  /* ---------- themes (bought in the Shop) ---------- */
+  :root[data-theme="lotus"]{
+    --paper:#FBF3F4; --paper-dark:#F3E4E7; --card:#FFFFFF; --ink:#3B2B31; --ink-soft:#85686F;
+    --rose:#C2566F; --rose-soft:#F4D9DF; --moss:#7D9A74; --moss-soft:#E5EEDF; --slate:#6B5B7B; --slate-soft:#E8E0EE;
+    --amber:#C97B8E; --amber-soft:#F6E1E5; --seal:#A04B62; --line:#EBD3D9; --shadow:0 6px 16px rgba(90,40,55,0.12);
+  }
+  :root[data-theme="pandan"]{
+    color-scheme:dark;
+    --paper:#141B17; --paper-dark:#1C2620; --card:#212C25; --ink:#E8EDE2; --ink-soft:#9DAC98;
+    --rose:#D58C9D; --rose-soft:#3A2B31; --moss:#8FB083; --moss-soft:#243326; --slate:#8FA6BA; --slate-soft:#25313B;
+    --amber:#A5BD86; --amber-soft:#2B3724; --seal:#7FA06C; --line:#2F3C34; --shadow:0 6px 16px rgba(0,0,0,0.45);
+  }
+  :root[data-theme="pandan"] body{ background-image:radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); }
+  :root[data-theme="pandan"] .overlay{ background:rgba(0,0,0,0.6); }
+  .fab-web svg{ display:block; margin:auto; }
+  .shop-coins{ display:inline-flex; align-items:center; gap:6px; background:var(--paper-dark); border:1px solid var(--line); border-radius:20px; padding:6px 14px; font-weight:600; font-size:0.9rem; }
+  .theme-card{ display:flex; gap:12px; align-items:stretch; }
+  .theme-prev{ width:92px; flex:none; border-radius:8px; border:1px solid rgba(128,128,128,0.35); padding:8px; display:flex; flex-direction:column; gap:5px; justify-content:space-between; }
+  .theme-prev i{ display:block; height:8px; border-radius:4px; }
+  .theme-prev .sw{ display:flex; gap:3px; } .theme-prev .sw b{ flex:1; height:12px; border-radius:3px; }
+  .theme-info{ flex:1; min-width:0; }
+  .theme-info b{ font-family:'Fraunces',serif; font-size:1.02rem; }
+  .theme-info p{ margin:3px 0 0; font-size:0.78rem; color:var(--ink-soft); line-height:1.4; }
+  .acct-body input[type=date]{ -webkit-appearance:none; appearance:none; min-width:0; height:40px; display:block; }
+  .a-row > .field{ min-width:0; }
 </style>
 <style>
   :root{
@@ -573,7 +601,7 @@
 </div>
 
 <div class="fab-row">
-  <button class="fab-web" id="webBtn" title="Social web" type="button">🕸️</button>
+  <button class="fab-web" id="webBtn" title="Constellation" aria-label="Constellation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 1C12.9 8 16 11.1 23 12C16 12.9 12.9 16 12 23C11.1 16 8 12.9 1 12C8 11.1 11.1 8 12 1Z"/></svg></button>
   <button class="fab" id="addBtn">+ Keep someone</button>
 </div>
 
@@ -624,7 +652,7 @@
       <div class="settings-row">
         <div>
           <div class="settings-row-label">Onboarding hints</div>
-          <div class="settings-row-desc">Show the intro tips again for Timeline, Connections, and Social Web</div>
+          <div class="settings-row-desc">Show the intro tips again for Timeline, Connections, and Constellation</div>
         </div>
         <label class="switch"><input type="checkbox" id="set-onboardingHints"><span class="switch-track"></span></label>
       </div>
@@ -945,7 +973,7 @@
 <div class="web-view hidden" id="socialWebView">
   <div class="web-topbar">
     <button class="web-back" id="webBackBtn">← Back</button>
-    <h2 class="web-title">Social web</h2>
+    <h2 class="web-title">Constellation</h2>
   </div>
   <div class="web-circle-tabs" id="webCircleTabs"></div>
   <div class="web-toolbar" id="webToolbar">
@@ -2003,7 +2031,7 @@ function maybeShowOnboardingHints(){
 function runOnboardingHints(){
   const step1 = ()=>{
     const target = document.getElementById('webBtn');
-    showHintBubble(target, 'Your Social Web', 'This opens a map of how everyone in your life connects — as a circle, a solar system, or a family tree.', step2, false);
+    showHintBubble(target, 'Your Constellation', 'This opens a map of how everyone in your life connects — as a circle, a solar system, or a family tree.', step2, false);
   };
   const step2 = ()=>{
     const firstCard = document.querySelector('#grid .card');
@@ -2217,9 +2245,10 @@ function acctTyping(){
 
 /* ---------- tabs ---------- */
 function acctTabs(){
-  if(!acctSignedIn()) return [['profile','Profile']];
-  if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'],['account','Account']];
-  return [['profile','Profile'],['people','People'],['privacy','Privacy'],['security','Security'],['account','Account']];
+  const shop = ['shop','Shop'];
+  if(!acctSignedIn()) return [['profile','Profile'], shop];
+  if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'], shop, ['account','Account']];
+  return [['profile','Profile'],['people','People'], shop, ['privacy','Privacy'],['security','Security'],['account','Account']];
 }
 function updateAcctTabs(){
   const tabs = acctTabs();
@@ -2236,7 +2265,7 @@ function acctRender(){
   const body = $a('acctBody');
   if(ACCT.view && ACCT.view.type === 'profile'){ renderProfileView(body); return; }
   if(ACCT.view && ACCT.view.type === 'page'){ renderPageView(body); return; }
-  ({ profile:renderTabProfile, people:renderTabPeople, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
+  ({ profile:renderTabProfile, people:renderTabPeople, shop:renderTabShop, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
 }
 function setupBanner(){
   return ACCT.setupError ? `<div class="a-banner alert"><b>Account features aren't switched on yet.</b><br>${aE(ACCT.setupError)}</div>` : '';
@@ -2248,7 +2277,7 @@ function privateProfileFields(){
     <h3>Just for you</h3>
     <p class="hint">Kept privately in your archive. Never shown to anyone else, even connections.</p>
     <div class="a-row">
-      <div class="field"><label>Date of birth</label><input type="date" id="pv-dob" value="${aE(profileData.dob||'')}" style="width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--line);border-radius:5px;background:var(--card);font:inherit;"></div>
+      <div class="field"><label>Date of birth</label><input type="date" id="pv-dob" value="${aE(profileData.dob||'')}"></div>
       <div class="field"><label>Gender</label><input type="text" id="pv-gender" maxlength="30" value="${aE(profileData.gender||'')}"></div>
     </div>
     <div class="field"><label>Private note to self</label><textarea id="pv-bio" maxlength="300">${aE(profileData.bio||'')}</textarea></div>`;
@@ -2896,6 +2925,66 @@ function bindAccountHub(){
   window.addEventListener('pagehide', ()=>{ flushProfile(); flushSides(); flushShared(); });
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden){ flushProfile(); flushSides(); flushShared(); } });
 }
+
+/* ---------- SHOP & THEMES ----------
+   Prototype: "petals" are free play money (everyone starts with 100) and the
+   purchase record is kept in the person's own archive. Real payments will need
+   a server-side check later. */
+const SHOP_KEY = 'kept-shop';
+const THEMES = {
+  classic:{ name:'Cream & Forest', price:0,  desc:'The original Kept look: cream paper with forest-green accents.', sw:['#F7F5EC','#EDEADB','#7C8F63','#5F7053','#31352C'], bg:'#F7F5EC', ink:'#31352C', bar:'#7C8F63' },
+  lotus:  { name:'Lotus Dawn',     price:40, desc:'Light. Blush paper, lotus-pink accents and little leaf-green details.', sw:['#FBF3F4','#F4D9DF','#C97B8E','#7D9A74','#3B2B31'], bg:'#FBF3F4', ink:'#3B2B31', bar:'#C2566F' },
+  pandan: { name:'Pandan Night',   price:40, desc:'Dark. Deep pandan-leaf green with a soft sage glow.', sw:['#141B17','#212C25','#A5BD86','#7FA06C','#E8EDE2'], bg:'#141B17', ink:'#E8EDE2', bar:'#A5BD86' }
+};
+let SHOP = { petals:100, owned:['classic'], active:'classic' };
+function applyTheme(id){
+  if(!THEMES[id] || !SHOP.owned.includes(id)) id = 'classic';
+  SHOP.active = id;
+  if(id === 'classic') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', id);
+  try{ localStorage.setItem('kept-theme', id); }catch(e){}
+}
+async function loadShop(){
+  try{
+    const r = await storage.get(SHOP_KEY, false);
+    const s = JSON.parse(r.value);
+    SHOP = { petals: Number.isFinite(s.petals) ? s.petals : 100,
+             owned: ['classic'].concat((s.owned || []).filter(x=>THEMES[x] && x !== 'classic')),
+             active: s.active };
+  }catch(e){ /* first time: starter petals */ }
+  applyTheme(SHOP.active);
+}
+async function saveShop(){
+  try{ await storage.set(SHOP_KEY, JSON.stringify(SHOP), false); setSave('saved'); }
+  catch(e){ setSave('error', "Couldn't save purchase"); }
+}
+function themeCardHtml(id){
+  const t = THEMES[id], owned = SHOP.owned.includes(id), active = SHOP.active === id;
+  const action = active ? `<button class="a-btn" disabled type="button">In use</button>`
+    : owned ? `<button class="a-btn primary" data-act="applyTheme" data-id="${id}" type="button">Use this theme</button>`
+    : `<button class="a-btn primary" data-act="buyTheme" data-id="${id}" type="button" ${SHOP.petals < t.price ? 'disabled' : ''}>Buy · ${t.price} 🌸</button>`;
+  return `<div class="a-card theme-card">
+    <div class="theme-prev" style="background:${t.bg}"><i style="background:${t.ink};width:70%"></i><i style="background:${t.bar};width:100%"></i><i style="background:${t.ink};opacity:.35;width:50%"></i><div class="sw">${t.sw.map(c=>`<b style="background:${c}"></b>`).join('')}</div></div>
+    <div class="theme-info"><b>${aE(t.name)}</b>${owned && id!=='classic' ? '<span class="a-badge">Owned</span>' : ''}<p>${aE(t.desc)}</p>
+    <div class="a-btns">${action}</div>${!owned && SHOP.petals < t.price ? '<div class="a-msg">Not enough petals yet.</div>' : ''}</div></div>`;
+}
+function renderTabShop(body){
+  const forSale = Object.keys(THEMES).filter(id=>!SHOP.owned.includes(id));
+  const owned = SHOP.owned.filter(id=>THEMES[id]);
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="shop-coins">🌸 ${aE(SHOP.petals)} petals</span></div>
+    <p class="hint" style="margin-top:8px">Prototype: petals are free play money for now, so you can try the shop. More themes are coming later.</p>
+    <h3>Owned themes</h3>${owned.map(themeCardHtml).join('')}
+    <h3>Theme shop</h3>${forSale.length ? forSale.map(themeCardHtml).join('') : '<p class="hint">You own everything in the shop right now. ✨</p>'}`;
+}
+ACTIONS.applyTheme = async (btn)=>{ applyTheme(btn.dataset.id); await saveShop(); acctRender(); };
+ACTIONS.buyTheme = async (btn)=>{
+  const id = btn.dataset.id, t = THEMES[id];
+  if(!t || SHOP.owned.includes(id) || SHOP.petals < t.price) return;
+  SHOP.petals -= t.price; SHOP.owned.push(id);
+  applyTheme(id);
+  await saveShop(); acctRender();
+};
 
 bindAccountHub();
 document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub());
@@ -5058,6 +5147,7 @@ async function startApp(){
   renderStats();
   renderGrid();
   maybeShowOnboardingHints();
+  loadShop().catch(()=>{});
   acctInit().catch(()=>{});
 }
 
