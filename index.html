@@ -140,6 +140,74 @@
   .theme-info p{ margin:3px 0 0; font-size:0.78rem; color:var(--ink-soft); line-height:1.4; }
   .acct-body input[type=date]{ -webkit-appearance:none; appearance:none; min-width:0; height:40px; display:block; }
   .a-row > .field{ min-width:0; }
+
+  .fab-left{ position:fixed; bottom:22px; left:18px; display:flex; flex-direction:column; align-items:flex-start; gap:10px; z-index:10; }
+  .fab-pill{ display:inline-flex; align-items:center; gap:8px; position:relative; font-family:'Inter',sans-serif; font-weight:600; font-size:0.85rem; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:26px; padding:11px 16px; box-shadow:0 8px 20px rgba(46,42,38,0.18); cursor:pointer; }
+  .fab-pill:hover{ transform:translateY(-2px); }
+  .pill-dot{ min-width:18px; height:18px; line-height:18px; border-radius:9px; background:var(--rose); color:#fff; font-size:0.68rem; text-align:center; padding:0 5px; }
+
+  .a-person .av, .av{ overflow:hidden; }
+  .av img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .av.md{ width:52px; height:52px; font-size:1.5rem; } .av.lg{ width:76px; height:76px; font-size:2.2rem; } .av.xl{ width:88px; height:88px; font-size:2.6rem; }
+  .av.md,.av.lg,.av.xl{ border-radius:50%; background:var(--paper-dark); display:flex; align-items:center; justify-content:center; flex:none; border:3px solid var(--paper); }
+  .pv-banner{ position:relative; height:110px; border-radius:10px; background:linear-gradient(135deg,var(--amber-soft),var(--rose-soft)); overflow:hidden; }
+  .pv-banner img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pv-bannerbtn{ position:absolute !important; right:8px; bottom:8px; background:var(--card) !important; }
+  .pv-bannerbtn.rm{ right:auto; left:8px; padding:8px 11px; }
+  .pv-avrow{ display:flex; align-items:center; gap:14px; margin:-30px 0 6px 14px; }
+  .pv-head{ display:flex; align-items:flex-end; gap:12px; margin:-34px 0 0 14px; }
+  .pv-name b{ display:block; font-family:'Fraunces',serif; font-size:1.3rem; }
+  .pv-name span{ font-size:0.82rem; color:var(--ink-soft); }
+  .pv-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin:14px 0; overflow-x:auto; }
+  .pv-tab{ background:none; border:none; font:inherit; font-size:0.84rem; font-weight:500; color:var(--ink-soft); padding:8px 12px; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; }
+  .pv-tab.active{ color:var(--ink); border-bottom-color:var(--amber); font-weight:600; }
+  .a-picklist{ max-height:230px; overflow-y:auto; border:1px solid var(--line); border-radius:8px; padding:0 10px; background:var(--card); }
+  .a-picklist .a-switch:last-child{ border-bottom:none; }
+  .us-hero{ text-align:center; margin-bottom:12px; }
+  .us-pair{ display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+  .us-pair .av{ border:3px solid var(--card); box-shadow:0 2px 8px rgba(0,0,0,0.15); }
+  .us-link{ color:var(--rose); font-size:1.2rem; }
+  input.us-title{ text-align:center; font-family:'Fraunces',serif !important; font-size:1.35rem !important; font-weight:600; border:none !important; border-bottom:2px solid var(--line) !important; border-radius:0 !important; background:transparent !important; max-width:420px; }
+  .us-days{ margin-top:8px; font-size:0.85rem; color:var(--ink-soft); } .us-days b{ font-family:'Fraunces',serif; font-size:1.8rem; color:var(--ink); }
+  .us-card{ padding-top:16px; }
+  .ms-row{ display:flex; gap:8px; margin-bottom:8px; align-items:center; } .ms-row input[type=date]{ flex:0 0 150px; width:150px; } .ms-row input[type=text]{ flex:1; min-width:0; }
+  .ms-view{ font-size:0.82rem; margin:3px 0; } .ms-view span{ color:var(--ink-soft); margin-right:6px; }
+  .kept-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+  .kept-card{ background:var(--card); border:1px solid var(--line); border-radius:8px; padding:12px; text-align:center; }
+  .kept-card b{ display:block; margin:6px 0 2px; font-family:'Fraunces',serif; } .kept-card span{ display:block; font-size:0.74rem; color:var(--ink-soft); } .kept-card em{ display:block; font-style:normal; font-size:0.72rem; margin-top:4px; color:var(--seal); }
+  .kept-initial{ width:42px; height:42px; border-radius:50%; margin:0 auto; background:var(--amber-soft); display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:1.2rem; }
+  .side .field label{ font-size:0.72rem; }
+
+  #inboxOverlay{ align-items:stretch; padding:0; background:rgba(46,42,38,0.55); z-index:130; }
+  .inbox-body{ display:flex; flex-direction:column; padding-bottom:12px !important; }
+  .chat-row{ display:flex; align-items:center; gap:12px; cursor:pointer; position:relative; }
+  .chat-row .av{ width:42px; height:42px; border-radius:50%; background:var(--paper-dark); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex:none; }
+  .chat-row .who{ flex:1; min-width:0; } .chat-row .who b{ display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; font-size:0.9rem; }
+  .chat-row .who span{ display:block; font-size:0.78rem; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .chat-meta{ display:flex; flex-direction:column; align-items:flex-end; gap:4px; font-size:0.72rem; color:var(--ink-soft); }
+  .chat-row.unread{ border-color:var(--rose); } .udot{ width:9px; height:9px; border-radius:50%; background:var(--rose); flex:none; }
+  .chat-top{ display:flex; align-items:center; gap:10px; padding:0 0 10px; border-bottom:1px solid var(--line); }
+  .chat-top .av{ width:38px; height:38px; border-radius:50%; background:var(--paper-dark); display:flex; align-items:center; justify-content:center; flex:none; }
+  .chat-top .who{ flex:1; min-width:0; } .chat-top .who b{ display:block; } .chat-top .who span{ font-size:0.76rem; color:var(--ink-soft); }
+  .chat-msgs{ flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding:12px 2px; }
+  .chat-day{ align-self:center; font-size:0.7rem; color:var(--ink-soft); margin:8px 0 2px; }
+  .msg{ max-width:80%; display:flex; flex-direction:column; position:relative; } .msg.mine{ align-self:flex-end; align-items:flex-end; } .msg.theirs{ align-self:flex-start; align-items:flex-start; }
+  .bub{ padding:8px 12px; border-radius:16px; font-size:0.9rem; line-height:1.4; word-break:break-word; cursor:pointer; position:relative; }
+  .msg.mine .bub{ background:var(--ink); color:var(--paper); border-bottom-right-radius:4px; } .msg.theirs .bub{ background:var(--card); border:1px solid var(--line); border-bottom-left-radius:4px; }
+  .bub.media{ padding:4px; background:transparent !important; border:none !important; }
+  .cimg{ display:block; max-width:min(260px,100%); max-height:300px; border-radius:12px; min-height:40px; background:var(--paper-dark); }
+  .pinmark{ position:absolute; top:-8px; right:-4px; font-size:0.75rem; } .gone{ opacity:0.6; }
+  .mtime{ font-size:0.65rem; color:var(--ink-soft); margin:2px 6px 0; }
+  .rx{ display:flex; gap:4px; flex-wrap:wrap; margin-top:3px; } .rxc{ font-size:0.75rem; padding:2px 8px; border-radius:12px; border:1px solid var(--line); background:var(--card); cursor:pointer; color:var(--ink); } .rxc.mine{ background:var(--rose-soft); border-color:var(--rose); }
+  .mmenu{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:6px; margin-top:4px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:2px; z-index:3; }
+  .mmenu button{ background:none; border:none; text-align:left; font:inherit; font-size:0.84rem; padding:7px 8px; cursor:pointer; color:var(--ink); border-radius:6px; } .mmenu button:hover{ background:var(--paper-dark); }
+  .mmenu .qr{ display:flex; gap:2px; align-items:center; } .mmenu .qr button{ font-size:1.2rem; padding:4px 6px; } .mmenu .qr input{ width:46px; padding:5px !important; text-align:center; font-size:0.9rem !important; }
+  .chat-compose{ display:flex; gap:6px; align-items:flex-end; padding-top:8px; border-top:1px solid var(--line); }
+  .chat-compose textarea{ flex:1; min-height:38px !important; max-height:120px; resize:none; padding:9px 10px; }
+  .gif-panel{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:6px; }
+  .gif-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; max-height:220px; overflow-y:auto; margin-top:8px; } .gif-grid button{ border:none; padding:0; background:none; cursor:pointer; } .gif-grid img{ width:100%; height:80px; object-fit:cover; border-radius:6px; display:block; }
+  .pin-list{ background:var(--card); border:1px solid var(--line); border-radius:10px; margin:8px 0; max-height:180px; overflow-y:auto; } .pin-item{ padding:8px 12px; border-bottom:1px solid var(--line); font-size:0.85rem; } .pin-item:last-child{ border-bottom:none; } .pin-item span{ font-size:0.7rem; color:var(--ink-soft); margin-right:8px; }
+  #lightbox{ position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:700; display:flex; align-items:center; justify-content:center; padding:14px; } #lightbox img{ max-width:100%; max-height:100%; border-radius:8px; }
 </style>
 <style>
   :root{
@@ -600,9 +668,21 @@
   </div>
 </div>
 
+<div class="fab-left">
+  <button class="fab-pill hidden" id="inboxBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></svg><span>Inbox</span><b class="pill-dot hidden" id="inboxDot"></b></button>
+  <button class="fab-pill" id="shopBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg><span>Shop</span></button>
+</div>
 <div class="fab-row">
   <button class="fab-web" id="webBtn" title="Constellation" aria-label="Constellation" type="button"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 1C12.9 8 16 11.1 23 12C16 12.9 12.9 16 12 23C11.1 16 8 12.9 1 12C8 11.1 11.1 8 12 1Z"/></svg></button>
   <button class="fab" id="addBtn">+ Keep someone</button>
+</div>
+
+<!-- shop -->
+<div class="overlay hidden" id="shopOverlay">
+  <div class="acct" role="dialog" aria-label="Shop">
+    <div class="acct-head"><h2>Shop</h2><span class="shop-coins" id="shopCoins"></span><button class="acct-x" id="shopClose" type="button" aria-label="Close">✕</button></div>
+    <div class="acct-body" id="shopBody"></div>
+  </div>
 </div>
 
 <!-- account hub -->
@@ -611,6 +691,15 @@
     <div class="acct-head"><h2>Account</h2><span class="acct-save" id="acctSaved"></span><button class="acct-x" id="acctClose" type="button" aria-label="Close">✕</button></div>
     <div class="acct-tabs" id="acctTabs"></div>
     <div class="acct-body" id="acctBody"></div>
+  </div>
+</div>
+
+<!-- inbox -->
+<div class="overlay hidden" id="inboxOverlay">
+  <div class="acct" role="dialog" aria-label="Inbox">
+    <div class="acct-head"><h2 id="inboxTitle">Inbox</h2><button class="acct-x" id="inboxClose" type="button" aria-label="Close">✕</button></div>
+    <div class="acct-tabs" id="inboxTabs"></div>
+    <div class="acct-body inbox-body" id="inboxBody"></div>
   </div>
 </div>
 
@@ -703,6 +792,13 @@
         <label>Since</label>
         <input type="date" id="f-start" required>
       </div>
+        <div class="field hidden" id="f-closenessField">
+          <label>How close are you?</label>
+          <div class="closeness-hearts" id="f-closenessHearts">
+            <span data-v="1">🤍</span><span data-v="2">🤍</span><span data-v="3">🤍</span><span data-v="4">🤍</span><span data-v="5">🤍</span>
+          </div>
+          <input type="text" id="f-closenessTag" placeholder="or a tag — e.g. inner circle, close, acquaintance" maxlength="30" style="margin-top:8px;">
+        </div>
 
       <button type="button" class="more-details-toggle" id="moreDetailsToggle">+ Add more details (optional)</button>
 
@@ -779,13 +875,6 @@
               <input type="date" id="f-datingEnd">
             </div>
           </div>
-        </div>
-        <div class="field hidden" id="f-closenessField">
-          <label>How close are you? (optional)</label>
-          <div class="closeness-hearts" id="f-closenessHearts">
-            <span data-v="1">🤍</span><span data-v="2">🤍</span><span data-v="3">🤍</span><span data-v="4">🤍</span><span data-v="5">🤍</span>
-          </div>
-          <input type="text" id="f-closenessTag" placeholder="or a tag — e.g. inner circle, close, acquaintance" maxlength="30" style="margin-top:8px;">
         </div>
         <div class="field">
           <label>Notes (optional)</label>
@@ -1116,6 +1205,8 @@ const CIRCLE_SUGGESTIONS = ['Family','Friends'];
 const SUPABASE_URL = 'https://hvzkubwlrdpuwdhnktxl.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_XBvbMxOh8BPVROj5yzyifg_DNxK12Lc';
 const PHOTO_BUCKET = 'kept-photos';
+// Optional: a free Giphy API key (developers.giphy.com) turns on GIF search in chats. Leave empty to paste GIF links instead.
+const GIPHY_API_KEY = '';
 const PHOTO_URL_TTL = 60 * 60 * 24 * 7; // signed photo URLs last 7 days, refreshed on every load
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
@@ -2081,7 +2172,8 @@ const REL_CATS = [['','—'],['real','Real life'],['online','Online'],['distance
 const REL_SHARING = [['ok','Ok! sharing'],['selective','Selective'],['non','Non-sharing']];
 const LINK_KINDS = [['friend','Friend'],['partner','Partner'],['ex','Ex'],['family','Family'],['other','Other']];
 const COUNT_KEYS = [['friend','Friendships'],['partner','Partners'],['ex','Exes'],['family','Family members'],['other','Others'],['total','Everyone kept']];
-const SLIDER_DEFAULTS = { aff:'Level of affection', lib:'Level of trust', conf:'Level of confidence' };
+const SLIDER_DEFAULTS = { aff:'Closeness', lib:'Trust', conf:'Comfort' };
+const REL_STATUS = [['','Not decided'],['ongoing','Still going'],['paused','On pause'],['happy','Ended well'],['neutral','Ended neutrally'],['bad','Ended badly']];
 const pick = (list, v) => { const f = list.find(x=>x[0]===v); return f ? f[1] : ''; };
 const $a = id => document.getElementById(id);
 const aE = escapeHtml;
@@ -2180,7 +2272,8 @@ async function acctInit(){
     if(Object.keys(upd).length) queueProfile(upd, true);
     await refreshLinks();
     ACCT.ready = true;
-    syncCounts();
+    syncCounts(); syncFeatured();
+    startInboxTick();
   }catch(e){
     ACCT.setupError = e.message;
   }
@@ -2191,7 +2284,7 @@ async function acctInit(){
     try{
       const before = JSON.stringify(ACCT.links);
       await refreshLinks();
-      syncCounts();
+      syncCounts(); syncFeatured();
       if(before !== JSON.stringify(ACCT.links) && !$a('acctOverlay').classList.contains('hidden') && !ACCT.view && ACCT.tab === 'people') acctRender();
     }catch(e){ /* try again next tick */ }
   }, 25000);
@@ -2226,7 +2319,7 @@ function openAccountHub(tab){
   acctRender();
   if(acctUsable()){
     refreshLinks().then(()=>{ if(!ACCT.view && ACCT.tab === 'people' && !acctTyping()) acctRender(); updateAcctTabs(); }).catch(()=>{});
-    syncCounts();
+    syncCounts(); syncFeatured();
   }
 }
 async function closeAccountHub(){
@@ -2245,10 +2338,9 @@ function acctTyping(){
 
 /* ---------- tabs ---------- */
 function acctTabs(){
-  const shop = ['shop','Shop'];
-  if(!acctSignedIn()) return [['profile','Profile'], shop];
-  if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'], shop, ['account','Account']];
-  return [['profile','Profile'],['people','People'], shop, ['privacy','Privacy'],['security','Security'],['account','Account']];
+  if(!acctSignedIn()) return [['profile','Profile']];
+  if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'],['account','Account']];
+  return [['profile','Profile'],['people','People'],['privacy','Privacy'],['security','Security'],['account','Account']];
 }
 function updateAcctTabs(){
   const tabs = acctTabs();
@@ -2265,7 +2357,7 @@ function acctRender(){
   const body = $a('acctBody');
   if(ACCT.view && ACCT.view.type === 'profile'){ renderProfileView(body); return; }
   if(ACCT.view && ACCT.view.type === 'page'){ renderPageView(body); return; }
-  ({ profile:renderTabProfile, people:renderTabPeople, shop:renderTabShop, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
+  ({ profile:renderTabProfile, people:renderTabPeople, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
 }
 function setupBanner(){
   return ACCT.setupError ? `<div class="a-banner alert"><b>Account features aren't switched on yet.</b><br>${aE(ACCT.setupError)}</div>` : '';
@@ -2306,6 +2398,7 @@ function renderTabProfile(body){
   const hasUser = !!p.username;
   body.innerHTML = `
     ${setupBanner()}
+    ${profileImagesHtml(p)}
     <h3>Username</h3>
     ${hasUser ? `
       <div class="a-person"><div class="who"><b>@${aE(p.username)}</b><span>People add you with this. Only exact matches can find you.</span></div>
@@ -2316,7 +2409,7 @@ function renderTabProfile(body){
     <h3>About you</h3>
     <p class="hint">What connections (or everyone, if you choose) can see. Changes save automatically.</p>
     <div class="a-row">
-      <div class="field fixed" style="max-width:90px"><label>Emoji</label><input type="text" data-p="emoji" maxlength="8" value="${aE(p.emoji||'')}" style="text-align:center;font-size:1.2rem"></div>
+      <div class="field fixed" style="max-width:90px"><label>Emoji (no photo)</label><input type="text" data-p="emoji" maxlength="8" value="${aE(p.emoji||'')}" style="text-align:center;font-size:1.2rem"></div>
       <div class="field"><label>Name</label><input type="text" data-p="display_name" maxlength="60" value="${aE(p.display_name||'')}"></div>
     </div>
     <div class="a-row">
@@ -2325,6 +2418,9 @@ function renderTabProfile(body){
     </div>
     <div class="field"><label>Nicknames (separate with commas)</label><input type="text" data-p="nicknames" maxlength="200" value="${aE((p.nicknames||[]).join(', '))}"></div>
     <div class="field"><label>About me</label><textarea data-p="about" maxlength="1500">${aE(p.about||'')}</textarea></div>
+    <h3>Kept people on my profile</h3>
+    <p class="hint">Pick anyone from your archive to show: their name, how you know them and how long. Photos and notes are never shown.</p>
+    ${featuredPickerHtml(p)}
     <div class="a-btns"><button class="a-btn" data-act="viewMe" type="button" ${hasUser?'':'disabled'}>Preview how others see me</button></div>
     ${privateProfileFields()}`;
 }
@@ -2337,7 +2433,7 @@ function userEditHtml(cur){
 
 /* ---------- PEOPLE tab ---------- */
 function personHtml(o, extra){
-  return `<div class="a-person"><div class="av">${aE(o.emoji || '🙂')}</div>
+  return `<div class="a-person">${avHtml(o)}
     <div class="who"><b>${aE(o.display_name || ('@' + (o.username||'?')))}</b><span>@${aE(o.username||'?')}${extra||''}</span></div></div>`;
 }
 function renderTabPeople(body){
@@ -2396,6 +2492,7 @@ function renderTabPrivacy(body){
     <div class="a-sub" id="countPicks" style="${p.show_counts?'':'display:none'}">
       ${COUNT_KEYS.map(([k,l])=>`<label><input type="checkbox" data-count="${k}" ${k in chosen?'checked':''}> ${aE(l)}</label>`).join('')}
     </div>
+    ${switchHtml('show_featured','Show the Kept people I picked','Hide them all at once without un-picking. Pick who in the Profile tab.', p.show_featured !== false)}
     ${switchHtml('show_relationships','Show relationship pages I\'ve chosen to display','You pick which pages appear — open a page and turn on "Show on my profile". Each page\'s sharing status also applies.', p.show_relationships)}
     <p class="hint" style="margin-top:14px">Your archive (people, photos, notes) is always private to you. Changes here save automatically.</p>`;
 }
@@ -2444,60 +2541,186 @@ function renderTabAccount(body){
     <div class="a-msg" id="del-msg"></div>`}`;
 }
 
+/* ---------- pictures, banners, featured Kept people ---------- */
+const AVATAR_BUCKET = 'kept-avatars', CHAT_BUCKET = 'kept-chat';
+function avatarUrl(path){
+  if(!path || !sb) return '';
+  try{ return sb.storage.from(AVATAR_BUCKET).getPublicUrl(path).data.publicUrl || ''; }catch(e){ return ''; }
+}
+function avHtml(o, cls){
+  o = o || {};
+  const u = avatarUrl(o.avatar);
+  return `<div class="av ${cls || ''}">${u ? `<img src="${aE(u)}" alt="" loading="lazy">` : aE(o.emoji || '🙂')}</div>`;
+}
+function cropToBlob(file, w, h, q){
+  return new Promise((resolve, reject)=>{
+    const r = new FileReader();
+    r.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h);
+        const s = Math.max(w / img.width, h / img.height), dw = img.width * s, dh = img.height * s;
+        x.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+        c.toBlob(b=> b ? resolve(b) : reject(new Error('Could not process that picture')), 'image/jpeg', q || 0.85);
+      };
+      img.onerror = ()=>reject(new Error("That file isn't a picture I can read"));
+      img.src = e.target.result;
+    };
+    r.onerror = ()=>reject(new Error("Couldn't read that file"));
+    r.readAsDataURL(file);
+  });
+}
+async function uploadProfileImage(kind, file){
+  const dims = kind === 'avatar' ? [320, 320] : [1200, 400];
+  const blob = await cropToBlob(file, dims[0], dims[1], 0.86);
+  const path = `${currentUser.id}/${kind}-${Date.now()}.jpg`;
+  const { error } = await sb.storage.from(AVATAR_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:true });
+  if(error) throw new Error(friendlyDbError(error));
+  const old = ACCT.profile[kind + '_path'];
+  queueProfile({ [kind + '_path']: path });
+  if(old){ try{ sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
+}
+function catLabelOf(c){
+  return (CAT_META[c] && CAT_META[c].label) || ((customCategories.find(x=>x.id === c) || {}).label) || 'Other';
+}
+function featuredSnapshot(ids){
+  const byId = new Map(entries.map(e=>[e.id, e]));
+  return ids.map(id=>byId.get(id)).filter(Boolean).slice(0, 30).map(e=>({
+    id: e.id, name: String(e.name || '').slice(0, 60), cat: catLabelOf(e.category).slice(0, 30),
+    status: String(e.status || '').slice(0, 40), since: e.startDate || '', ended: !!e.endDate
+  }));
+}
+function syncFeatured(){
+  const p = ACCT.profile; if(!p || !acctUsable()) return;
+  const ids = (p.featured || []).map(f=>f.id); if(!ids.length) return;
+  const next = featuredSnapshot(ids);
+  if(JSON.stringify(next) !== JSON.stringify(p.featured)) queueProfile({ featured: next }, true);
+}
+function profileImagesHtml(p){
+  const bu = avatarUrl(p.banner_path);
+  return `
+    <div class="pv-banner pv-edit">${bu ? `<img src="${aE(bu)}" alt="">` : ''}
+      <button class="a-btn pv-bannerbtn" data-act="pickBanner" type="button">${bu ? 'Change banner' : 'Add a banner'}</button>
+      ${bu ? `<button class="a-btn pv-bannerbtn rm" data-act="removeBanner" type="button" aria-label="Remove banner">✕</button>` : ''}</div>
+    <div class="pv-avrow">
+      <div class="pv-avwrap">${avHtml(p, 'xl')}</div>
+      <div class="a-btns" style="margin:0">
+        <button class="a-btn" data-act="pickAvatar" type="button">${p.avatar_path ? 'Change photo' : 'Upload a photo'}</button>
+        ${p.avatar_path ? `<button class="a-btn link" data-act="removeAvatar" type="button">Remove</button>` : ''}
+      </div>
+    </div>
+    <input type="file" id="avatarFile" accept="image/*" hidden><input type="file" id="bannerFile" accept="image/*" hidden>
+    <div class="a-msg" id="img-msg"></div>`;
+}
+function featuredPickerHtml(p){
+  const sel = new Set((p.featured || []).map(f=>f.id));
+  if(!entries.length) return `<p class="hint">Once you've kept someone, you can choose to show them here.</p>`;
+  return `<div class="a-picklist">${entries.map(e=>`
+    <label class="a-switch"><input type="checkbox" data-feat="${aE(e.id)}" ${sel.has(e.id) ? 'checked' : ''}>
+      <span>${aE(e.name)}<small>${aE(catLabelOf(e.category))}${e.status ? ' · ' + aE(e.status) : ''}</small></span></label>`).join('')}</div>`;
+}
+
 /* ---------- viewing a profile ---------- */
-function relCardHtml(r){
-  const s = r.shared || {};
+function sinceText(iso){
+  if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return '';
+  const d = parseLocalDate(iso); if(isNaN(d)) return '';
+  return d.toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' });
+}
+function daysSince(iso){
+  if(!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+  const n = daysBetween(iso, todayStr());
+  return (typeof n === 'number' && isFinite(n) && n >= 0) ? n : null;
+}
+function relCardHtml(r, owner){
+  const s = r.shared || {}, full = r.sharing === 'ok';
   const types = (s.types || []).map(t=>`<span class="a-chip">${aE(pick(REL_TYPES,t) || t)}</span>`).join('');
   const lab = Object.assign({}, SLIDER_DEFAULTS, s.labels || {});
-  const full = r.sharing === 'ok';
   const side = r.side || {}, oth = r.other_side || {};
+  const days = daysSince(s.since);
   const bars = full ? ['aff','lib','conf'].filter(k=>s[k]!=null).map(k=>`
       <div style="margin:6px 0;font-size:0.8rem">${aE(lab[k])}<div class="bar"><i style="width:${num01(s[k])}%"></i></div></div>`).join('') : '';
-  const sideBox = (x, fallback) => `<div class="side" style="text-align:center"><div style="font-size:1.4rem">${aE(x.emoji||'')}</div><div class="nm">${aE(x.name || fallback)}</div>
-      ${full && (x.pronouns||x.mbti||x.height) ? `<div style="font-size:0.76rem;color:var(--ink-soft)">${[x.pronouns,x.mbti,x.height].filter(Boolean).map(aE).join(' · ')}</div>` : ''}
-      ${(x.palette||[]).filter(hex).length ? `<div class="pal" style="display:flex;gap:4px;margin-top:6px">${x.palette.filter(hex).map(c=>`<i style="flex:1;height:14px;border-radius:3px;background:${hex(c)}"></i>`).join('')}</div>`:''}</div>`;
-  return `<div class="a-card">
-    <div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:600">${aE(s.title || 'Our story')}
-      <span class="a-badge">${aE(pick(LINK_KINDS, r.kind))}${r.label ? ' · ' + aE(r.label) : ''}</span></div>
-    <div class="a-chips" style="margin:8px 0">${types}${s.ending?`<span class="a-chip">${aE(pick(REL_ENDINGS,s.ending))}</span>`:''}${s.category?`<span class="a-chip">${aE(pick(REL_CATS,s.category))}</span>`:''}</div>
-    ${full ? `<div class="rel-two" style="margin:8px 0">${sideBox(side, 'Me')}${sideBox(oth, (r.with && (r.with.display_name || r.with.username)) || 'them')}</div>
-      ${s.notes ? `<div style="white-space:pre-wrap;font-size:0.88rem;margin:8px 0">${aE(s.notes)}</div>`:''}
-      ${s.tropes ? `<div style="font-size:0.82rem;color:var(--ink-soft)"><b>Tropes:</b> ${aE(s.tropes)}</div>`:''}${bars}` :
-      `<div style="font-size:0.8rem;color:var(--ink-soft)">With ${aE((r.with && (r.with.display_name || r.with.username)) || 'someone')} · sharing selectively</div>`}
+  const mine = ACCT.links.find(l=>l.page_id === r.page_id);
+  const withName = (r.with && (r.with.display_name || r.with.username)) || 'someone';
+  const ownerName = (owner && (owner.display_name || owner.username)) || 'them';
+  return `<div class="a-card us-card">
+    <div class="us-pair">${avHtml(owner || {}, 'md')}<span class="us-link">♥</span>${avHtml(r.with || {}, 'md')}</div>
+    <div style="text-align:center;font-family:'Fraunces',serif;font-size:1.1rem;font-weight:600">${aE(s.title || (ownerName + ' & ' + withName))}</div>
+    <div class="hint" style="text-align:center;margin:2px 0 8px">${aE(ownerName)} &amp; ${aE(withName)} · ${aE(pick(LINK_KINDS, r.kind))}${r.label ? ' · ' + aE(r.label) : ''}${s.since ? ' · since ' + aE(sinceText(s.since)) : ''}${days != null ? ' (' + days + ' days)' : ''}</div>
+    <div class="a-chips" style="justify-content:center;margin:6px 0">${types}${s.ending ? `<span class="a-chip">${aE(pick(REL_STATUS, s.ending) || '')}</span>` : ''}</div>
+    ${full ? `
+      ${s.notes ? `<div style="white-space:pre-wrap;font-size:0.88rem;margin:10px 0">${aE(s.notes)}</div>` : ''}
+      ${s.how_met ? `<div class="hint"><b>How we met:</b> ${aE(s.how_met)}</div>` : ''}
+      ${(s.jokes || []).length ? `<div class="a-chips" style="margin:8px 0">${s.jokes.map(j=>`<span class="a-chip">${aE(j)}</span>`).join('')}</div>` : ''}
+      ${(s.milestones || []).length ? `<div style="margin:8px 0">${s.milestones.slice(0, 6).map(m=>`<div class="ms-view"><span>${aE(sinceText(m.date) || m.date || '')}</span> ${aE(m.text || '')}</div>`).join('')}</div>` : ''}
+      ${side.love || side.nickname ? `<div class="hint" style="margin-top:8px">${side.nickname ? `${aE(ownerName)} calls ${aE(withName)} “${aE(side.nickname)}”. ` : ''}${side.love ? `<i>${aE(side.love)}</i>` : ''}</div>` : ''}
+      ${bars}` : ''}
+    ${mine ? `<div class="a-btns" style="justify-content:center"><button class="a-btn" data-act="openPage" data-id="${aE(mine.id)}" data-page="${aE(mine.page_id)}" type="button">Open our page</button></div>` : ''}
   </div>`;
+}
+function featuredCardsHtml(list){
+  return `<div class="kept-grid">${list.map(f=>{
+    const d = daysSince(f.since);
+    return `<div class="kept-card"><div class="kept-initial">${aE((f.name || '?').trim().charAt(0).toUpperCase())}</div>
+      <b>${aE(f.name)}</b><span>${aE(f.cat || '')}${f.status ? ' · ' + aE(f.status) : ''}</span>${d != null ? `<em>${f.ended ? 'kept' : 'together'} ${d} d</em>` : ''}</div>`;
+  }).join('')}</div>`;
 }
 async function renderProfileView(body){
   body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><p class="hint">Loading…</p>`;
-  const username = ACCT.view.username;
   try{
-    const r = await rpc('get_profile', { uname: username });
+    const r = await rpc('get_profile', { uname: ACCT.view.username });
     if(!ACCT.view || ACCT.view.type !== 'profile') return;
     if(!r){ body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><p class="hint">That profile doesn't exist.</p>`; return; }
-    const counts = r.counts || {}, lc = r.linked_counts || {};
-    const countBoxes = COUNT_KEYS.filter(([k])=>k in counts).map(([k,l])=>`<div class="a-count"><b>${aE(counts[k])}</b><span>${aE(l)}</span></div>`).join('');
-    const linkedBoxes = LINK_KINDS.filter(([k])=>lc[k]).map(([k,l])=>`<div class="a-count"><b>${aE(lc[k])}</b><span>${aE(l)}${lc[k]>1?'s':''} on Kept</span></div>`).join('');
-    body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
-      <div class="a-card" style="text-align:center">
-        <div style="font-size:2.4rem">${aE(r.emoji || '🙂')}</div>
-        <div style="font-family:'Fraunces',serif;font-size:1.4rem;font-weight:600">${aE(r.display_name || '@' + r.username)}</div>
-        <div class="hint" style="margin:2px 0 8px">@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age!=null ? ' · ' + aE(r.age) : ''}</div>
-        ${(r.nicknames||[]).length ? `<div class="a-chips" style="justify-content:center;margin-bottom:8px">${r.nicknames.map(n=>`<span class="a-chip">${aE(n)}</span>`).join('')}</div>` : ''}
-        ${r.is_me ? '<div class="hint">This is how others see you.</div>' : ''}
-      </div>
-      ${r.limited ? `<p class="hint">This profile is ${r.connected?'private':'only visible to connections'}.</p>` : `
-        ${r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
-        ${(countBoxes || linkedBoxes) ? `<h3>In numbers</h3><div>${countBoxes}${linkedBoxes}</div>` : ''}
-        ${(r.relationships||[]).length ? `<h3>Relationships</h3>${r.relationships.map(relCardHtml).join('')}` : ''}`}`;
+    ACCT.pv = r; ACCT.pvTab = ACCT.pvTab || 'overview';
+    renderProfileBody(body);
   }catch(e){
     body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><div class="a-msg">${aE(e.message)}</div>`;
   }
 }
+function renderProfileBody(body){
+  const r = ACCT.pv; if(!r) return;
+  const rels = r.relationships || [], feat = r.featured || [];
+  const tabs = [['overview','Overview']];
+  if(!r.limited && (rels.length || r.is_me)) tabs.push(['rels', 'Relationships' + (rels.length ? ' ' + rels.length : '')]);
+  if(!r.limited && (feat.length || r.is_me)) tabs.push(['kept', 'Kept' + (feat.length ? ' ' + feat.length : '')]);
+  if(!tabs.some(t=>t[0] === ACCT.pvTab)) ACCT.pvTab = 'overview';
+  const counts = r.counts || {}, lc = r.linked_counts || {};
+  const countBoxes = COUNT_KEYS.filter(([k])=>k in counts).map(([k,l])=>`<div class="a-count"><b>${aE(counts[k])}</b><span>${aE(l)}</span></div>`).join('');
+  const linkedBoxes = LINK_KINDS.filter(([k])=>lc[k]).map(([k,l])=>`<div class="a-count"><b>${aE(lc[k])}</b><span>${aE(l)}${lc[k] > 1 ? 's' : ''} on Kept</span></div>`).join('');
+  const bu = avatarUrl(r.banner);
+  const myLink = !r.is_me && r.connected ? (ACCT.links || []).find(l=>l.status === 'accepted' && l.other.username === r.username) : null;
+  let content = '';
+  if(r.limited){
+    content = `<p class="hint" style="margin-top:14px">This profile is ${r.connected ? 'private' : 'only visible to connections'}.</p>`;
+  } else if(ACCT.pvTab === 'overview'){
+    content = `
+      ${r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
+      ${(countBoxes || linkedBoxes) ? `<h3>In numbers</h3><div>${countBoxes}${linkedBoxes}</div>` : ''}
+      ${r.is_me && !countBoxes && !linkedBoxes && !r.about ? '<p class="hint">Fill in "About you" in the Profile tab to see it here.</p>' : ''}`;
+  } else if(ACCT.pvTab === 'rels'){
+    content = rels.length ? rels.map(x=>relCardHtml(x, r)).join('') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
+  } else {
+    content = feat.length ? featuredCardsHtml(feat) : `<p class="hint">Nobody is shown yet. Pick people from your archive in the Profile tab.</p>`;
+    if(r.is_me && r.featured_visible === false) content += `<p class="hint">Hidden from others right now (Privacy tab).</p>`;
+  }
+  body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
+    <div class="pv-banner">${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>
+    <div class="pv-head">${avHtml(r, 'xl')}
+      <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age != null ? ' · ' + aE(r.age) : ''}</span></div></div>
+    ${(r.nicknames || []).length ? `<div class="a-chips" style="margin:8px 0">${r.nicknames.map(n=>`<span class="a-chip">${aE(n)}</span>`).join('')}</div>` : ''}
+    ${r.is_me ? '<div class="hint">This is how others see you.</div>' : ''}
+    ${myLink ? `<div class="a-btns" style="margin:8px 0"><button class="a-btn primary" data-act="openChat" data-link="${aE(myLink.id)}" type="button">Message</button>
+      ${myLink.page_id ? `<button class="a-btn" data-act="openPage" data-id="${aE(myLink.id)}" data-page="${aE(myLink.page_id)}" type="button">Our relationship page</button>` : ''}</div>` : ''}
+    <div class="pv-tabs">${tabs.map(([id,l])=>`<button class="pv-tab ${ACCT.pvTab === id ? 'active' : ''}" data-pvtab="${id}" type="button">${aE(l)}</button>`).join('')}</div>
+    ${content}`;
+}
 
-/* ---------- RELATIONSHIP PAGE ---------- */
+/* ---------- RELATIONSHIP PAGE (between two people) ---------- */
 function stopPagePoll(){ clearInterval(ACCT.pageTimer); ACCT.pageTimer = null; }
 function pageSig(pg){ return JSON.stringify([pg.shared, pg.pending, pg.pending_by_me, pg.their_side, pg.version]); }
 function effectiveShared(pg){ return Object.assign({}, pg.shared || {}, pg.pending || {}); }
 function theirPending(pg){ return !!pg.pending && !pg.pending_by_me; }
+const SHARED_DEFAULTS = { title:'', types:[], ending:'', since:'', how_met:'', notes:'', sharing:'selective', jokes:[], milestones:[], aff:50, lib:50, conf:50 };
 
 async function renderPageView(body){
   stopPagePoll();
@@ -2508,17 +2731,15 @@ async function renderPageView(body){
     ACCT.page = pg; ACCT.pageEff = effectiveShared(pg); ACCT.pageSig = pageSig(pg); ACCT.sharedPatch = {};
     const name = pg.other.display_name || ('@' + pg.other.username);
     body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
-      <div class="a-person" style="margin-bottom:12px">${personHtml(pg.other, ' · ' + aE(pick(LINK_KINDS,pg.kind)) + (pg.label ? ' · ' + aE(pg.label) : ''))}</div>
       <div id="relBar"></div>
-      <div class="rel-wrap">
-        <div id="relShared"></div>
-        <div class="rel-two" style="margin-top:10px">
-          <div id="relMine"></div>
-          <div id="relTheirs"></div>
-        </div>
+      <div id="relShared"></div>
+      <div class="rel-two" style="margin-top:12px">
+        <div id="relMine"></div>
+        <div id="relTheirs"></div>
       </div>
-      <label class="a-switch" style="margin-top:12px"><input type="checkbox" id="relShow" ${pg.my_side.show_on_profile?'checked':''}><span>Show this page on my profile<small>Only you decide this for your own profile. If the page's sharing status is "Selective" only a short summary shows; "Non-sharing" hides it.</small></span></label>
-      <p class="hint">Your side saves automatically and only you can edit it. Shared parts (the middle) need ${aE(name)} to accept changes.</p>`;
+      <div class="a-btns"><button class="a-btn primary" data-act="openChat" data-link="${aE(pg.link_id)}" type="button">Message ${aE(name)}</button></div>
+      <label class="a-switch" style="margin-top:12px"><input type="checkbox" id="relShow" ${pg.my_side.show_on_profile ? 'checked' : ''}><span>Show this page on my profile<small>Only you decide this for your own profile. Sharing status “Selective” shows only a short summary; “Non-sharing” hides it.</small></span></label>
+      <p class="hint">What you write in “From you” saves right away and only you can edit it. The shared parts at the top need ${aE(name)} to accept your changes.</p>`;
     renderRelBar(); renderRelShared(); renderRelMine(); renderRelTheirs();
     ACCT.pageTimer = setInterval(pollPage, 6000);
   }catch(e){
@@ -2526,19 +2747,22 @@ async function renderPageView(body){
   }
 }
 function diffList(pg){
-  const lab = Object.assign({}, SLIDER_DEFAULTS, (pg.shared||{}).labels || {}, (pg.pending||{}).labels || {});
-  const names = { title:'Title', types:'Type of relationship', ending:'Ending', category:'Category', notes:'Notes', sharing:'Sharing', tropes:'Tropes', aff:lab.aff, lib:lab.lib, conf:lab.conf, labels:'Slider names' };
+  const lab = Object.assign({}, SLIDER_DEFAULTS, (pg.shared || {}).labels || {}, (pg.pending || {}).labels || {});
+  const names = { title:'Title', types:'Type of relationship', ending:'Where things stand', category:'Category', notes:'Our story', sharing:'Sharing', tropes:'Tropes',
+    aff:lab.aff, lib:lab.lib, conf:lab.conf, labels:'Level names', since:'Together since', how_met:'How we met', milestones:'Milestones', jokes:'Things we share' };
   const show = (k, v) => {
     if(v == null || v === '') return '—';
-    if(k === 'types') return (v||[]).map(t=>pick(REL_TYPES,t)||t).join(', ') || '—';
-    if(k === 'ending') return pick(REL_ENDINGS, v) || '—';
+    if(k === 'types') return (v || []).map(t=>pick(REL_TYPES, t) || t).join(', ') || '—';
+    if(k === 'ending') return pick(REL_STATUS, v) || '—';
     if(k === 'category') return pick(REL_CATS, v) || '—';
     if(k === 'sharing') return pick(REL_SHARING, v);
+    if(k === 'since') return sinceText(v) || v;
     if(k === 'labels') return Object.values(v).join(' / ');
+    if(Array.isArray(v)) return v.length + (v.length === 1 ? ' item' : ' items');
     const s = String(typeof v === 'object' ? JSON.stringify(v) : v);
     return s.length > 60 ? s.slice(0, 57) + '…' : s;
   };
-  return Object.keys(pg.pending || {}).map(k=>`<li><b>${aE(names[k]||k)}</b>: <del>${aE(show(k,(pg.shared||{})[k]))}</del> → ${aE(show(k,pg.pending[k]))}</li>`).join('');
+  return Object.keys(pg.pending || {}).map(k=>`<li><b>${aE(names[k] || k)}</b>: <del>${aE(show(k, (pg.shared || {})[k]))}</del> → ${aE(show(k, pg.pending[k]))}</li>`).join('');
 }
 function renderRelBar(){
   const bar = $a('relBar'); if(!bar || !ACCT.page) return;
@@ -2548,10 +2772,14 @@ function renderRelBar(){
     bar.innerHTML = `<div class="a-banner">⏳ Waiting for <b>${aE(name)}</b> to accept your changes.<ul>${diffList(pg)}</ul>
       <div class="a-btns"><button class="a-btn" data-act="withdraw" type="button">Withdraw my changes</button></div></div>`;
   } else {
-    bar.innerHTML = `<div class="a-banner alert"><b>${aE(name)}</b> wants to change the shared page:<ul>${diffList(pg)}</ul>
+    bar.innerHTML = `<div class="a-banner alert"><b>${aE(name)}</b> wants to change your shared page:<ul>${diffList(pg)}</ul>
       <div class="a-btns"><button class="a-btn primary" data-act="acceptChange" type="button">Accept</button>
       <button class="a-btn" data-act="declineChange" type="button">Decline</button></div></div>`;
   }
+}
+function msRowHtml(m, dis){
+  return `<div class="ms-row"><input type="date" data-msdate value="${aE(m.date || '')}" ${dis}><input type="text" data-mstext maxlength="300" placeholder="What happened?" value="${aE(m.text || '')}" ${dis}>
+    <button class="a-btn link" data-act="delMilestone" type="button" aria-label="Remove" ${dis}>✕</button></div>`;
 }
 function renderRelShared(){
   const box = $a('relShared'); if(!box || !ACCT.page) return;
@@ -2559,50 +2787,55 @@ function renderRelShared(){
   const dis = lock ? 'disabled' : '';
   const lab = Object.assign({}, SLIDER_DEFAULTS, s.labels || {});
   const types = s.types || [];
-  const sel = (key, list, cur) => `<select data-sh="${key}" ${dis}>${list.map(([v,l])=>`<option value="${v}" ${cur===v||(!cur&&v==='')?'selected':''}>${aE(l)}</option>`).join('')}</select>`;
+  const days = daysSince(s.since);
+  const nameMe = pg.me.display_name || '@' + pg.me.username, nameThem = pg.other.display_name || '@' + pg.other.username;
+  const sel = (key, list, cur) => `<select data-sh="${key}" ${dis}>${list.map(([v,l])=>`<option value="${v}" ${cur === v || (!cur && v === '') ? 'selected' : ''}>${aE(l)}</option>`).join('')}</select>`;
   box.innerHTML = `
-    <div class="rel-title"><input type="text" data-sh="title" maxlength="80" placeholder="Talking about our story…" value="${aE(s.title||'')}" ${dis}></div>
-    <div class="rel-box"><b>Type of relationship</b><div class="a-chips">${REL_TYPES.map(([v,l])=>
-      `<label class="a-chip"><input type="checkbox" data-shtype="${v}" ${types.includes(v)?'checked':''} ${dis}> ${aE(l)}</label>`).join('')}</div></div>
-    <div class="rel-two">
-      <div class="rel-box"><b>This has…</b>${sel('ending', REL_ENDINGS, s.ending||'')}</div>
-      <div class="rel-box"><b>Category</b>${sel('category', REL_CATS, s.category||'')}</div>
+    <div class="us-hero">
+      <div class="us-pair">${avHtml(pg.me, 'lg')}<span class="us-link">♥</span>${avHtml(pg.other, 'lg')}</div>
+      <input type="text" class="us-title" data-sh="title" maxlength="80" placeholder="${aE(nameMe)} & ${aE(nameThem)}" value="${aE(s.title || '')}" ${dis}>
+      <div class="hint" style="text-align:center;margin:4px 0 0">${aE(pick(LINK_KINDS, pg.kind))}${pg.label ? ' · ' + aE(pg.label) : ''}</div>
+      ${days != null ? `<div class="us-days"><b>${days}</b> days${s.since ? ' since ' + aE(sinceText(s.since)) : ''}</div>` : ''}
     </div>
-    <div class="rel-box rel-heart"><b>Notes — our story in a few words</b><textarea data-sh="notes" maxlength="3000" placeholder="Whatever describes you two…" ${dis}>${aE(s.notes||'')}</textarea></div>
-    <div class="rel-two">
-      <div class="rel-box"><b>Sharing status</b>${sel('sharing', REL_SHARING, s.sharing||'selective')}</div>
-      <div class="rel-box"><b>Tropes / vibes</b><textarea data-sh="tropes" maxlength="600" style="min-height:42px" ${dis}>${aE(s.tropes||'')}</textarea></div>
+    <div class="a-card"><h3>About us</h3>
+      <div class="field"><label>What are we to each other?</label><div class="a-chips">${REL_TYPES.map(([v,l])=>
+        `<label class="a-chip"><input type="checkbox" data-shtype="${v}" ${types.includes(v) ? 'checked' : ''} ${dis}> ${aE(l)}</label>`).join('')}</div></div>
+      <div class="a-row">
+        <div class="field"><label>Together since</label><input type="date" data-sh="since" value="${aE(s.since || '')}" ${dis}></div>
+        <div class="field"><label>Where things stand</label>${sel('ending', REL_STATUS, s.ending || '')}</div>
+      </div>
+      <div class="field"><label>How we met</label><textarea data-sh="how_met" maxlength="600" style="min-height:56px" ${dis}>${aE(s.how_met || '')}</textarea></div>
     </div>
-    <div class="rel-box rel-sliders"><b>Levels</b>
+    <div class="a-card"><h3>Our story</h3>
+      <textarea data-sh="notes" maxlength="3000" placeholder="Whatever describes the two of you…" ${dis}>${aE(s.notes || '')}</textarea></div>
+    <div class="a-card"><h3>Milestones</h3>
+      <div id="msList">${(s.milestones || []).map(m=>msRowHtml(m, dis)).join('')}</div>
+      <button class="a-btn" data-act="addMilestone" type="button" ${dis}>+ Add a milestone</button></div>
+    <div class="a-card"><h3>Things we share</h3><p class="hint">Inside jokes, songs, places, rituals — one per line.</p>
+      <textarea data-sh="jokes" maxlength="2000" style="min-height:70px" ${dis}>${aE((s.jokes || []).join('\n'))}</textarea></div>
+    <div class="a-card rel-sliders"><h3>How it feels</h3>
       ${['aff','lib','conf'].map(k=>`<div class="sl"><input type="text" data-shlabel="${k}" maxlength="30" value="${aE(lab[k])}" ${dis}>
-        <input type="range" min="0" max="100" data-sh="${k}" value="${s[k]==null?50:num01(s[k])}" ${dis}><output>${s[k]==null?50:num01(s[k])}</output></div>`).join('')}
-    </div>`;
+        <input type="range" min="0" max="100" data-sh="${k}" value="${s[k] == null ? 50 : num01(s[k])}" ${dis}><output>${s[k] == null ? 50 : num01(s[k])}</output></div>`).join('')}
+    </div>
+    <div class="a-card"><h3>Sharing</h3><p class="hint">How much of this page may appear on profiles.</p>${sel('sharing', REL_SHARING, s.sharing || 'selective')}</div>`;
 }
 function sideForm(d){
-  const boxes = d.boxes || [], pal = d.palette || [];
-  const palV = i => hex(pal[i]) || '#e8e2d0';
   return `
-    <div class="side-top"><input type="text" class="emo" data-sd="emoji" maxlength="8" value="${aE(d.emoji||'')}" placeholder="🙂"><input type="text" class="name" data-sd="name" maxlength="40" value="${aE(d.name||'')}" placeholder="Name"></div>
-    <div class="mini">${[0,1,2].map(i=>`<input type="text" data-sdbox="${i}" maxlength="24" value="${aE(boxes[i]||'')}" placeholder="…">`).join('')}</div>
-    <div class="f"><span>Pronouns</span><input type="text" data-sd="pronouns" maxlength="30" value="${aE(d.pronouns||'')}"></div>
-    <div class="f"><span>Height</span><input type="text" data-sd="height" maxlength="20" value="${aE(d.height||'')}"></div>
-    <div class="f"><span>MBTI</span><input type="text" data-sd="mbti" maxlength="8" value="${aE(d.mbti||'')}"></div>
-    <div class="f"><span>Palette</span><div class="pal">${[0,1,2,3,4].map(i=>`<input type="color" data-sdpal="${i}" value="${palV(i)}">`).join('')}</div></div>`;
+    <div class="field"><label>What I call them</label><input type="text" data-sd="nickname" maxlength="40" value="${aE(d.nickname || '')}"></div>
+    <div class="field"><label>What I love about them</label><textarea data-sd="love" maxlength="600" style="min-height:64px">${aE(d.love || '')}</textarea></div>
+    <div class="field"><label>My favorite memory of us</label><textarea data-sd="memory" maxlength="600" style="min-height:64px">${aE(d.memory || '')}</textarea></div>
+    <div class="field"><label>Something I want us to do</label><textarea data-sd="wish" maxlength="400" style="min-height:54px">${aE(d.wish || '')}</textarea></div>`;
 }
 function renderRelMine(){
   const el = $a('relMine'); if(!el || !ACCT.page) return;
-  el.innerHTML = `<div class="side"><h4>You · only you can edit</h4>${sideForm(ACCT.page.my_side.data || {})}</div>`;
+  el.innerHTML = `<div class="side"><h4>From you · only you can edit</h4>${sideForm(ACCT.page.my_side.data || {})}</div>`;
 }
 function renderRelTheirs(){
   const el = $a('relTheirs'); if(!el || !ACCT.page) return;
   const d = ACCT.page.their_side.data || {}, pg = ACCT.page;
-  const boxes = d.boxes || [], pal = (d.palette || []).map(hex).filter(Boolean);
-  const row = (l, v) => `<div class="f"><span>${l}</span><div class="ro">${aE(v||'')}</div></div>`;
-  el.innerHTML = `<div class="side theirs"><h4>${aE(pg.other.display_name || '@' + pg.other.username)} · read-only</h4>
-    <div class="side-top"><div class="ro emo" style="width:54px;text-align:center;font-size:1.2rem">${aE(d.emoji||'')}</div><div class="ro name nm">${aE(d.name||'')}</div></div>
-    <div class="mini">${[0,1,2].map(i=>`<div class="ro" style="text-align:center;font-size:0.76rem">${aE(boxes[i]||'')}</div>`).join('')}</div>
-    ${row('Pronouns', d.pronouns)}${row('Height', d.height)}${row('MBTI', d.mbti)}
-    <div class="f"><span>Palette</span><div class="pal">${pal.length ? pal.map(c=>`<i style="background:${c}"></i>`).join('') : '<div class="ro" style="flex:1"></div>'}</div></div></div>`;
+  const row = (l, v) => `<div class="field"><label>${l}</label><div class="ro">${v ? aE(v) : '<span style="opacity:.5">Nothing yet</span>'}</div></div>`;
+  el.innerHTML = `<div class="side theirs"><h4>From ${aE(pg.other.display_name || '@' + pg.other.username)} · read-only</h4>
+    ${row('What they call you', d.nickname)}${row('What they love about you', d.love)}${row('Their favorite memory of us', d.memory)}${row('Something they want us to do', d.wish)}</div>`;
 }
 
 async function pollPage(){
@@ -2612,8 +2845,7 @@ async function pollPage(){
     if(!ACCT.view || ACCT.view.type !== 'page') return;
     const sig = pageSig(pg);
     if(sig === ACCT.pageSig) return;
-    const hadMine = ACCT.page;
-    pg.my_side = hadMine.my_side;                          // never overwrite what I'm typing on my side
+    pg.my_side = ACCT.page.my_side;                          // never overwrite what I'm typing on my side
     const sharedChanged = JSON.stringify([ACCT.page.shared, ACCT.page.pending, ACCT.page.pending_by_me]) !== JSON.stringify([pg.shared, pg.pending, pg.pending_by_me]);
     ACCT.page = pg; ACCT.pageSig = sig;
     renderRelBar();
@@ -2629,8 +2861,12 @@ function readSharedFromDom(){
   return {
     title: g('title').value.trim(),
     types: [...document.querySelectorAll('[data-shtype]')].filter(i=>i.checked).map(i=>i.dataset.shtype),
-    ending: g('ending').value, category: g('category').value,
-    notes: g('notes').value, tropes: g('tropes').value.trim(), sharing: g('sharing').value,
+    ending: g('ending').value, since: g('since').value || '', how_met: g('how_met').value,
+    notes: g('notes').value, sharing: g('sharing').value,
+    jokes: g('jokes').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0, 30).map(x=>x.slice(0, 200)),
+    milestones: [...document.querySelectorAll('#msList .ms-row')].map(r=>({
+      date: r.querySelector('[data-msdate]').value || '', text: r.querySelector('[data-mstext]').value.trim().slice(0, 300)
+    })).filter(m=>m.text || m.date).slice(0, 40),
     aff: num01(g('aff').value), lib: num01(g('lib').value), conf: num01(g('conf').value),
     labels: Object.fromEntries(['aff','lib','conf'].map(k=>[k, (document.querySelector(`[data-shlabel="${k}"]`).value.trim() || SLIDER_DEFAULTS[k])]))
   };
@@ -2640,7 +2876,7 @@ function onSharedInput(){
   const cur = readSharedFromDom(), base = ACCT.pageEff || {};
   const baseLabels = Object.assign({}, SLIDER_DEFAULTS, base.labels || {});
   Object.keys(cur).forEach(k=>{
-    const b = k === 'labels' ? baseLabels : (base[k] == null ? (k==='sharing'?'selective':(['aff','lib','conf'].includes(k)?50:(k==='types'?[]:''))) : base[k]);
+    const b = k === 'labels' ? baseLabels : (base[k] == null ? SHARED_DEFAULTS[k] : base[k]);
     if(JSON.stringify(cur[k]) !== JSON.stringify(b)) ACCT.sharedPatch[k] = cur[k];
     else delete ACCT.sharedPatch[k];
   });
@@ -2653,7 +2889,6 @@ async function flushShared(){
   const pg = ACCT.page; if(!pg) return;
   const patch = ACCT.sharedPatch;
   if(!Object.keys(patch).length){ setSave('saved'); return; }
-  // "labels" must be sent as a whole (all three), the rest as changed keys
   try{
     await rpc('propose_rel_change', { pid: pg.id, patch });
     ACCT.sharedPatch = {};
@@ -2670,11 +2905,7 @@ async function flushShared(){
 }
 function readSideFromDom(){
   const v = k => { const el = document.querySelector(`#relMine [data-sd="${k}"]`); return el ? el.value.trim() : ''; };
-  return {
-    name: v('name'), emoji: v('emoji'), pronouns: v('pronouns'), height: v('height'), mbti: v('mbti'),
-    boxes: [0,1,2].map(i=>document.querySelector(`#relMine [data-sdbox="${i}"]`).value.trim()),
-    palette: (()=>{ const p = [0,1,2,3,4].map(i=>document.querySelector(`#relMine [data-sdpal="${i}"]`).value); return p.every(c=>c==='#e8e2d0') ? [] : p; })()
-  };
+  return { nickname: v('nickname'), love: v('love'), memory: v('memory'), wish: v('wish') };
 }
 function onSideInput(){
   if(!ACCT.page) return;
@@ -2710,6 +2941,25 @@ async function checkUsername(u){
   return ok ? '' : 'That username is taken or not allowed.';
 }
 const ACTIONS = {
+  async pickAvatar(){ $a('avatarFile').click(); },
+  async pickBanner(){ $a('bannerFile').click(); },
+  async removeAvatar(){
+    const old = ACCT.profile.avatar_path; queueProfile({ avatar_path: null });
+    if(old){ try{ await sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
+    renderTabProfile($a('acctBody'));
+  },
+  async removeBanner(){
+    const old = ACCT.profile.banner_path; queueProfile({ banner_path: null });
+    if(old){ try{ await sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
+    renderTabProfile($a('acctBody'));
+  },
+  async addMilestone(){
+    const list = $a('msList'); if(!list) return;
+    list.insertAdjacentHTML('beforeend', msRowHtml({ date: todayStr(), text: '' }, ''));
+    const last = list.lastElementChild.querySelector('[data-mstext]'); if(last) last.focus();
+    onSharedInput();
+  },
+  async delMilestone(btn){ const row = btn.closest('.ms-row'); if(row) row.remove(); onSharedInput(); },
   async chgUser(){ $a('userEdit').innerHTML = userEditHtml(ACCT.profile.username || ''); $a('un-input').focus(); },
   async saveUser(btn){
     await withBtn(btn, async ()=>{
@@ -2725,8 +2975,8 @@ const ACTIONS = {
       }catch(e){ msg('un-msg', e.message); }
     });
   },
-  async viewMe(){ if(ACCT.profile && ACCT.profile.username){ await flushProfile(); ACCT.view = { type:'profile', username: ACCT.profile.username }; acctRender(); } },
-  async viewUser(btn){ ACCT.view = { type:'profile', username: btn.dataset.u }; acctRender(); },
+  async viewMe(){ if(ACCT.profile && ACCT.profile.username){ await flushProfile(); ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: ACCT.profile.username }; acctRender(); } },
+  async viewUser(btn){ ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: btn.dataset.u }; acctRender(); },
   async back(){ await flushSides(); await flushShared(); ACCT.view = null; ACCT.page = null; await refreshLinks().catch(()=>{}); acctRender(); },
   async find(btn){
     await withBtn(btn, async ()=>{
@@ -2839,6 +3089,11 @@ const ACTIONS = {
           const paths = (files || []).map(f=>uid + '/' + d.name + '/' + f.name);
           if(paths.length) await bucket.remove(paths);
         }
+        try{
+          const { data: av } = await sb.storage.from(AVATAR_BUCKET).list(uid, { limit: 100 });
+          const ap = (av || []).map(f=>uid + '/' + f.name);
+          if(ap.length) await sb.storage.from(AVATAR_BUCKET).remove(ap);
+        }catch(e){ /* best effort */ }
         msg('del-msg', 'Deleting account…', true);
         await rpc('delete_my_account');
         signingOut = true;
@@ -2862,6 +3117,8 @@ function bindAccountHub(){
     ACCT.tab = b.dataset.tab; ACCT.view = null; acctRender();
   });
   $a('acctBody').addEventListener('click', async ev=>{
+    const pvt = ev.target.closest('[data-pvtab]');
+    if(pvt){ ACCT.pvTab = pvt.dataset.pvtab; renderProfileBody($a('acctBody')); return; }
     const tabBtn = ev.target.closest('[data-tab]');
     if(tabBtn){ ACCT.tab = tabBtn.dataset.tab; ACCT.view = null; acctRender(); return; }
     const b = ev.target.closest('[data-act]');
@@ -2881,10 +3138,10 @@ function bindAccountHub(){
         bio: t.id==='pv-bio' ? t.value.trim() : profileData.bio });
       clearTimeout(ACCT.privTimer); setSave('saving');
       ACCT.privTimer = setTimeout(async ()=>{ try{ await storage.set(PROFILE_KEY, JSON.stringify(profileData), false); setSave('saved'); }catch(e){ setSave('error', 'Not saved'); } }, 600);
-    } else if(t.dataset.sh || t.dataset.shlabel || t.dataset.shtype){
+    } else if(t.dataset.sh || t.dataset.shlabel || t.dataset.shtype || t.dataset.msdate !== undefined || t.dataset.mstext !== undefined){
       if(t.type === 'range' && t.nextElementSibling) t.nextElementSibling.textContent = t.value;
       onSharedInput();
-    } else if(t.dataset.sd || t.dataset.sdbox != null || t.dataset.sdpal != null){
+    } else if(t.dataset.sd){
       onSideInput();
     } else if(t.id === 'un-input' || t.id === 'up-username'){
       t.value = t.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
@@ -2892,6 +3149,19 @@ function bindAccountHub(){
   });
   $a('acctBody').addEventListener('change', ev=>{
     const t = ev.target;
+    if(t.id === 'avatarFile' || t.id === 'bannerFile'){
+      const f = t.files && t.files[0]; t.value = '';
+      if(!f) return;
+      const kind = t.id === 'avatarFile' ? 'avatar' : 'banner';
+      msg('img-msg', 'Uploading…', true);
+      uploadProfileImage(kind, f).then(()=>{ msg('img-msg', ''); renderTabProfile($a('acctBody')); }).catch(e=>msg('img-msg', e.message));
+      return;
+    }
+    if(t.dataset.feat !== undefined){
+      const ids = [...document.querySelectorAll('[data-feat]')].filter(c=>c.checked).map(c=>c.dataset.feat);
+      if(ids.length > 30){ t.checked = false; msg('img-msg', 'You can show up to 30 people.'); return; }
+      queueProfile({ featured: featuredSnapshot(ids) }); return;
+    }
     if(t.dataset.vis){ queueProfile({ visibility: t.dataset.vis }); return; }
     if(t.dataset.pc){
       const k = t.dataset.pc, patch = { [k]: t.checked };
@@ -2968,25 +3238,434 @@ function themeCardHtml(id){
     <div class="theme-info"><b>${aE(t.name)}</b>${owned && id!=='classic' ? '<span class="a-badge">Owned</span>' : ''}<p>${aE(t.desc)}</p>
     <div class="a-btns">${action}</div>${!owned && SHOP.petals < t.price ? '<div class="a-msg">Not enough petals yet.</div>' : ''}</div></div>`;
 }
-function renderTabShop(body){
+function renderShop(){
+  const body = $a('shopBody'); if(!body) return;
   const forSale = Object.keys(THEMES).filter(id=>!SHOP.owned.includes(id));
   const owned = SHOP.owned.filter(id=>THEMES[id]);
+  $a('shopCoins').textContent = '🌸 ' + SHOP.petals + ' petals';
   body.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="shop-coins">🌸 ${aE(SHOP.petals)} petals</span></div>
-    <p class="hint" style="margin-top:8px">Prototype: petals are free play money for now, so you can try the shop. More themes are coming later.</p>
+    <p class="hint">Prototype: petals are free play money for now, so you can try the shop. More themes are coming later.</p>
     <h3>Owned themes</h3>${owned.map(themeCardHtml).join('')}
     <h3>Theme shop</h3>${forSale.length ? forSale.map(themeCardHtml).join('') : '<p class="hint">You own everything in the shop right now. ✨</p>'}`;
 }
-ACTIONS.applyTheme = async (btn)=>{ applyTheme(btn.dataset.id); await saveShop(); acctRender(); };
+function openShop(){ renderShop(); $a('shopOverlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+function closeShop(){ $a('shopOverlay').classList.add('hidden'); document.body.style.overflow = ''; }
+ACTIONS.applyTheme = async (btn)=>{ applyTheme(btn.dataset.id); await saveShop(); renderShop(); };
 ACTIONS.buyTheme = async (btn)=>{
   const id = btn.dataset.id, t = THEMES[id];
   if(!t || SHOP.owned.includes(id) || SHOP.petals < t.price) return;
   SHOP.petals -= t.price; SHOP.owned.push(id);
   applyTheme(id);
-  await saveShop(); acctRender();
+  await saveShop(); renderShop();
 };
 
+
+/* =====================================================================
+   INBOX — chats (reactions, pins, pictures, GIFs) and notifications.
+   Polls the server while open; no extra setup beyond supabase_update_2.sql.
+   ===================================================================== */
+const INBOX = { tab:'chats', counts:{ notifications:0, messages:0 }, summary:[], notifs:[], chat:null, urls:{}, listTimer:null, chatTimer:null, tickTimer:null, gifTimer:null };
+const QUICK_REACTIONS = ['❤️','😂','😮','😢','👍','🔥'];
+
+function relTime(iso){
+  const d = new Date(iso); if(isNaN(d)) return '';
+  const s = (Date.now() - d.getTime()) / 1000;
+  if(s < 60) return 'now';
+  if(s < 3600) return Math.floor(s / 60) + 'm';
+  if(s < 86400) return Math.floor(s / 3600) + 'h';
+  if(s < 172800) return 'yesterday';
+  return d.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+}
+function inboxOpen(){ return !$a('inboxOverlay').classList.contains('hidden'); }
+
+/* ---------- badge ---------- */
+function updateInboxBadge(){
+  const btn = $a('inboxBtn'), dot = $a('inboxDot'); if(!btn) return;
+  btn.classList.toggle('hidden', !acctUsable());
+  const n = (INBOX.counts.notifications || 0) + (INBOX.counts.messages || 0);
+  dot.textContent = n > 99 ? '99+' : n;
+  dot.classList.toggle('hidden', !n);
+}
+async function inboxTick(){
+  if(document.hidden || !acctUsable()) { updateInboxBadge(); return; }
+  try{ INBOX.counts = await rpc('inbox_counts'); }catch(e){ /* try later */ }
+  updateInboxBadge();
+  if(inboxOpen() && !INBOX.chat){ renderInbox(true); }
+}
+function startInboxTick(){
+  clearInterval(INBOX.tickTimer);
+  inboxTick();
+  INBOX.tickTimer = setInterval(inboxTick, 15000);
+}
+
+/* ---------- open / close ---------- */
+async function openInbox(tab, lid){
+  INBOX.tab = tab || INBOX.tab || 'chats';
+  INBOX.chat = null;
+  $a('inboxOverlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  if(lid){ await openChatView(lid); return; }
+  renderInbox();
+}
+async function closeInbox(){
+  stopChatPoll();
+  clearTimeout(INBOX.gifTimer);
+  INBOX.chat = null;
+  $a('inboxOverlay').classList.add('hidden');
+  if($a('acctOverlay').classList.contains('hidden') && $a('shopOverlay').classList.contains('hidden')) document.body.style.overflow = '';
+  inboxTick();
+}
+function stopChatPoll(){ clearInterval(INBOX.chatTimer); INBOX.chatTimer = null; }
+
+/* ---------- list view ---------- */
+async function renderInbox(quiet){
+  if(INBOX.chat) return;
+  const body = $a('inboxBody');
+  $a('inboxTitle').textContent = 'Inbox';
+  const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
+  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['notifs','Notifications', nn]].map(([id,l,n])=>
+    `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
+  if(!quiet) body.innerHTML = '<p class="hint">Loading…</p>';
+  try{
+    if(INBOX.tab === 'chats'){
+      INBOX.summary = (await rpc('chat_summary')) || [];
+      if(INBOX.chat || INBOX.tab !== 'chats') return;
+      body.innerHTML = INBOX.summary.length ? INBOX.summary.map(c=>{
+        const o = c.other, last = c.last;
+        const preview = !last ? 'Say hi 👋' : last.deleted ? 'Message deleted' : (last.kind === 'image' ? '📷 Photo' : last.kind === 'gif' ? 'GIF' : last.body);
+        return `<div class="a-card chat-row" data-act="openChatRow" data-link="${aE(c.link_id)}">
+          ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b>
+          <span>${last ? (last.mine ? 'You: ' : '') : ''}${aE(preview)}</span></div>
+          <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}</div></div>`;
+      }).join('') : `<p class="hint">No chats yet. Once someone accepts your request, you can message them here.</p>`;
+    } else {
+      INBOX.notifs = (await rpc('list_notifications', { lim: 40 })) || [];
+      if(INBOX.chat || INBOX.tab !== 'notifs') return;
+      body.innerHTML = (INBOX.notifs.some(n=>!n.read) ? `<div class="a-btns" style="margin:0 0 10px"><button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button></div>` : '') +
+        (INBOX.notifs.length ? INBOX.notifs.map(n=>`<div class="a-card chat-row ${n.read ? '' : 'unread'}" data-act="openNotif" data-nid="${aE(n.id)}">
+          ${avHtml(n.actor)}<div class="who"><b>${aE(notifText(n))}</b><span>${aE(relTime(n.created_at))}</span></div>${n.read ? '' : '<i class="udot"></i>'}</div>`).join('')
+          : `<p class="hint">Nothing new yet. Requests, replies to your relationship page changes and new messages will show up here.</p>`);
+    }
+  }catch(e){ body.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+function notifText(n){
+  const who = (n.actor && (n.actor.display_name || (n.actor.username ? '@' + n.actor.username : ''))) || 'Someone';
+  switch(n.kind){
+    case 'link_request': return `${who} wants to be your ${(pick(LINK_KINDS, (n.data || {}).kind) || 'connection').toLowerCase()}`;
+    case 'link_accepted': return `${who} accepted your request`;
+    case 'page_created': return `${who} started a relationship page with you`;
+    case 'page_proposal': return `${who} suggested changes to your shared page`;
+    case 'page_accepted': return `${who} accepted your changes`;
+    case 'page_declined': return `${who} declined your changes`;
+    case 'message': { const c = (n.data || {}).count || 1; return `${who} sent you ${c} message${c > 1 ? 's' : ''}`; }
+    default: return `${who} did something`;
+  }
+}
+
+/* ---------- chat view ---------- */
+async function openChatView(lid){
+  let info = (INBOX.summary || []).find(c=>c.link_id === lid);
+  if(!info){
+    try{ INBOX.summary = (await rpc('chat_summary')) || []; info = INBOX.summary.find(c=>c.link_id === lid); }catch(e){ showToast(e.message); return; }
+  }
+  if(!info){ showToast('That chat is not available.'); return; }
+  const link = (ACCT.links || []).find(l=>l.id === lid);
+  INBOX.chat = { lid, other: info.other, pageId: link && link.page_id, msgs: [], sig:'', menu:null, pins:null, showPins:false, gif:false, atBottom:true, hasMore:true };
+  renderChatShell();
+  await pollChat(true);
+  stopChatPoll();
+  INBOX.chatTimer = setInterval(()=>pollChat(false), 3500);
+}
+function renderChatShell(){
+  const c = INBOX.chat, o = c.other;
+  $a('inboxTitle').textContent = '';
+  $a('inboxTabs').innerHTML = `<button class="a-back" data-act="chatBack" type="button" style="padding:8px 12px">← Chats</button>`;
+  $a('inboxBody').innerHTML = `
+    <div class="chat-top">${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b><span>@${aE(o.username)}</span></div>
+      <button class="a-btn" data-act="chatPins" type="button" id="pinBtn">📌</button>
+      <button class="a-btn" data-act="chatProfile" type="button">Profile</button>
+      ${c.pageId ? `<button class="a-btn" data-act="chatPage" type="button">Us</button>` : ''}</div>
+    <div id="chatPins" class="hidden"></div>
+    <div id="chatMsgs" class="chat-msgs"></div>
+    <div id="chatGif" class="hidden"></div>
+    <div class="a-msg" id="chatErr" style="margin:0 12px"></div>
+    <div class="chat-compose">
+      <button class="a-btn" data-act="chatImg" type="button" aria-label="Send a picture">📷</button>
+      <button class="a-btn" data-act="chatGif" type="button" aria-label="Send a GIF">GIF</button>
+      <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Message…"></textarea>
+      <button class="a-btn primary" data-act="chatSend" type="button">Send</button>
+      <input type="file" id="chatFile" accept="image/*" hidden>
+    </div>`;
+}
+function stateSig(msgs){ return JSON.stringify(msgs.map(m=>[m.id, m.body, m.media, m.pinned, m.deleted, m.reactions])); }
+async function pollChat(first){
+  const c = INBOX.chat; if(!c || document.hidden) return;
+  try{
+    const latest = (await rpc('list_messages', { lid: c.lid, lim: 60 })) || [];
+    if(INBOX.chat !== c) return;
+    const firstAt = latest.length ? latest[0].created_at : null;
+    const older = firstAt ? c.msgs.filter(m=>m.created_at < firstAt) : [];
+    const merged = older.concat(latest);
+    c.hasMore = latest.length >= 60 || older.length > 0;
+    const sig = stateSig(merged);
+    const hadNew = merged.length > c.msgs.length && c.msgs.length > 0 && merged[merged.length - 1].id !== (c.msgs[c.msgs.length - 1] || {}).id;
+    if(sig !== c.sig || first){
+      const box = $a('chatMsgs');
+      c.atBottom = first || !box || (box.scrollHeight - box.scrollTop - box.clientHeight < 80);
+      c.msgs = merged; c.sig = sig;
+      if(!c.menu) renderMessages();
+    }
+    if(first || hadNew || merged.some(m=>!m.mine && !m.deleted)){ rpc('mark_read', { lid: c.lid }).then(()=>inboxTick()).catch(()=>{}); }
+    if(c.showPins) loadPins();
+  }catch(e){ const el = $a('chatErr'); if(el) el.textContent = e.message; }
+}
+async function loadEarlier(){
+  const c = INBOX.chat; if(!c || !c.msgs.length) return;
+  try{
+    const older = (await rpc('list_messages', { lid: c.lid, before: c.msgs[0].created_at, lim: 60 })) || [];
+    c.hasMore = older.length >= 60;
+    const box = $a('chatMsgs'), prev = box.scrollHeight;
+    c.msgs = older.concat(c.msgs); c.sig = stateSig(c.msgs); c.atBottom = false;
+    renderMessages(); box.scrollTop = box.scrollHeight - prev;
+  }catch(e){ $a('chatErr').textContent = e.message; }
+}
+function msgContentHtml(m){
+  if(m.deleted) return '<i class="gone">Message deleted</i>';
+  if(m.kind === 'image'){
+    const u = INBOX.urls[m.media];
+    return `<img class="cimg" data-path="${aE(m.media)}" ${u && u.exp > Date.now() ? `src="${aE(u.url)}"` : ''} alt="Picture">`;
+  }
+  if(m.kind === 'gif') return `<img class="cimg" src="${aE(m.media)}" alt="GIF" referrerpolicy="no-referrer">`;
+  return aE(m.body).replace(/\n/g, '<br>');
+}
+function renderMessages(){
+  const c = INBOX.chat, box = $a('chatMsgs'); if(!c || !box) return;
+  let lastDay = '';
+  const html = c.msgs.map(m=>{
+    const d = new Date(m.created_at), day = d.toDateString();
+    const sep = day !== lastDay ? `<div class="chat-day">${aE(d.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' }))}</div>` : '';
+    lastDay = day;
+    const rx = (m.reactions || []).length ? `<div class="rx">${m.reactions.map(r=>`<button class="rxc ${r.mine ? 'mine' : ''}" data-act="react" data-mid="${aE(m.id)}" data-e="${aE(r.emoji)}" type="button">${aE(r.emoji)} ${r.count > 1 ? aE(r.count) : ''}</button>`).join('')}</div>` : '';
+    const menu = c.menu === m.id && !m.deleted ? `<div class="mmenu">
+        <div class="qr">${QUICK_REACTIONS.map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${e}" type="button">${e}</button>`).join('')}<input type="text" maxlength="8" placeholder="＋" data-custom="${aE(m.id)}"></div>
+        <button data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="${m.pinned ? '0' : '1'}" type="button">${m.pinned ? '📌 Unpin' : '📌 Pin'}</button>
+        ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
+        ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : ''}</div>` : '';
+    return `${sep}<div class="msg ${m.mine ? 'mine' : 'theirs'}" data-mid="${aE(m.id)}">
+      <div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>
+      ${rx}${menu}<div class="mtime">${aE(d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }))}</div></div>`;
+  }).join('');
+  box.innerHTML = (c.hasMore && c.msgs.length >= 60 ? `<button class="a-btn link" data-act="loadEarlier" type="button" style="align-self:center">Load earlier messages</button>` : '')
+    + (html || `<p class="hint" style="text-align:center;margin-top:30px">No messages yet. Say hi 👋</p>`);
+  if(c.atBottom) box.scrollTop = box.scrollHeight;
+  hydrateChatImages();
+  const pins = c.msgs.filter(m=>m.pinned && !m.deleted).length;
+  const pb = $a('pinBtn'); if(pb) pb.textContent = pins ? `📌 ${pins}` : '📌';
+}
+async function hydrateChatImages(){
+  const imgs = [...document.querySelectorAll('#chatMsgs img[data-path]:not([src]), #chatPins img[data-path]:not([src])')];
+  const need = [...new Set(imgs.map(i=>i.dataset.path).filter(p=>!(INBOX.urls[p] && INBOX.urls[p].exp > Date.now())))];
+  if(need.length){
+    try{
+      const { data } = await sb.storage.from(CHAT_BUCKET).createSignedUrls(need, 3600);
+      (data || []).forEach(r=>{ if(r && r.path && r.signedUrl) INBOX.urls[r.path] = { url: r.signedUrl, exp: Date.now() + 3300000 }; });
+    }catch(e){ /* pictures just won't load */ }
+  }
+  imgs.forEach(i=>{ const u = INBOX.urls[i.dataset.path]; if(u) i.src = u.url; });
+}
+
+/* ---------- pins ---------- */
+async function loadPins(){
+  const c = INBOX.chat; if(!c) return;
+  try{
+    c.pins = (await rpc('list_pins', { lid: c.lid })) || [];
+    const box = $a('chatPins'); if(!box) return;
+    box.innerHTML = c.pins.length ? `<div class="pin-list">${c.pins.map(m=>`<div class="pin-item"><div>${m.kind === 'image' ? `<img class="cimg" data-path="${aE(m.media)}" alt="Picture" style="max-width:120px">` : m.kind === 'gif' ? `<img class="cimg" src="${aE(m.media)}" alt="GIF" style="max-width:120px" referrerpolicy="no-referrer">` : aE(m.body)}</div>
+      <span>${m.mine ? 'You' : aE(c.other.display_name || '@' + c.other.username)} · ${aE(relTime(m.created_at))}</span>
+      <button class="a-btn link" data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="0" type="button">Unpin</button></div>`).join('')}</div>` : `<p class="hint" style="padding:8px 12px;margin:0">Nothing pinned yet. Tap a message to pin it.</p>`;
+    hydrateChatImages();
+  }catch(e){ /* ignore */ }
+}
+
+/* ---------- GIF panel ---------- */
+function gifPanelHtml(){
+  return `<div class="gif-panel">
+    ${GIPHY_API_KEY ? `<input type="text" id="gifQuery" placeholder="Search GIFs…" autocomplete="off"><div id="gifResults" class="gif-grid"></div>
+      <div class="hint" style="margin:4px 0 0">Powered by GIPHY</div>` :
+      `<p class="hint" style="margin:0 0 8px">Paste a direct GIF link from Giphy, Tenor or Imgur (it should end in .gif), or upload a GIF with 📷.</p>
+       <div class="a-row"><div class="field" style="margin:0"><input type="text" id="gifUrl" placeholder="https://media.giphy.com/…/giphy.gif" autocomplete="off"></div>
+       <div class="field fixed" style="margin:0"><button class="a-btn primary" data-act="sendGifUrl" type="button">Send</button></div></div>`}
+  </div>`;
+}
+async function searchGifs(q){
+  const box = $a('gifResults'); if(!box) return;
+  try{
+    const url = q ? `https://api.giphy.com/v1/gifs/search?api_key=${encodeURIComponent(GIPHY_API_KEY)}&q=${encodeURIComponent(q)}&limit=24&rating=pg-13`
+                  : `https://api.giphy.com/v1/gifs/trending?api_key=${encodeURIComponent(GIPHY_API_KEY)}&limit=24&rating=pg-13`;
+    const res = await fetch(url); const j = await res.json();
+    box.innerHTML = (j.data || []).map(g=>{ const prev = g.images.fixed_height_small || g.images.fixed_height, full = g.images.downsized || g.images.original;
+      return `<button type="button" data-act="pickGif" data-url="${aE(full.url)}"><img src="${aE(prev.url)}" alt="${aE(g.title || 'GIF')}" loading="lazy"></button>`; }).join('') || '<p class="hint">No GIFs found.</p>';
+  }catch(e){ box.innerHTML = '<p class="hint">Could not load GIFs right now.</p>'; }
+}
+
+/* ---------- sending ---------- */
+async function sendChat(kind, body, media){
+  const c = INBOX.chat; if(!c) return;
+  const err = $a('chatErr'); if(err) err.textContent = '';
+  try{
+    await rpc('send_message', { lid: c.lid, k: kind, b: body || '', m: media || '' });
+    c.atBottom = true;
+    await pollChat(false);
+    return true;
+  }catch(e){ if(err) err.textContent = e.message; return false; }
+}
+async function sendChatText(){
+  const input = $a('chatInput'); if(!input) return;
+  const text = input.value.trim(); if(!text) return;
+  input.value = ''; input.style.height = '';
+  const ok = await sendChat('text', text);
+  if(!ok) input.value = text;
+}
+async function uploadChatFile(lid, file){
+  const isGif = file.type === 'image/gif' || /\.gif$/i.test(file.name);
+  let blob, ext;
+  if(isGif){ if(file.size > 6 * 1024 * 1024) throw new Error('GIFs can be up to 6 MB'); blob = file; ext = 'gif'; }
+  else { blob = await resizeToBlob(file); ext = 'jpg'; }
+  const id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
+  const path = `${lid}/${id}.${ext}`;
+  const { error } = await sb.storage.from(CHAT_BUCKET).upload(path, blob, { contentType: isGif ? 'image/gif' : 'image/jpeg' });
+  if(error) throw new Error(friendlyDbError(error));
+  return path;
+}
+function openLightbox(src){
+  let lb = $a('lightbox');
+  if(!lb){ lb = document.createElement('div'); lb.id = 'lightbox'; lb.addEventListener('click', ()=>lb.classList.add('hidden')); document.body.appendChild(lb); }
+  lb.innerHTML = `<img src="${aE(src)}" alt="">`; lb.classList.remove('hidden');
+}
+
+/* ---------- actions ---------- */
+const INBOX_ACTIONS = {
+  async openChatRow(el){ await openChatView(el.dataset.link); },
+  async chatBack(){ stopChatPoll(); INBOX.chat = null; renderInbox(); inboxTick(); },
+  async chatProfile(){
+    const c = INBOX.chat; const u = c.other.username; await closeInbox();
+    ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u });
+  },
+  async chatPage(){
+    const c = INBOX.chat; const pid = c.pageId; await closeInbox();
+    openAcctView({ type:'page', id: pid });
+  },
+  async chatPins(){
+    const c = INBOX.chat; c.showPins = !c.showPins;
+    $a('chatPins').classList.toggle('hidden', !c.showPins);
+    if(c.showPins) await loadPins();
+  },
+  async chatSend(){ await sendChatText(); },
+  async chatImg(){ $a('chatFile').click(); },
+  async chatGif(){
+    const c = INBOX.chat; c.gif = !c.gif;
+    const box = $a('chatGif'); box.classList.toggle('hidden', !c.gif);
+    if(c.gif){ box.innerHTML = gifPanelHtml(); if(GIPHY_API_KEY) searchGifs(''); }
+  },
+  async sendGifUrl(){
+    const u = ($a('gifUrl').value || '').trim();
+    if(!/^https:\/\/([a-z0-9-]+\.)*(giphy\.com|tenor\.com|imgur\.com)\/\S+$/i.test(u)){ $a('chatErr').textContent = 'Use a direct https link from Giphy, Tenor or Imgur.'; return; }
+    if(await sendChat('gif', '', u)){ $a('gifUrl').value = ''; INBOX.chat.gif = false; $a('chatGif').classList.add('hidden'); }
+  },
+  async pickGif(el){
+    if(await sendChat('gif', '', el.dataset.url)){ INBOX.chat.gif = false; $a('chatGif').classList.add('hidden'); }
+  },
+  async msgMenu(el){
+    const c = INBOX.chat; c.menu = c.menu === el.dataset.mid ? null : el.dataset.mid;
+    c.atBottom = false; renderMessages();
+  },
+  async react(el){
+    const c = INBOX.chat; c.menu = null;
+    try{ await rpc('react_message', { mid: el.dataset.mid, e: el.dataset.e }); }catch(e){ $a('chatErr').textContent = e.message; }
+    c.sig = ''; await pollChat(false); renderMessages();
+  },
+  async pinMsg(el){
+    const c = INBOX.chat; c.menu = null;
+    try{ await rpc('pin_message', { mid: el.dataset.mid, pin: el.dataset.pin === '1' }); }catch(e){ $a('chatErr').textContent = e.message; }
+    c.sig = ''; await pollChat(false); renderMessages(); if(c.showPins) loadPins();
+  },
+  async copyMsg(el){
+    const c = INBOX.chat; const m = c.msgs.find(x=>x.id === el.dataset.mid); c.menu = null;
+    try{ await navigator.clipboard.writeText(m ? m.body : ''); }catch(e){ /* not available */ }
+    renderMessages();
+  },
+  async delMsg(el){
+    const c = INBOX.chat; c.menu = null;
+    if(!confirm('Delete this message for both of you?')){ renderMessages(); return; }
+    try{
+      const media = await rpc('delete_message', { mid: el.dataset.mid });
+      if(media && /^[0-9a-f-]{36}\//i.test(media)){ try{ await sb.storage.from(CHAT_BUCKET).remove([media]); }catch(e){} }
+    }catch(e){ $a('chatErr').textContent = e.message; }
+    c.sig = ''; await pollChat(false); renderMessages();
+  },
+  async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openLightbox(i2.src); },
+  async loadEarlier(){ await loadEarlier(); },
+  async markAllRead(){ try{ await rpc('mark_notifications_read', {}); }catch(e){} await inboxTick(); renderInbox(true); },
+  async openNotif(el){
+    const n = INBOX.notifs.find(x=>x.id === el.dataset.nid); if(!n) return;
+    try{ await rpc('mark_notifications_read', { ids: [n.id] }); }catch(e){}
+    inboxTick();
+    if(n.kind === 'link_request'){ await closeInbox(); openAccountHub('people'); }
+    else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
+    else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }); }
+    else renderInbox(true);
+  }
+};
+Object.assign(ACTIONS, { openChat: async (btn)=>{ await openInbox('chats', btn.dataset.link); } });
+function openAcctView(view){
+  ACCT.tab = 'people'; ACCT.view = view;
+  $a('acctOverlay').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  acctRender();
+}
+
+function bindInbox(){
+  $a('inboxBtn').addEventListener('click', ()=>openInbox('chats'));
+  $a('inboxClose').addEventListener('click', closeInbox);
+  $a('inboxOverlay').addEventListener('click', ev=>{ if(ev.target === $a('inboxOverlay')) closeInbox(); });
+  $a('inboxTabs').addEventListener('click', ev=>{
+    const t = ev.target.closest('[data-itab]');
+    if(t){ INBOX.tab = t.dataset.itab; renderInbox(); return; }
+    const b = ev.target.closest('[data-act]'); if(b && INBOX_ACTIONS[b.dataset.act]) INBOX_ACTIONS[b.dataset.act](b);
+  });
+  $a('inboxBody').addEventListener('click', ev=>{
+    if(ev.target.closest('.mmenu input')) return;
+    const b = ev.target.closest('[data-act]');
+    if(b && INBOX_ACTIONS[b.dataset.act]){
+      INBOX_ACTIONS[b.dataset.act](b);
+    }
+  });
+  $a('inboxBody').addEventListener('keydown', ev=>{
+    if(ev.target.id === 'chatInput' && ev.key === 'Enter' && !ev.shiftKey && window.matchMedia('(pointer:fine)').matches){ ev.preventDefault(); sendChatText(); }
+    if(ev.target.dataset && ev.target.dataset.custom && ev.key === 'Enter'){
+      ev.preventDefault(); const e = ev.target.value.trim(); if(e) INBOX_ACTIONS.react({ dataset:{ mid: ev.target.dataset.custom, e } });
+    }
+    if(ev.target.id === 'gifUrl' && ev.key === 'Enter'){ ev.preventDefault(); INBOX_ACTIONS.sendGifUrl(); }
+  });
+  $a('inboxBody').addEventListener('input', ev=>{
+    if(ev.target.id === 'chatInput'){ ev.target.style.height = 'auto'; ev.target.style.height = Math.min(ev.target.scrollHeight, 120) + 'px'; }
+    if(ev.target.id === 'gifQuery'){ clearTimeout(INBOX.gifTimer); const q = ev.target.value.trim(); INBOX.gifTimer = setTimeout(()=>searchGifs(q), 350); }
+  });
+  $a('inboxBody').addEventListener('change', async ev=>{
+    if(ev.target.id !== 'chatFile') return;
+    const f = ev.target.files && ev.target.files[0]; ev.target.value = '';
+    if(!f || !INBOX.chat) return;
+    const err = $a('chatErr'); err.textContent = 'Sending picture…';
+    try{ const path = await uploadChatFile(INBOX.chat.lid, f); err.textContent = ''; await sendChat('image', '', path); }
+    catch(e){ err.textContent = e.message; }
+  });
+}
+
 bindAccountHub();
+bindInbox();
+$a('shopBtn').addEventListener('click', openShop);
+$a('shopClose').addEventListener('click', closeShop);
+$a('shopOverlay').addEventListener('click', ev=>{ if(ev.target === $a('shopOverlay')) closeShop(); });
+$a('shopBody').addEventListener('click', async ev=>{ const b = ev.target.closest('[data-act]'); if(b && ACTIONS[b.dataset.act]) await ACTIONS[b.dataset.act](b); });
 document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub());
 
 
@@ -3297,21 +3976,27 @@ document.getElementById('moreDetailsToggle').addEventListener('click', ()=>{
 });
 function wireHeartPicker(containerId, tagInputId, getVal, setVal){
   const container = document.getElementById(containerId);
-  function paint(){
-    const v = getVal();
+  // Always point at the newest getter/setter, but only attach click handlers once —
+  // attaching them again on every form open made each click cancel itself out.
+  container._get = getVal; container._set = setVal;
+  container._paint = ()=>{
+    const v = container._get();
     container.querySelectorAll('span').forEach(s=>{
       s.textContent = Number(s.dataset.v) <= v ? '💚' : '🤍';
       s.classList.toggle('filled', Number(s.dataset.v) <= v);
     });
-  }
-  container.querySelectorAll('span').forEach(s=>{
-    s.addEventListener('click', ()=>{
-      const v = Number(s.dataset.v);
-      setVal(getVal() === v ? 0 : v); // click same heart again to clear
-      paint();
+  };
+  if(!container._wired){
+    container._wired = true;
+    container.querySelectorAll('span').forEach(s=>{
+      s.addEventListener('click', ()=>{
+        const v = Number(s.dataset.v);
+        container._set(container._get() === v ? 0 : v); // click same heart again to clear
+        container._paint();
+      });
     });
-  });
-  paint();
+  }
+  container._paint();
 }
 let fClosenessRating = 0;
 wireHeartPicker('f-closenessHearts', 'f-closenessTag', ()=>fClosenessRating, v=>{ fClosenessRating = v; });
