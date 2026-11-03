@@ -154,8 +154,23 @@
   .pv-banner img{ width:100%; height:100%; object-fit:cover; display:block; }
   .pv-bannerbtn{ position:absolute !important; right:8px; bottom:8px; background:var(--card) !important; }
   .pv-bannerbtn.rm{ right:auto; left:8px; padding:8px 11px; }
-  .pv-avrow{ display:flex; align-items:center; gap:14px; margin:-30px 0 6px 14px; }
-  .pv-head{ display:flex; align-items:flex-end; gap:12px; margin:-34px 0 0 14px; }
+  .pv-avrow{ position:relative; z-index:2; display:flex; align-items:flex-end; gap:14px; margin:-34px 0 12px 14px; }
+  .pv-avrow .a-btns{ padding-bottom:6px; }
+  .pv-head{ position:relative; z-index:2; display:flex; align-items:flex-end; gap:12px; margin:-34px 0 0 14px; }
+  .pv-avwrap{ flex:none; line-height:0; }
+  .a-row{ align-items:flex-end; }
+  .acct-body input[type=text], .acct-body input[type=email], .acct-body input[type=password], .acct-body input[type=number], .acct-body select{ height:40px; }
+  .acct-body .field input, .acct-body .field textarea, .acct-body .field select{ display:block; }
+  .acct-body textarea{ min-height:96px; line-height:1.4; }
+  .a-follow{ font-size:0.76rem; color:var(--ink-soft); }
+  .ppl-add{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); }
+  .rep-ov{ position:fixed; inset:0; z-index:900; background:rgba(46,42,38,0.6); display:flex; align-items:center; justify-content:center; padding:16px; }
+  .rep-box{ background:var(--card); color:var(--ink); border-radius:12px; padding:18px; width:100%; max-width:400px; max-height:90vh; overflow-y:auto; box-shadow:0 10px 40px rgba(0,0,0,0.3); }
+  .rep-box h3{ margin:0 0 4px; font-family:'Fraunces',serif; }
+  .rep-box .field{ margin-bottom:12px; }
+  .rep-box select, .rep-box textarea{ width:100%; box-sizing:border-box; font:inherit; font-size:0.9rem; padding:9px 10px; border:1px solid var(--line); border-radius:5px; background:var(--paper); color:var(--ink); }
+  .rep-box label{ display:block; font-size:0.76rem; font-weight:600; color:var(--ink-soft); margin-bottom:4px; }
+  .rep-box label.chk{ display:flex; gap:8px; align-items:center; font-weight:500; font-size:0.84rem; color:var(--ink); }
   .pv-name b{ display:block; font-family:'Fraunces',serif; font-size:1.3rem; }
   .pv-name span{ font-size:0.82rem; color:var(--ink-soft); }
   .pv-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin:14px 0; overflow-x:auto; }
@@ -2328,7 +2343,7 @@ async function closeAccountHub(){
   stopPagePoll();
   $a('acctOverlay').classList.add('hidden');
   document.body.style.overflow = '';
-  ACCT.view = null; ACCT.page = null;
+  ACCT.view = null; ACCT.page = null; ACCT.returnTo = null;
   updateAcctBadge();
 }
 function acctTyping(){
@@ -2340,7 +2355,7 @@ function acctTyping(){
 function acctTabs(){
   if(!acctSignedIn()) return [['profile','Profile']];
   if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'],['account','Account']];
-  return [['profile','Profile'],['people','People'],['privacy','Privacy'],['security','Security'],['account','Account']];
+  return [['profile','Profile'],['privacy','Privacy'],['security','Security'],['account','Account']];
 }
 function updateAcctTabs(){
   const tabs = acctTabs();
@@ -2357,7 +2372,7 @@ function acctRender(){
   const body = $a('acctBody');
   if(ACCT.view && ACCT.view.type === 'profile'){ renderProfileView(body); return; }
   if(ACCT.view && ACCT.view.type === 'page'){ renderPageView(body); return; }
-  ({ profile:renderTabProfile, people:renderTabPeople, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
+  ({ profile:renderTabProfile, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
 }
 function setupBanner(){
   return ACCT.setupError ? `<div class="a-banner alert"><b>Account features aren't switched on yet.</b><br>${aE(ACCT.setupError)}</div>` : '';
@@ -2401,7 +2416,7 @@ function renderTabProfile(body){
     ${profileImagesHtml(p)}
     <h3>Username</h3>
     ${hasUser ? `
-      <div class="a-person"><div class="who"><b>@${aE(p.username)}</b><span>People add you with this. Only exact matches can find you.</span></div>
+      <div class="a-person"><div class="who"><b>@${aE(p.username)}</b><span>People search for this to find and add you. You can hide from searches in Privacy.</span></div>
       <button class="a-btn" data-act="chgUser" type="button">Change</button></div>
       <div id="userEdit"></div>` : `
       <div class="a-banner alert">You don't have a username yet. Pick one so people can find and add you.</div>
@@ -2409,7 +2424,7 @@ function renderTabProfile(body){
     <h3>About you</h3>
     <p class="hint">What connections (or everyone, if you choose) can see. Changes save automatically.</p>
     <div class="a-row">
-      <div class="field fixed" style="max-width:90px"><label>Emoji (no photo)</label><input type="text" data-p="emoji" maxlength="8" value="${aE(p.emoji||'')}" style="text-align:center;font-size:1.2rem"></div>
+      <div class="field fixed" style="max-width:76px"><label>Emoji</label><input type="text" data-p="emoji" maxlength="8" value="${aE(p.emoji||'')}" style="text-align:center;font-size:1.05rem" aria-label="Emoji used when you have no photo"></div>
       <div class="field"><label>Name</label><input type="text" data-p="display_name" maxlength="60" value="${aE(p.display_name||'')}"></div>
     </div>
     <div class="a-row">
@@ -2436,43 +2451,6 @@ function personHtml(o, extra){
   return `<div class="a-person">${avHtml(o)}
     <div class="who"><b>${aE(o.display_name || ('@' + (o.username||'?')))}</b><span>@${aE(o.username||'?')}${extra||''}</span></div></div>`;
 }
-function renderTabPeople(body){
-  const p = ACCT.profile || {};
-  if(!p.username){
-    body.innerHTML = `${setupBanner()}<div class="a-banner alert"><b>Choose a username first.</b> It's how people find you. <button class="a-btn link" data-tab="profile" type="button">Go to Profile</button></div>`;
-    return;
-  }
-  const links = ACCT.links || [];
-  const incoming = links.filter(l=>l.status==='pending' && l.direction==='received');
-  const outgoing = links.filter(l=>l.status==='pending' && l.direction==='sent');
-  const accepted = links.filter(l=>l.status==='accepted');
-  body.innerHTML = `
-    <h3>Add someone</h3>
-    <p class="hint">Type their exact username. They'll get a request and choose whether to accept.</p>
-    <div class="a-row">
-      <div class="field"><input type="text" id="find-input" maxlength="20" autocapitalize="none" autocomplete="off" placeholder="username"></div>
-      <div class="field fixed"><select id="find-kind">${LINK_KINDS.map(k=>`<option value="${k[0]}">${aE(k[1])}</option>`).join('')}</select></div>
-      <div class="field fixed"><button class="a-btn primary" data-act="find" type="button">Find</button></div>
-    </div>
-    <div id="find-result"></div>
-    ${incoming.length ? `<h3>Requests for you <span class="a-badge alert">${incoming.length}</span></h3>` + incoming.map(l=>`
-      <div class="a-card">${personHtml(l.other, ' · wants to be your ' + aE(pick(LINK_KINDS,l.kind).toLowerCase()))}
-      <div class="a-btns"><button class="a-btn primary" data-act="accept" data-id="${aE(l.id)}" type="button">Accept</button>
-      <button class="a-btn" data-act="decline" data-id="${aE(l.id)}" type="button">Decline</button></div></div>`).join('') : ''}
-    ${outgoing.length ? `<h3>Waiting for an answer</h3>` + outgoing.map(l=>`
-      <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS,l.kind)))}
-      <div class="a-btns"><button class="a-btn" data-act="cancelReq" data-id="${aE(l.id)}" type="button">Cancel request</button></div></div>`).join('') : ''}
-    <h3>Your connections</h3>
-    ${accepted.length ? accepted.map(l=>`
-      <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS,l.kind)) + (l.label ? ' · ' + aE(l.label) : ''))}
-      ${l.page_pending_for_me ? `<div class="a-msg" style="color:var(--rose)">⏳ A change on your relationship page is waiting for you.</div>` : ''}
-      <div class="a-btns">
-        <button class="a-btn primary" data-act="openPage" data-id="${aE(l.id)}" data-page="${aE(l.page_id||'')}" type="button">${l.page_id ? 'Relationship page' : 'Start relationship page'}</button>
-        <button class="a-btn" data-act="viewUser" data-u="${aE(l.other.username)}" type="button">Profile</button>
-        <button class="a-btn link" data-act="removeLink" data-id="${aE(l.id)}" type="button">Remove</button>
-      </div></div>`).join('') : `<p class="hint">No one yet. Add a friend, partner, family member — anyone who uses Kept.</p>`}`;
-}
-
 /* ---------- PRIVACY tab ---------- */
 function switchHtml(key, title, small, checked){
   return `<label class="a-switch"><input type="checkbox" data-pc="${key}" ${checked?'checked':''}><span>${aE(title)}<small>${aE(small)}</small></span></label>`;
@@ -2482,10 +2460,13 @@ function renderTabPrivacy(body){
   const chosen = p.counts || {};
   body.innerHTML = `
     <h3>Who can see your profile</h3>
-    ${[['public','Everyone on Kept','Anyone who knows your username can see your profile.'],['connections','Only my connections','People you\'ve accepted. Everyone else just sees your name.'],['private','Nobody','Everyone (even connections) only sees your name and username.']].map(([v,t,s])=>
+    ${[['public','Everyone on Kept','Anyone who knows your username can see your profile.'],['followers','Connections and followers','People you\'ve accepted, plus anyone who follows you. Everyone else just sees your name.'],['connections','Only my connections','People you\'ve accepted. Everyone else just sees your name.'],['private','Nobody','Everyone (even connections) only sees your name and username.']].map(([v,t,s])=>
       `<label class="a-switch"><input type="radio" name="vis" data-vis="${v}" ${p.visibility===v?'checked':''}><span>${aE(t)}<small>${aE(s)}</small></span></label>`).join('')}
     <h3>Requests</h3>
-    ${switchHtml('allow_requests','Let people add me by username','Turn this off to stop new requests (and hide yourself from searches).', p.allow_requests)}
+    ${switchHtml('allow_requests','Let people find and add me','Turn this off to stop new requests and to hide yourself from username searches.', p.allow_requests)}
+    <h3>Blocked people</h3>
+    <p class="hint" id="followInfo"></p>
+    <div id="blockedList"><p class="hint">Loading…</p></div>
     <h3>What your profile shows</h3>
     ${switchHtml('show_age','Show my age','',p.show_age)}
     ${switchHtml('show_counts','Show counts from my archive','e.g. how many friendships, partners, exes or family members you\'ve kept. Only the numbers — never names.', p.show_counts)}
@@ -2495,6 +2476,18 @@ function renderTabPrivacy(body){
     ${switchHtml('show_featured','Show the Kept people I picked','Hide them all at once without un-picking. Pick who in the Profile tab.', p.show_featured !== false)}
     ${switchHtml('show_relationships','Show relationship pages I\'ve chosen to display','You pick which pages appear — open a page and turn on "Show on my profile". Each page\'s sharing status also applies.', p.show_relationships)}
     <p class="hint" style="margin-top:14px">Your archive (people, photos, notes) is always private to you. Changes here save automatically.</p>`;
+  loadBlocked();
+}
+async function loadBlocked(){
+  try{
+    const [bl, fo] = await Promise.all([rpc('list_blocks'), rpc('list_follows')]);
+    ACCT.blocks = bl || [];
+    const box = $a('blockedList'); if(!box || ACCT.tab !== 'privacy' || ACCT.view) return;
+    const fi = $a('followInfo'); const n = (fo && fo.followers) || 0;
+    if(fi) fi.textContent = `${n} ${n === 1 ? 'person follows' : 'people follow'} you. Blocking someone removes any connection, chat and follows between you, and hides you from each other.`;
+    box.innerHTML = ACCT.blocks.length ? ACCT.blocks.map(o=>`<div class="a-card">${personHtml(o)}<div class="a-btns"><button class="a-btn" data-act="unblock" data-u="${aE(o.username)}" type="button">Unblock</button></div></div>`).join('')
+      : `<p class="hint">You haven't blocked anyone.</p>`;
+  }catch(e){ const box = $a('blockedList'); if(box) box.innerHTML = `<p class="hint">${aE(e.message)}</p>`; }
 }
 
 /* ---------- SECURITY tab ---------- */
@@ -2677,6 +2670,18 @@ async function renderProfileView(body){
     body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><div class="a-msg">${aE(e.message)}</div>`;
   }
 }
+function profileActionsHtml(r){
+  const u = aE(r.username), st = r.link_status;
+  const add = st === 'accepted' ? '' : st === 'pending'
+    ? `<span class="a-chip">${r.link_direction === 'sent' ? 'Request sent' : 'Wants to connect — answer in Inbox → People'}</span>`
+    : r.allow_requests ? `<button class="a-btn primary" data-act="pvAddOpen" type="button">Add</button>` : '';
+  return `<div class="a-btns" style="margin:8px 0 0">${add}
+      <button class="a-btn" data-act="pvFollow" data-u="${u}" data-on="${r.i_follow ? '1' : '0'}" type="button">${r.i_follow ? 'Following ✓' : 'Follow'}</button>
+      <button class="a-btn link" data-act="pvBlock" data-u="${u}" type="button">Block</button>
+      <button class="a-btn link" data-act="pvReport" data-u="${u}" type="button">Report</button></div>
+    ${r.follows_me ? '<div class="a-follow" style="margin-top:6px">Follows you</div>' : ''}
+    <div id="pvAdd"></div>`;
+}
 function renderProfileBody(body){
   const r = ACCT.pv; if(!r) return;
   const rels = r.relationships || [], feat = r.featured || [];
@@ -2691,7 +2696,7 @@ function renderProfileBody(body){
   const myLink = !r.is_me && r.connected ? (ACCT.links || []).find(l=>l.status === 'accepted' && l.other.username === r.username) : null;
   let content = '';
   if(r.limited){
-    content = `<p class="hint" style="margin-top:14px">This profile is ${r.connected ? 'private' : 'only visible to connections'}.</p>`;
+    content = `<p class="hint" style="margin-top:14px">${r.connected ? 'This profile is private — only their name shows.' : 'Only their name shows for now. Their profile is limited, and connecting with them (or following them, if they allow it) may show more.'}</p>`;
   } else if(ACCT.pvTab === 'overview'){
     content = `
       ${r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
@@ -2706,9 +2711,10 @@ function renderProfileBody(body){
   body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
     <div class="pv-banner">${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>
     <div class="pv-head">${avHtml(r, 'xl')}
-      <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age != null ? ' · ' + aE(r.age) : ''}</span></div></div>
+      <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age != null ? ' · ' + aE(r.age) : ''}${r.followers ? ' · ' + aE(r.followers) + (r.followers == 1 ? ' follower' : ' followers') : ''}</span></div></div>
     ${(r.nicknames || []).length ? `<div class="a-chips" style="margin:8px 0">${r.nicknames.map(n=>`<span class="a-chip">${aE(n)}</span>`).join('')}</div>` : ''}
     ${r.is_me ? '<div class="hint">This is how others see you.</div>' : ''}
+    ${r.is_me ? '' : profileActionsHtml(r)}
     ${myLink ? `<div class="a-btns" style="margin:8px 0"><button class="a-btn primary" data-act="openChat" data-link="${aE(myLink.id)}" type="button">Message</button>
       ${myLink.page_id ? `<button class="a-btn" data-act="openPage" data-id="${aE(myLink.id)}" data-page="${aE(myLink.page_id)}" type="button">Our relationship page</button>` : ''}</div>` : ''}
     <div class="pv-tabs">${tabs.map(([id,l])=>`<button class="pv-tab ${ACCT.pvTab === id ? 'active' : ''}" data-pvtab="${id}" type="button">${aE(l)}</button>`).join('')}</div>
@@ -2940,6 +2946,41 @@ async function checkUsername(u){
   const ok = await rpc('username_available', { u });
   return ok ? '' : 'That username is taken or not allowed.';
 }
+function addFormHtml(pfx, uname, act){
+  return `<div class="a-card" style="margin-top:10px"><div class="a-row">
+      <div class="field"><label>They are your…</label><select id="${pfx}-kind">${LINK_KINDS.map(k=>`<option value="${k[0]}">${aE(k[1])}</option>`).join('')}</select></div>
+      <div class="field"><label>Label (optional)</label><input type="text" id="${pfx}-label" maxlength="40" placeholder="e.g. best friend"></div></div>
+    <div class="a-btns"><button class="a-btn primary" data-act="${act}" data-u="${aE(uname)}" type="button">Send request</button></div>
+    <div class="a-msg" id="${pfx}-msg"></div>
+    <p class="hint" style="margin:6px 0 0">They'll get a request and choose whether to accept.</p></div>`;
+}
+const REPORT_REASONS = [['spam','Spam or scam'],['harassment','Harassment or bullying'],['impersonation','Pretending to be someone else'],['inappropriate','Inappropriate content'],['underage','Seems to be under 13'],['other','Something else']];
+function openReport(username, mid, done){
+  const old = document.getElementById('repOv'); if(old) old.remove();
+  const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'repOv';
+  ov.innerHTML = `<div class="rep-box" role="dialog" aria-label="Report">
+    <h3>Report @${aE(username)}</h3>
+    <p class="hint" style="margin:0 0 12px">${mid ? 'This message and the details below are sent to the Kept team to review.' : 'The details below are sent to the Kept team to review. They won\'t be told who reported them.'}</p>
+    <div class="field"><label>What's wrong?</label><select id="rep-why">${REPORT_REASONS.map(([v,l])=>`<option value="${v}">${aE(l)}</option>`).join('')}</select></div>
+    <div class="field"><label>Details (optional)</label><textarea id="rep-d" maxlength="1000" rows="3" placeholder="Anything that helps us understand"></textarea></div>
+    <div class="field"><label class="chk"><input type="checkbox" id="rep-block"> Also block @${aE(username)}</label></div>
+    <div class="a-msg" id="rep-msg"></div>
+    <div class="a-btns"><button class="a-btn primary" id="rep-send" type="button">Send report</button><button class="a-btn" id="rep-cancel" type="button">Cancel</button></div></div>`;
+  document.body.appendChild(ov);
+  const close = ()=>ov.remove();
+  ov.addEventListener('click', ev=>{ if(ev.target === ov) close(); });
+  ov.querySelector('#rep-cancel').addEventListener('click', close);
+  ov.querySelector('#rep-send').addEventListener('click', async ev=>{
+    const btn = ev.currentTarget; btn.disabled = true;
+    const why = ov.querySelector('#rep-why').value, d = ov.querySelector('#rep-d').value.trim(), blk = ov.querySelector('#rep-block').checked;
+    try{
+      await rpc('report_user', { uname: username, why, d, mid: mid || null });
+      if(blk){ try{ await rpc('block_user', { uname: username }); }catch(e){} }
+      close(); showToastOk(blk ? 'Report sent and person blocked' : 'Report sent. Thank you.');
+      if(done) done(blk);
+    }catch(e){ btn.disabled = false; const m = ov.querySelector('#rep-msg'); m.textContent = e.message; }
+  });
+}
 const ACTIONS = {
   async pickAvatar(){ $a('avatarFile').click(); },
   async pickBanner(){ $a('bannerFile').click(); },
@@ -2977,7 +3018,38 @@ const ACTIONS = {
   },
   async viewMe(){ if(ACCT.profile && ACCT.profile.username){ await flushProfile(); ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: ACCT.profile.username }; acctRender(); } },
   async viewUser(btn){ ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: btn.dataset.u }; acctRender(); },
-  async back(){ await flushSides(); await flushShared(); ACCT.view = null; ACCT.page = null; await refreshLinks().catch(()=>{}); acctRender(); },
+  async back(){
+    await flushSides(); await flushShared(); ACCT.view = null; ACCT.page = null;
+    if(ACCT.returnTo){ const t = ACCT.returnTo; ACCT.returnTo = null; await closeAccountHub(); openInbox(t); return; }
+    await refreshLinks().catch(()=>{}); acctRender();
+  },
+  async unblock(btn){ await withBtn(btn, async ()=>{ try{ await rpc('unblock_user', { uname: btn.dataset.u }); showToastOk('Unblocked'); loadBlocked(); }catch(e){ showToast(e.message); } }); },
+  async pvAddOpen(){
+    const box = $a('pvAdd'); if(!box) return;
+    if(box.innerHTML){ box.innerHTML = ''; return; }
+    box.innerHTML = addFormHtml('pv', ACCT.pv.username, 'pvAddSend');
+  },
+  async pvAddSend(btn){
+    await withBtn(btn, async ()=>{
+      try{
+        await rpc('send_link_request', { target: btn.dataset.u, k: $a('pv-kind').value, lbl: ($a('pv-label').value || '').trim() });
+        await refreshLinks(); showToastOk('Request sent');
+        await renderProfileView($a('acctBody'));
+      }catch(e){ msg('pv-msg', e.message); }
+    });
+  },
+  async pvFollow(btn){
+    await withBtn(btn, async ()=>{
+      try{ await rpc(btn.dataset.on === '1' ? 'unfollow_user' : 'follow_user', { uname: btn.dataset.u }); await renderProfileView($a('acctBody')); }
+      catch(e){ showToast(e.message); }
+    });
+  },
+  async pvBlock(btn){
+    if(!confirm('Block @' + btn.dataset.u + '? This removes any connection, chat and shared page between you, and you will no longer see each other.')) return;
+    try{ await rpc('block_user', { uname: btn.dataset.u }); showToastOk('Blocked'); await refreshLinks().catch(()=>{}); await ACTIONS.back(); }
+    catch(e){ showToast(e.message); }
+  },
+  async pvReport(btn){ openReport(btn.dataset.u, null, async blocked=>{ if(blocked){ await refreshLinks().catch(()=>{}); await ACTIONS.back(); } }); },
   async find(btn){
     await withBtn(btn, async ()=>{
       const q = $a('find-input').value.trim().toLowerCase().replace(/^@/, '');
@@ -3317,14 +3389,110 @@ async function closeInbox(){
 }
 function stopChatPoll(){ clearInterval(INBOX.chatTimer); INBOX.chatTimer = null; }
 
+
+/* ---------- PEOPLE (inside the inbox) ---------- */
+function pplChips(r){
+  const c = [];
+  if(r.link_status === 'accepted') c.push('Connected');
+  else if(r.link_status === 'pending') c.push(r.link_direction === 'sent' ? 'Request sent' : 'Wants to connect');
+  if(r.following) c.push('Following');
+  return c.map(x=>`<span class="a-chip">${aE(x)}</span>`).join('');
+}
+function pplResultHtml(r){
+  const u = aE(r.username), linked = r.link_status === 'accepted', pend = r.link_status === 'pending';
+  return `<div class="a-card" data-ppl="${u}">${personHtml(r)}
+    <div class="a-chips" style="margin:8px 0 0">${pplChips(r)}</div>
+    <div class="a-btns">
+      <button class="a-btn" data-act="pplView" data-u="${u}" type="button">View profile</button>
+      ${!linked && !pend ? `<button class="a-btn primary" data-act="pplAddOpen" data-u="${u}" type="button">Add</button>` : ''}
+      <button class="a-btn" data-act="pplFollow" data-u="${u}" data-on="${r.following ? '1' : '0'}" type="button">${r.following ? 'Following ✓' : 'Follow'}</button>
+      <button class="a-btn link" data-act="pplBlock" data-u="${u}" type="button">Block</button>
+      <button class="a-btn link" data-act="pplReport" data-u="${u}" type="button">Report</button></div>
+    <div class="ppl-add-slot"></div></div>`;
+}
+async function pplSearch(raw){
+  const out = $a('pplResults'); if(!out) return;
+  const q = (raw || '').trim().toLowerCase().replace(/^@/, '');
+  INBOX.q = q;
+  if(q.length < 2){ INBOX.qseq = (INBOX.qseq || 0) + 1; out.innerHTML = q ? `<p class="hint">Keep typing — at least 2 letters.</p>` : ''; return; }
+  const seq = INBOX.qseq = (INBOX.qseq || 0) + 1;
+  try{
+    const rs = (await rpc('search_users', { q })) || [];
+    if(seq !== INBOX.qseq || !$a('pplResults')) return;
+    out.innerHTML = rs.length ? rs.map(pplResultHtml).join('')
+      : `<p class="hint">No one found for “${aE(q)}”. People who turned off “Let people find and add me” don't show up in searches.</p>`;
+  }catch(e){ if(seq === INBOX.qseq) out.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+function pplListsHtml(){
+  const links = ACCT.links || [];
+  const incoming = links.filter(l=>l.status === 'pending' && l.direction === 'received');
+  const outgoing = links.filter(l=>l.status === 'pending' && l.direction === 'sent');
+  const accepted = links.filter(l=>l.status === 'accepted');
+  const fol = (INBOX.follows && INBOX.follows.following) || [];
+  return `
+    ${incoming.length ? `<h3>Requests for you <span class="a-badge alert">${incoming.length}</span></h3>` + incoming.map(l=>`
+      <div class="a-card">${personHtml(l.other, ' · wants to be your ' + aE(pick(LINK_KINDS, l.kind).toLowerCase()))}
+      <div class="a-btns"><button class="a-btn primary" data-act="pplAccept" data-id="${aE(l.id)}" type="button">Accept</button>
+      <button class="a-btn" data-act="pplDecline" data-id="${aE(l.id)}" type="button">Decline</button>
+      <button class="a-btn link" data-act="pplView" data-u="${aE(l.other.username)}" type="button">View profile</button></div></div>`).join('') : ''}
+    ${outgoing.length ? `<h3>Waiting for an answer</h3>` + outgoing.map(l=>`
+      <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS, l.kind)))}
+      <div class="a-btns"><button class="a-btn" data-act="pplCancel" data-id="${aE(l.id)}" type="button">Cancel request</button></div></div>`).join('') : ''}
+    <h3>Your connections</h3>
+    ${accepted.length ? accepted.map(l=>`
+      <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS, l.kind)) + (l.label ? ' · ' + aE(l.label) : ''))}
+      ${l.page_pending_for_me ? `<div class="a-msg" style="color:var(--rose)">⏳ A change on your relationship page is waiting for you.</div>` : ''}
+      <div class="a-btns">
+        <button class="a-btn primary" data-act="openChatRow" data-link="${aE(l.id)}" type="button">Message</button>
+        <button class="a-btn" data-act="pplPage" data-id="${aE(l.id)}" data-page="${aE(l.page_id || '')}" type="button">${l.page_id ? 'Relationship page' : 'Start page'}</button>
+        <button class="a-btn" data-act="pplView" data-u="${aE(l.other.username)}" type="button">Profile</button>
+        <button class="a-btn link" data-act="pplRemove" data-id="${aE(l.id)}" type="button">Remove</button>
+      </div></div>`).join('') : `<p class="hint">No one yet. Search a username above to add a friend, partner, family member — anyone who uses Kept.</p>`}
+    ${fol.length ? `<h3>Following</h3>` + fol.map(o=>`
+      <div class="a-card">${personHtml(o)}<div class="a-btns">
+        <button class="a-btn" data-act="pplView" data-u="${aE(o.username)}" type="button">Profile</button>
+        <button class="a-btn link" data-act="pplUnfollow" data-u="${aE(o.username)}" type="button">Unfollow</button></div></div>`).join('') : ''}`;
+}
+async function pplRefreshLists(){
+  try{ await refreshLinks(); }catch(e){}
+  try{ INBOX.follows = await rpc('list_follows'); }catch(e){}
+  const box = $a('pplLists'); if(box && INBOX.tab === 'people' && !INBOX.chat) box.innerHTML = pplListsHtml();
+  if(!INBOX.chat && inboxOpen()) renderInboxTabsOnly();
+}
+function renderInboxTabsOnly(){
+  const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
+  const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
+  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['notifs','Notifications', nn]].map(([id,l,n])=>
+    `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
+}
+async function renderInboxPeople(body, quiet){
+  const p = ACCT.profile || {};
+  if(!p.username){
+    body.innerHTML = `<div class="a-banner alert"><b>Choose a username first.</b> It's how people find you. <button class="a-btn link" data-act="pplGoProfile" type="button">Go to Profile</button></div>`;
+    return;
+  }
+  if(!$a('pplSearch') || !quiet){
+    body.innerHTML = `
+      <h3 style="margin-top:0">Find someone</h3>
+      <p class="hint">Type a username (or part of one, or a name). Look at their profile before you add them, or follow or block them.</p>
+      <div class="field"><input type="text" id="pplSearch" maxlength="30" autocapitalize="none" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Search username…" value="${aE(INBOX.q || '')}"></div>
+      <div id="pplResults"></div>
+      <div id="pplLists"><p class="hint">Loading…</p></div>`;
+    if(INBOX.q) pplSearch(INBOX.q);
+  }
+  await pplRefreshLists();
+}
+
 /* ---------- list view ---------- */
 async function renderInbox(quiet){
   if(INBOX.chat) return;
   const body = $a('inboxBody');
   $a('inboxTitle').textContent = 'Inbox';
   const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
-  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['notifs','Notifications', nn]].map(([id,l,n])=>
+  const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
+  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['notifs','Notifications', nn]].map(([id,l,n])=>
     `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
+  if(INBOX.tab === 'people'){ await renderInboxPeople(body, quiet); return; }
   if(!quiet) body.innerHTML = '<p class="hint">Loading…</p>';
   try{
     if(INBOX.tab === 'chats'){
@@ -3353,6 +3521,7 @@ function notifText(n){
   switch(n.kind){
     case 'link_request': return `${who} wants to be your ${(pick(LINK_KINDS, (n.data || {}).kind) || 'connection').toLowerCase()}`;
     case 'link_accepted': return `${who} accepted your request`;
+    case 'followed': return `${who} started following you`;
     case 'page_created': return `${who} started a relationship page with you`;
     case 'page_proposal': return `${who} suggested changes to your shared page`;
     case 'page_accepted': return `${who} accepted your changes`;
@@ -3450,7 +3619,7 @@ function renderMessages(){
         <div class="qr">${QUICK_REACTIONS.map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${e}" type="button">${e}</button>`).join('')}<input type="text" maxlength="8" placeholder="＋" data-custom="${aE(m.id)}"></div>
         <button data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="${m.pinned ? '0' : '1'}" type="button">${m.pinned ? '📌 Unpin' : '📌 Pin'}</button>
         ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
-        ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : ''}</div>` : '';
+        ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : `<button data-act="reportMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Report</button>`}</div>` : '';
     return `${sep}<div class="msg ${m.mine ? 'mine' : 'theirs'}" data-mid="${aE(m.id)}">
       <div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>
       ${rx}${menu}<div class="mtime">${aE(d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }))}</div></div>`;
@@ -3546,14 +3715,60 @@ function openLightbox(src){
 /* ---------- actions ---------- */
 const INBOX_ACTIONS = {
   async openChatRow(el){ await openChatView(el.dataset.link); },
+  async pplGoProfile(){ await closeInbox(); openAccountHub('profile'); },
+  async pplView(el){ const u = el.dataset.u; await closeInbox(); ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u }, 'people'); },
+  async pplPage(el){
+    await withBtn(el, async ()=>{
+      try{
+        let pid = el.dataset.page; if(!pid) pid = await rpc('create_rel_page', { lid: el.dataset.id });
+        await closeInbox(); openAcctView({ type:'page', id: pid }, 'people');
+      }catch(e){ showToast(e.message); }
+    });
+  },
+  async pplAddOpen(el){
+    const slot = el.closest('[data-ppl]').querySelector('.ppl-add-slot');
+    slot.innerHTML = slot.innerHTML ? '' : addFormHtml('ppl', el.dataset.u, 'pplAddSend');
+  },
+  async pplAddSend(el){
+    await withBtn(el, async ()=>{
+      try{
+        await rpc('send_link_request', { target: el.dataset.u, k: $a('ppl-kind').value, lbl: ($a('ppl-label').value || '').trim() });
+        showToastOk('Request sent'); await pplRefreshLists(); pplSearch(INBOX.q);
+      }catch(e){ msg('ppl-msg', e.message); }
+    });
+  },
+  async pplFollow(el){
+    await withBtn(el, async ()=>{
+      try{ await rpc(el.dataset.on === '1' ? 'unfollow_user' : 'follow_user', { uname: el.dataset.u }); await pplRefreshLists(); pplSearch(INBOX.q); }
+      catch(e){ showToast(e.message); }
+    });
+  },
+  async pplUnfollow(el){ await withBtn(el, async ()=>{ try{ await rpc('unfollow_user', { uname: el.dataset.u }); await pplRefreshLists(); pplSearch(INBOX.q); }catch(e){ showToast(e.message); } }); },
+  async pplBlock(el){
+    if(!confirm('Block @' + el.dataset.u + '? This removes any connection, chat and shared page between you, and you will no longer see each other.')) return;
+    try{ await rpc('block_user', { uname: el.dataset.u }); showToastOk('Blocked'); await pplRefreshLists(); pplSearch(INBOX.q); }
+    catch(e){ showToast(e.message); }
+  },
+  async pplReport(el){ openReport(el.dataset.u, null, ()=>{ pplRefreshLists(); pplSearch(INBOX.q); }); },
+  async pplAccept(el){ await withBtn(el, async ()=>{ try{ await rpc('respond_link_request', { lid: el.dataset.id, accept: true }); await pplRefreshLists(); inboxTick(); }catch(e){ showToast(e.message); } }); },
+  async pplDecline(el){ await withBtn(el, async ()=>{ try{ await rpc('respond_link_request', { lid: el.dataset.id, accept: false }); await pplRefreshLists(); inboxTick(); }catch(e){ showToast(e.message); } }); },
+  async pplCancel(el){ await withBtn(el, async ()=>{ try{ await rpc('remove_link', { lid: el.dataset.id }); await pplRefreshLists(); }catch(e){ showToast(e.message); } }); },
+  async pplRemove(el){
+    if(!confirm('Remove this connection? Your chat and shared relationship page with them will be deleted for both of you.')) return;
+    try{ await rpc('remove_link', { lid: el.dataset.id }); await pplRefreshLists(); }catch(e){ showToast(e.message); }
+  },
+  async reportMsg(el){
+    const c = INBOX.chat; if(!c) return; c.menu = null; renderMessages();
+    openReport(c.other.username, el.dataset.mid, async blocked=>{ if(blocked){ stopChatPoll(); INBOX.chat = null; await refreshLinks().catch(()=>{}); renderInbox(); inboxTick(); } });
+  },
   async chatBack(){ stopChatPoll(); INBOX.chat = null; renderInbox(); inboxTick(); },
   async chatProfile(){
     const c = INBOX.chat; const u = c.other.username; await closeInbox();
-    ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u });
+    ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u }, 'chats');
   },
   async chatPage(){
     const c = INBOX.chat; const pid = c.pageId; await closeInbox();
-    openAcctView({ type:'page', id: pid });
+    openAcctView({ type:'page', id: pid }, 'chats');
   },
   async chatPins(){
     const c = INBOX.chat; c.showPins = !c.showPins;
@@ -3610,15 +3825,16 @@ const INBOX_ACTIONS = {
     const n = INBOX.notifs.find(x=>x.id === el.dataset.nid); if(!n) return;
     try{ await rpc('mark_notifications_read', { ids: [n.id] }); }catch(e){}
     inboxTick();
-    if(n.kind === 'link_request'){ await closeInbox(); openAccountHub('people'); }
+    if(n.kind === 'link_request'){ INBOX.tab = 'people'; INBOX.q = ''; renderInbox(); }
+    else if(n.kind === 'followed' && n.actor && n.actor.username){ await closeInbox(); ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: n.actor.username }, 'notifs'); }
     else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
-    else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }); }
+    else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }, 'notifs'); }
     else renderInbox(true);
   }
 };
 Object.assign(ACTIONS, { openChat: async (btn)=>{ await openInbox('chats', btn.dataset.link); } });
-function openAcctView(view){
-  ACCT.tab = 'people'; ACCT.view = view;
+function openAcctView(view, from){
+  ACCT.tab = 'profile'; ACCT.view = view; ACCT.returnTo = from || null;
   $a('acctOverlay').classList.remove('hidden'); document.body.style.overflow = 'hidden';
   acctRender();
 }
@@ -3648,6 +3864,7 @@ function bindInbox(){
   });
   $a('inboxBody').addEventListener('input', ev=>{
     if(ev.target.id === 'chatInput'){ ev.target.style.height = 'auto'; ev.target.style.height = Math.min(ev.target.scrollHeight, 120) + 'px'; }
+    if(ev.target.id === 'pplSearch'){ clearTimeout(INBOX.qTimer); const v = ev.target.value; INBOX.qTimer = setTimeout(()=>pplSearch(v), 300); }
     if(ev.target.id === 'gifQuery'){ clearTimeout(INBOX.gifTimer); const q = ev.target.value.trim(); INBOX.gifTimer = setTimeout(()=>searchGifs(q), 350); }
   });
   $a('inboxBody').addEventListener('change', async ev=>{
