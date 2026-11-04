@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>')</script>
 <script>try{var __t=localStorage.getItem('kept-theme');if(__t==='lotus'||__t==='pandan')document.documentElement.setAttribute('data-theme',__t);}catch(e){}</script>
 <style>
   #authGate{ position:fixed; inset:0; background:var(--paper); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
@@ -223,6 +224,62 @@
   .gif-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; max-height:220px; overflow-y:auto; margin-top:8px; } .gif-grid button{ border:none; padding:0; background:none; cursor:pointer; } .gif-grid img{ width:100%; height:80px; object-fit:cover; border-radius:6px; display:block; }
   .pin-list{ background:var(--card); border:1px solid var(--line); border-radius:10px; margin:8px 0; max-height:180px; overflow-y:auto; } .pin-item{ padding:8px 12px; border-bottom:1px solid var(--line); font-size:0.85rem; } .pin-item:last-child{ border-bottom:none; } .pin-item span{ font-size:0.7rem; color:var(--ink-soft); margin-right:8px; }
   #lightbox{ position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:700; display:flex; align-items:center; justify-content:center; padding:14px; } #lightbox img{ max-width:100%; max-height:100%; border-radius:8px; }
+
+  .crop-stage{ position:relative; overflow:hidden; background:#ddd; margin:0 auto 12px; touch-action:none; cursor:grab; box-shadow:0 0 0 2px var(--line); }
+  .crop-stage canvas{ display:block; }
+  .crop-zoom{ width:100%; margin:0 0 12px; accent-color:var(--ink); }
+  .rxpick{ width:min(300px,78vw); }
+  .rxtop{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:0.78rem; padding:2px 4px 6px; }
+  .rxtop button{ font-size:0.76rem; padding:4px 8px; }
+  .rxslots{ display:flex; gap:2px; padding:4px; border-radius:10px; background:var(--paper-dark); margin-bottom:6px; justify-content:space-between; }
+  .rxslots button{ font-size:1.25rem; padding:4px 6px; border:2px solid transparent; border-radius:10px; }
+  .rxslots button.sel{ border-color:var(--ink); background:var(--card); }
+  .rxcats{ display:flex; overflow-x:auto; border-bottom:1px solid var(--line); }
+  .rxcats button{ font-size:1.1rem; padding:5px 8px; border-radius:0; border-bottom:2px solid transparent; flex:none; }
+  .rxcats button.on{ border-bottom-color:var(--ink); }
+  .rxgrid{ display:grid; grid-template-columns:repeat(7,1fr); max-height:210px; overflow-y:auto; padding-top:4px; }
+  .rxgrid button{ font-size:1.35rem; padding:5px 0; text-align:center; }
+  .editwrap{ width:min(280px,85vw); }
+  .editwrap textarea{ width:100%; box-sizing:border-box; font:inherit; font-size:0.9rem; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--card); color:var(--ink); resize:vertical; }
+  .gifp{ background:var(--card); border-top:1px solid var(--line); padding:8px 10px; }
+  .gifp-q{ width:100%; box-sizing:border-box; font:inherit; font-size:0.9rem; padding:9px 12px; border:1px solid var(--line); border-radius:20px; background:var(--paper); color:var(--ink); }
+  .gifp-cats{ display:flex; gap:6px; overflow-x:auto; padding:8px 0; }
+  .gifp-cats button{ flex:none; border:1px solid var(--line); background:var(--paper); color:var(--ink); border-radius:14px; padding:4px 11px; font:inherit; font-size:0.78rem; cursor:pointer; }
+  .gifp-cats button.on{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .gifp-scroll{ height:240px; overflow-y:auto; }
+  .gifp-cols{ display:flex; gap:6px; align-items:flex-start; }
+  .gifp-cols > div{ flex:1; display:flex; flex-direction:column; gap:6px; min-width:0; }
+  .gifp-cols button{ border:none; padding:0; background:var(--paper-dark); cursor:pointer; border-radius:6px; overflow:hidden; display:block; }
+  .gifp-cols img{ width:100%; display:block; }
+  .gifp-attr{ font-size:0.66rem; color:var(--ink-soft); text-align:right; padding-top:4px; }
+  .post{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:12px; }
+  .post-h{ display:flex; gap:10px; align-items:center; margin-bottom:8px; }
+  .post-h .av, .cm-item .av{ width:36px; height:36px; font-size:1.1rem; border-radius:50%; background:var(--paper-dark); display:flex; align-items:center; justify-content:center; overflow:hidden; flex:none; }
+  .cm-item .av{ width:30px; height:30px; font-size:0.95rem; }
+  .post-h .who{ min-width:0; } .post-h .who b{ display:block; font-size:0.88rem; } .post-h .who span{ font-size:0.74rem; color:var(--ink-soft); }
+  .post-b{ white-space:pre-wrap; word-break:break-word; font-size:0.92rem; line-height:1.5; margin-bottom:8px; }
+  .post-m{ display:grid; gap:4px; margin:8px 0; border-radius:8px; overflow:hidden; grid-template-columns:1fr; }
+  .post-m.n2, .post-m.n3, .post-m.n4{ grid-template-columns:1fr 1fr; }
+  .post-m img, .post-m video{ width:100%; display:block; object-fit:cover; max-height:420px; background:#000; cursor:zoom-in; }
+  .post-m.n2 img, .post-m.n3 img, .post-m.n4 img, .post-m.n2 video, .post-m.n3 video, .post-m.n4 video{ aspect-ratio:1; max-height:none; }
+  .post-t{ display:flex; flex-wrap:wrap; gap:4px 10px; margin:6px 0; }
+  .post-t button{ background:none; border:none; color:var(--ink-soft); font:inherit; font-size:0.82rem; cursor:pointer; padding:0; } .post-t button:hover{ color:var(--ink); text-decoration:underline; }
+  .post-a{ display:flex; gap:6px; align-items:center; margin-top:8px; border-top:1px solid var(--line); padding-top:8px; }
+  .post-a button{ background:none; border:none; font:inherit; font-size:0.86rem; padding:4px 8px; border-radius:14px; cursor:pointer; color:var(--ink-soft); }
+  .post-a button.on{ color:var(--rose); }
+  .post-a button.link{ text-decoration:underline; font-size:0.78rem; margin-left:auto; } .post-a button.link + .link{ margin-left:0; }
+  .post-e textarea, .post-e input[type=text]{ margin-bottom:8px; }
+  .cm-item{ display:flex; gap:8px; margin:8px 0; }
+  .cm-b{ flex:1; min-width:0; background:var(--paper); border-radius:10px; padding:6px 10px; font-size:0.86rem; word-break:break-word; white-space:pre-wrap; }
+  .cm-b b{ display:block; font-size:0.76rem; }
+  .cm-b img{ max-width:100%; max-height:220px; border-radius:6px; display:block; margin-top:4px; cursor:zoom-in; }
+  .cm-x{ background:none; border:none; color:var(--ink-soft); font-size:0.7rem; cursor:pointer; text-decoration:underline; padding:0; }
+  .cm-compose{ display:flex; gap:6px; align-items:center; margin-top:8px; } .cm-compose input[type=text]{ flex:1; min-width:0; } .cm-compose .a-btn{ padding:8px 9px; }
+  .pc textarea, .pc input[type=text]{ margin-bottom:8px; }
+  .pc-prev{ display:flex; gap:6px; flex-wrap:wrap; } .pc-prev:not(:empty){ margin-bottom:8px; }
+  .pc-prev div{ position:relative; width:64px; height:64px; border-radius:6px; overflow:hidden; background:var(--paper-dark); }
+  .pc-prev img, .pc-prev video{ width:100%; height:100%; object-fit:cover; }
+  .pc-prev button{ position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; width:20px; height:20px; font-size:0.7rem; cursor:pointer; }
 </style>
 <style>
   :root{
@@ -1225,7 +1282,16 @@ const GIPHY_API_KEY = '';
 const PHOTO_URL_TTL = 60 * 60 * 24 * 7; // signed photo URLs last 7 days, refreshed on every load
 
 const supabaseConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
-const sb = supabaseConfigured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+const supabaseBlocked = supabaseConfigured && !(window.supabase && window.supabase.createClient);
+const sb = (supabaseConfigured && !supabaseBlocked) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+if(supabaseBlocked){
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;inset:0;z-index:10000;background:#F7F5EC;color:#31352C;display:flex;align-items:center;justify-content:center;padding:28px;text-align:center;font-family:Inter,sans-serif;line-height:1.5';
+    d.innerHTML = '<div style="max-width:340px"><h2 style="font-family:Fraunces,serif;margin:0 0 8px">Kept can\'t reach its account service</h2><p>Something on this browser is blocking the file Kept needs (an ad blocker, a privacy setting or a content filter). Turn it off for this site, or open Kept in another browser, then reload.</p><button onclick="location.reload()" style="padding:10px 18px;border-radius:6px;border:1px solid #31352C;background:#31352C;color:#F7F5EC;font:inherit;cursor:pointer">Reload</button></div>';
+    document.body.appendChild(d);
+  });
+}
 let currentUser = null;
 let appStarted = false;
 let signingOut = false;
@@ -2564,16 +2630,6 @@ function cropToBlob(file, w, h, q){
     r.readAsDataURL(file);
   });
 }
-async function uploadProfileImage(kind, file){
-  const dims = kind === 'avatar' ? [320, 320] : [1200, 400];
-  const blob = await cropToBlob(file, dims[0], dims[1], 0.86);
-  const path = `${currentUser.id}/${kind}-${Date.now()}.jpg`;
-  const { error } = await sb.storage.from(AVATAR_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:true });
-  if(error) throw new Error(friendlyDbError(error));
-  const old = ACCT.profile[kind + '_path'];
-  queueProfile({ [kind + '_path']: path });
-  if(old){ try{ sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
-}
 function catLabelOf(c){
   return (CAT_META[c] && CAT_META[c].label) || ((customCategories.find(x=>x.id === c) || {}).label) || 'Other';
 }
@@ -2686,6 +2742,7 @@ function renderProfileBody(body){
   const r = ACCT.pv; if(!r) return;
   const rels = r.relationships || [], feat = r.featured || [];
   const tabs = [['overview','Overview']];
+  if(!r.limited || r.is_me) tabs.push(['posts','Posts']);
   if(!r.limited && (rels.length || r.is_me)) tabs.push(['rels', 'Relationships' + (rels.length ? ' ' + rels.length : '')]);
   if(!r.limited && (feat.length || r.is_me)) tabs.push(['kept', 'Kept' + (feat.length ? ' ' + feat.length : '')]);
   if(!tabs.some(t=>t[0] === ACCT.pvTab)) ACCT.pvTab = 'overview';
@@ -2702,6 +2759,8 @@ function renderProfileBody(body){
       ${r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
       ${(countBoxes || linkedBoxes) ? `<h3>In numbers</h3><div>${countBoxes}${linkedBoxes}</div>` : ''}
       ${r.is_me && !countBoxes && !linkedBoxes && !r.about ? '<p class="hint">Fill in "About you" in the Profile tab to see it here.</p>' : ''}`;
+  } else if(ACCT.pvTab === 'posts'){
+    content = '<div class="posts-root"></div>';
   } else if(ACCT.pvTab === 'rels'){
     content = rels.length ? rels.map(x=>relCardHtml(x, r)).join('') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
   } else {
@@ -2719,6 +2778,7 @@ function renderProfileBody(body){
       ${myLink.page_id ? `<button class="a-btn" data-act="openPage" data-id="${aE(myLink.id)}" data-page="${aE(myLink.page_id)}" type="button">Our relationship page</button>` : ''}</div>` : ''}
     <div class="pv-tabs">${tabs.map(([id,l])=>`<button class="pv-tab ${ACCT.pvTab === id ? 'active' : ''}" data-pvtab="${id}" type="button">${aE(l)}</button>`).join('')}</div>
     ${content}`;
+  if(ACCT.pvTab === 'posts' && !r.limited) postsInit();
 }
 
 /* ---------- RELATIONSHIP PAGE (between two people) ---------- */
@@ -3225,8 +3285,8 @@ function bindAccountHub(){
       const f = t.files && t.files[0]; t.value = '';
       if(!f) return;
       const kind = t.id === 'avatarFile' ? 'avatar' : 'banner';
-      msg('img-msg', 'Uploading…', true);
-      uploadProfileImage(kind, f).then(()=>{ msg('img-msg', ''); renderTabProfile($a('acctBody')); }).catch(e=>msg('img-msg', e.message));
+      msg('img-msg', '');
+      uploadProfileImage(kind, f).then(ok=>{ msg('img-msg', ''); if(ok) renderTabProfile($a('acctBody')); }).catch(e=>msg('img-msg', e.message));
       return;
     }
     if(t.dataset.feat !== undefined){
@@ -3462,7 +3522,7 @@ async function pplRefreshLists(){
 function renderInboxTabsOnly(){
   const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
   const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
-  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['notifs','Notifications', nn]].map(([id,l,n])=>
+  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['feed','Feed', 0], ['notifs','Notifications', nn]].map(([id,l,n])=>
     `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
 }
 async function renderInboxPeople(body, quiet){
@@ -3490,9 +3550,10 @@ async function renderInbox(quiet){
   $a('inboxTitle').textContent = 'Inbox';
   const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
   const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
-  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['notifs','Notifications', nn]].map(([id,l,n])=>
+  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['feed','Feed', 0], ['notifs','Notifications', nn]].map(([id,l,n])=>
     `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
   if(INBOX.tab === 'people'){ await renderInboxPeople(body, quiet); return; }
+  if(INBOX.tab === 'feed'){ if(quiet && body.querySelector('.posts-list')) return; await renderFeed(body); return; }
   if(!quiet) body.innerHTML = '<p class="hint">Loading…</p>';
   try{
     if(INBOX.tab === 'chats'){
@@ -3522,6 +3583,8 @@ function notifText(n){
     case 'link_request': return `${who} wants to be your ${(pick(LINK_KINDS, (n.data || {}).kind) || 'connection').toLowerCase()}`;
     case 'link_accepted': return `${who} accepted your request`;
     case 'followed': return `${who} started following you`;
+    case 'post_like': return `${who} liked your post`;
+    case 'post_comment': return `${who} commented on your post`;
     case 'page_created': return `${who} started a relationship page with you`;
     case 'page_proposal': return `${who} suggested changes to your shared page`;
     case 'page_accepted': return `${who} accepted your changes`;
@@ -3566,7 +3629,7 @@ function renderChatShell(){
       <input type="file" id="chatFile" accept="image/*" hidden>
     </div>`;
 }
-function stateSig(msgs){ return JSON.stringify(msgs.map(m=>[m.id, m.body, m.media, m.pinned, m.deleted, m.reactions])); }
+function stateSig(msgs){ return JSON.stringify(msgs.map(m=>[m.id, m.body, m.media, m.pinned, m.deleted, m.reactions, m.edited])); }
 async function pollChat(first){
   const c = INBOX.chat; if(!c || document.hidden) return;
   try{
@@ -3616,18 +3679,20 @@ function renderMessages(){
     lastDay = day;
     const rx = (m.reactions || []).length ? `<div class="rx">${m.reactions.map(r=>`<button class="rxc ${r.mine ? 'mine' : ''}" data-act="react" data-mid="${aE(m.id)}" data-e="${aE(r.emoji)}" type="button">${aE(r.emoji)} ${r.count > 1 ? aE(r.count) : ''}</button>`).join('')}</div>` : '';
     const menu = c.menu === m.id && !m.deleted ? `<div class="mmenu">
-        <div class="qr">${QUICK_REACTIONS.map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${e}" type="button">${e}</button>`).join('')}<input type="text" maxlength="8" placeholder="＋" data-custom="${aE(m.id)}"></div>
+        ${c.picker && c.picker.mid === m.id ? rxPickerHtml(c.picker, m.id) : `<div class="qr">${rxDefaults().map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${aE(e)}" type="button">${aE(e)}</button>`).join('')}<button data-act="rxMore" data-mid="${aE(m.id)}" type="button" aria-label="More reactions">＋</button></div>`}
+        ${m.mine && m.kind === 'text' ? `<button data-act="editMsg" data-mid="${aE(m.id)}" type="button">✏️ Edit</button>` : ''}
         <button data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="${m.pinned ? '0' : '1'}" type="button">${m.pinned ? '📌 Unpin' : '📌 Pin'}</button>
         ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
         ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : `<button data-act="reportMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Report</button>`}</div>` : '';
     return `${sep}<div class="msg ${m.mine ? 'mine' : 'theirs'}" data-mid="${aE(m.id)}">
-      <div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>
-      ${rx}${menu}<div class="mtime">${aE(d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }))}</div></div>`;
+      ${c.editing === m.id && !m.deleted ? editBoxHtml(c) : `<div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>`}
+      ${rx}${menu}<div class="mtime">${aE(d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }))}${m.edited && !m.deleted ? ' · edited' : ''}</div></div>`;
   }).join('');
   box.innerHTML = (c.hasMore && c.msgs.length >= 60 ? `<button class="a-btn link" data-act="loadEarlier" type="button" style="align-self:center">Load earlier messages</button>` : '')
     + (html || `<p class="hint" style="text-align:center;margin-top:30px">No messages yet. Say hi 👋</p>`);
   if(c.atBottom) box.scrollTop = box.scrollHeight;
   hydrateChatImages();
+  if(c.editing){ const t = $a('editBox'); if(t){ t.focus(); const p = c.editSel == null ? t.value.length : Math.min(c.editSel, t.value.length); try{ t.setSelectionRange(p, p); }catch(e){} } }
   const pins = c.msgs.filter(m=>m.pinned && !m.deleted).length;
   const pb = $a('pinBtn'); if(pb) pb.textContent = pins ? `📌 ${pins}` : '📌';
 }
@@ -3706,7 +3771,7 @@ async function uploadChatFile(lid, file){
   if(error) throw new Error(friendlyDbError(error));
   return path;
 }
-function openLightbox(src){
+function openImageLightbox(src){
   let lb = $a('lightbox');
   if(!lb){ lb = document.createElement('div'); lb.id = 'lightbox'; lb.addEventListener('click', ()=>lb.classList.add('hidden')); document.body.appendChild(lb); }
   lb.innerHTML = `<img src="${aE(src)}" alt="">`; lb.classList.remove('hidden');
@@ -3818,7 +3883,7 @@ const INBOX_ACTIONS = {
     }catch(e){ $a('chatErr').textContent = e.message; }
     c.sig = ''; await pollChat(false); renderMessages();
   },
-  async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openLightbox(i2.src); },
+  async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openImageLightbox(i2.src); },
   async loadEarlier(){ await loadEarlier(); },
   async markAllRead(){ try{ await rpc('mark_notifications_read', {}); }catch(e){} await inboxTick(); renderInbox(true); },
   async openNotif(el){
@@ -3826,6 +3891,7 @@ const INBOX_ACTIONS = {
     try{ await rpc('mark_notifications_read', { ids: [n.id] }); }catch(e){}
     inboxTick();
     if(n.kind === 'link_request'){ INBOX.tab = 'people'; INBOX.q = ''; renderInbox(); }
+    else if((n.kind === 'post_like' || n.kind === 'post_comment') && ACCT.profile && ACCT.profile.username){ await closeInbox(); ACCT.pvTab = 'posts'; openAcctView({ type:'profile', username: ACCT.profile.username }, 'notifs'); }
     else if(n.kind === 'followed' && n.actor && n.actor.username){ await closeInbox(); ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: n.actor.username }, 'notifs'); }
     else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
     else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }, 'notifs'); }
@@ -3876,6 +3942,556 @@ function bindInbox(){
     catch(e){ err.textContent = e.message; }
   });
 }
+
+
+/* =====================================================================
+   UPDATE 4: photo cropper, chat editing, emoji reactions, GIF picker,
+   posts (with tags, likes, comments) and a feed
+   ===================================================================== */
+const POST_BUCKET = 'kept-posts';
+function postUrl(path){ try{ return sb.storage.from(POST_BUCKET).getPublicUrl(path).data.publicUrl || ''; }catch(e){ return ''; } }
+function newId(){ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2)); }
+function safeActions(obj){
+  const out = {};
+  Object.keys(obj).forEach(k=>{
+    out[k] = async el=>{ try{ return await obj[k](el); }catch(e){ showToast((e && e.message) || String(e)); } };
+  });
+  return out;
+}
+
+/* ---------- photo cropper (drag + pinch/slider zoom) ---------- */
+function cropImage(file, o){
+  return new Promise(resolve=>{
+    const url = URL.createObjectURL(file), img = new Image();
+    const fail = ()=>{ URL.revokeObjectURL(url); showToast("That file isn't a picture I can read"); resolve(null); };
+    img.onerror = fail;
+    img.onload = ()=>{
+      const iw = img.naturalWidth, ih = img.naturalHeight;
+      if(!iw || !ih) return fail();
+      const W = Math.max(220, Math.min(340, window.innerWidth - 64)), H = Math.round(W * o.h / o.w);
+      const ov = document.createElement('div'); ov.className = 'rep-ov';
+      ov.innerHTML = `<div class="rep-box"><h3>${aE(o.title || 'Adjust photo')}</h3>
+        <p class="hint" style="margin:0 0 10px">Drag to move. Pinch, scroll or use the slider to zoom.</p>
+        <div class="crop-stage" style="width:${W}px;height:${H}px;border-radius:${o.round ? '50%' : '8px'}"><canvas></canvas></div>
+        <input type="range" class="crop-zoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom">
+        <div class="a-btns"><button class="a-btn primary" data-c="ok" type="button">Use this</button><button class="a-btn" data-c="no" type="button">Cancel</button></div></div>`;
+      document.body.appendChild(ov);
+      const cv = ov.querySelector('canvas'), stage = ov.querySelector('.crop-stage'), slider = ov.querySelector('.crop-zoom');
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+      const ctx = cv.getContext('2d');
+      const base = Math.max(W / iw, H / ih);
+      let zoom = 1, cx = iw / 2, cy = ih / 2;
+      const src = ()=>{
+        const sw = W / (base * zoom), sh = H / (base * zoom);
+        cx = Math.min(Math.max(cx, sw / 2), iw - sw / 2); cy = Math.min(Math.max(cy, sh / 2), ih - sh / 2);
+        return [cx - sw / 2, cy - sh / 2, sw, sh];
+      };
+      const draw = ()=>{ const s = src(); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(img, s[0], s[1], s[2], s[3], 0, 0, cv.width, cv.height); };
+      const setZoom = z=>{ zoom = Math.min(4, Math.max(1, z)); slider.value = zoom; draw(); };
+      draw();
+      slider.addEventListener('input', ()=>setZoom(parseFloat(slider.value)));
+      stage.addEventListener('wheel', ev=>{ ev.preventDefault(); setZoom(zoom - ev.deltaY * 0.0025); }, { passive:false });
+      const ptrs = new Map(); let pinch = 0;
+      stage.addEventListener('pointerdown', ev=>{ stage.setPointerCapture(ev.pointerId); ptrs.set(ev.pointerId, { x:ev.clientX, y:ev.clientY }); pinch = 0; stage.style.cursor = 'grabbing'; });
+      stage.addEventListener('pointermove', ev=>{
+        const p = ptrs.get(ev.pointerId); if(!p) return;
+        const dx = ev.clientX - p.x, dy = ev.clientY - p.y; p.x = ev.clientX; p.y = ev.clientY;
+        if(ptrs.size === 1){ cx -= dx / (base * zoom); cy -= dy / (base * zoom); draw(); }
+        else if(ptrs.size === 2){
+          const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+          if(pinch) setZoom(zoom * d / pinch); pinch = d;
+        }
+      });
+      const up = ev=>{ ptrs.delete(ev.pointerId); pinch = 0; if(!ptrs.size) stage.style.cursor = 'grab'; };
+      stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+      const done = blob=>{ URL.revokeObjectURL(url); ov.remove(); resolve(blob); };
+      ov.querySelector('[data-c="no"]').addEventListener('click', ()=>done(null));
+      ov.addEventListener('click', ev=>{ if(ev.target === ov) done(null); });
+      ov.querySelector('[data-c="ok"]').addEventListener('click', ()=>{
+        const out = document.createElement('canvas'); out.width = o.w; out.height = o.h;
+        const s = src(), x = out.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, o.w, o.h);
+        x.drawImage(img, s[0], s[1], s[2], s[3], 0, 0, o.w, o.h);
+        out.toBlob(b=>{ if(b) done(b); else { showToast('Could not process that picture'); done(null); } }, 'image/jpeg', 0.88);
+      });
+    };
+    img.src = url;
+  });
+}
+function resizeImage(file, maxDim, q){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error("That file isn't a picture I can read")); };
+    img.onload = ()=>{
+      let w = img.naturalWidth, h = img.naturalHeight;
+      const s = Math.min(1, maxDim / Math.max(w, h)); w = Math.round(w * s); h = Math.round(h * s);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      c.toBlob(b=> b ? resolve(b) : reject(new Error('Could not process that picture')), 'image/jpeg', q || 0.85);
+    };
+    img.src = url;
+  });
+}
+async function uploadProfileImage(kind, file){
+  const dims = kind === 'avatar' ? [512, 512] : [1500, 500];
+  const blob = await cropImage(file, { w:dims[0], h:dims[1], round: kind === 'avatar', title: kind === 'avatar' ? 'Adjust your profile photo' : 'Adjust your banner' });
+  if(!blob) return false;
+  msg('img-msg', 'Uploading…', true);
+  const path = `${currentUser.id}/${kind}-${Date.now()}.jpg`;
+  const { error } = await sb.storage.from(AVATAR_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:true });
+  if(error) throw new Error(friendlyDbError(error));
+  const old = ACCT.profile[kind + '_path'];
+  queueProfile({ [kind + '_path']: path });
+  if(old){ try{ sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
+  return true;
+}
+
+/* ---------- emoji picker data (generated from Unicode ranges, no big list to ship) ---------- */
+let _EMO = null;
+function emojiCats(){
+  if(_EMO) return _EMO;
+  const seen = new Set();
+  let isEmo = null, isPres = null;
+  try{
+    const ep = new RegExp('\\p{Extended_Pictographic}', 'u'), em = new RegExp('\\p{Emoji}', 'u'), mod = new RegExp('\\p{Emoji_Modifier}', 'u');
+    isPres = new RegExp('\\p{Emoji_Presentation}', 'u');
+    isEmo = ch=>ep.test(ch) && em.test(ch) && !mod.test(ch);
+  }catch(e){ isEmo = null; }
+  const R = (...r)=>r;
+  const defs = [
+    ['😀', 'Smileys', 'smileys', R([0x1F600,0x1F64F],[0x1F910,0x1F92F],[0x1F970,0x1F97A],[0x1F9D0,0x1F9D0],[0x1F47B,0x1F47F],[0x1F480,0x1F480],[0x1F4A9,0x1F4A9],[0x263A,0x263A],[0x2639,0x2639],[0x2620,0x2620])],
+    ['👍', 'People', 'people', R([0x1F440,0x1F478],[0x1F481,0x1F487],[0x1F4AA,0x1F4AA],[0x1F590,0x1F596],[0x1F918,0x1F91F],[0x1F930,0x1F93F],[0x1F9B0,0x1F9BF],[0x1F9D1,0x1F9DF],[0x1F9E0,0x1F9E0],[0x261D,0x261D],[0x270A,0x270D])],
+    ['❤️', 'Hearts', 'hearts', R([0x2763,0x2764],[0x1F493,0x1F49F],[0x1F5A4,0x1F5A4],[0x1F90D,0x1F90E],[0x1F9E1,0x1F9E1],[0x1F48B,0x1F48C],[0x1F4A2,0x1F4AF],[0x2728,0x2728],[0x2B50,0x2B50],[0x1F31F,0x1F320],[0x26A1,0x26A1],[0x1F525,0x1F525],[0x1F389,0x1F38A])],
+    ['🐻', 'Nature', 'nature', R([0x1F400,0x1F43F],[0x1F980,0x1F9AE],[0x1F300,0x1F344],[0x1F54A,0x1F54A],[0x1F577,0x1F578],[0x2600,0x2604],[0x2614,0x2614],[0x2618,0x2618],[0x26C4,0x26C5],[0x2744,0x2744])],
+    ['🍕', 'Food', 'food', R([0x1F345,0x1F37F],[0x1F950,0x1F96F],[0x1F9C0,0x1F9CB],[0x2615,0x2615])],
+    ['⚽', 'Activity', 'activity', R([0x1F380,0x1F3FA],[0x1F945,0x1F94F],[0x1F9E9,0x1F9E9],[0x1F9FF,0x1F9FF],[0x26BD,0x26BE],[0x26F3,0x26F3],[0x26F8,0x26F8],[0x265F,0x265F])],
+    ['🚗', 'Travel', 'travel', R([0x1F3D4,0x1F3F0],[0x1F680,0x1F6C5],[0x1F6CB,0x1F6D2],[0x1F6D5,0x1F6D7],[0x1F6E0,0x1F6EC],[0x1F6F0,0x1F6FC],[0x26EA,0x26EA],[0x26F0,0x26FA],[0x2708,0x2708])],
+    ['💡', 'Objects', 'objects', R([0x1F4A1,0x1F4A1],[0x1F4B0,0x1F4FF],[0x1F50A,0x1F52E],[0x1F5A5,0x1F5FF],[0x1F9E2,0x1F9FF],[0x231A,0x231B],[0x23F0,0x23F3],[0x260E,0x260E],[0x2692,0x2699],[0x2702,0x2702],[0x2709,0x2709],[0x270F,0x2712])],
+    ['🔣', 'Symbols', 'symbols', R([0x1F500,0x1F549],[0x1F7E0,0x1F7EB],[0x1F170,0x1F251],[0x203C,0x2049],[0x2122,0x2139],[0x2194,0x21AA],[0x24C2,0x24C2],[0x25AA,0x25FE],[0x2640,0x2642],[0x2648,0x2653],[0x2660,0x2668],[0x267B,0x267F],[0x26A0,0x26AB],[0x2705,0x2705],[0x2714,0x2716],[0x2721,0x2721],[0x2733,0x2734],[0x2747,0x2747],[0x274C,0x274E],[0x2753,0x2757],[0x2795,0x2797],[0x27A1,0x27BF],[0x2934,0x2935],[0x2B05,0x2B07],[0x2B1B,0x2B1C],[0x2B55,0x2B55],[0x3030,0x3030],[0x303D,0x303D],[0x3297,0x3299],[0x2600,0x27BF])]
+  ];
+  const cats = [];
+  if(isEmo){
+    defs.forEach(([icon, label, id, ranges])=>{
+      const list = [];
+      ranges.forEach(([a, b])=>{
+        for(let cp = a; cp <= b; cp++){
+          const ch = String.fromCodePoint(cp);
+          if(!isEmo(ch)) continue;
+          const e = isPres.test(ch) ? ch : ch + '️';
+          if(!seen.has(e)){ seen.add(e); list.push(e); }
+        }
+      });
+      if(list.length) cats.push({ id, icon, label, list });
+    });
+  }else{
+    cats.push({ id:'smileys', icon:'😀', label:'Smileys', list:'😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 😉 😍 🥰 😘 😋 😛 😜 🤪 🤔 😐 😶 🙄 😏 😮 😲 😢 😭 😱 😡 🥺 👍 👎 👏 🙏 💪 👀 ❤️ 💔 💯 🔥 ✨ 🎉'.split(' ') });
+  }
+  // flags are built from country codes
+  const codes = 'AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET EU FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA UG UN US UY UZ VA VC VE VG VI VN VU WF WS XK YE YT ZA ZM ZW'.split(' ');
+  const flag = c=>String.fromCodePoint(...c.split('').map(x=>0x1F1E6 + x.charCodeAt(0) - 65));
+  cats.push({ id:'flags', icon:'🏳️', label:'Flags', list:['🏁','🚩','🎌','🏴','🏳️','🏳️‍🌈'].concat(codes.map(flag)) });
+  return (_EMO = cats);
+}
+function lsGet(k, d){ try{ const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; }catch(e){ return d; } }
+function lsSet(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+const RX_DEFAULT = ['❤️','😂','😮','😢','😡','👍'];
+function rxDefaults(){
+  const v = lsGet('kept-rx', null);
+  return Array.isArray(v) && v.length === 6 && v.every(x=>typeof x === 'string' && x.length <= 16 && !/[A-Za-z]/.test(x)) ? v : RX_DEFAULT.slice();
+}
+function rxRecent(){ const v = lsGet('kept-rx-recent', []); return Array.isArray(v) ? v.filter(x=>typeof x === 'string' && !/[A-Za-z]/.test(x)).slice(0, 28) : []; }
+function rxAddRecent(e){ lsSet('kept-rx-recent', [e].concat(rxRecent().filter(x=>x !== e)).slice(0, 28)); }
+
+function rxPickerHtml(pk, mid){
+  const cats = emojiCats(), defs = rxDefaults();
+  const list = pk.cat === 'recent' ? rxRecent() : (cats.find(c=>c.id === pk.cat) || cats[0]).list;
+  return `<div class="rxpick">
+    <div class="rxtop"><b>${pk.editing ? 'Tap a slot, then an emoji' : 'React'}</b>
+      <span><button data-act="rxEditToggle" type="button">${pk.editing ? 'Done' : 'Customize'}</button><button data-act="rxClose" type="button" aria-label="Close">✕</button></span></div>
+    <div class="rxslots">${defs.map((e, i)=>`<button class="${pk.editing && pk.slot === i ? 'sel' : ''}" data-act="rxSlot" data-i="${i}" data-mid="${aE(mid)}" type="button">${aE(e)}</button>`).join('')}</div>
+    <div class="rxcats">${[{ id:'recent', icon:'🕘' }].concat(cats).map(c=>`<button class="${pk.cat === c.id ? 'on' : ''}" data-act="rxCat" data-c="${c.id}" type="button">${c.icon}</button>`).join('')}</div>
+    <div class="rxgrid">${list.length ? list.map(e=>`<button data-act="rxPick" data-e="${aE(e)}" data-mid="${aE(mid)}" type="button">${aE(e)}</button>`).join('') : '<p class="hint" style="grid-column:1/-1;padding:10px">Emoji you use will show up here.</p>'}</div></div>`;
+}
+function rxRefresh(resetScroll){
+  const c = INBOX.chat; if(!c || !c.picker) return;
+  const node = document.querySelector('#chatMsgs .rxpick'); if(!node) return;
+  const g = node.querySelector('.rxgrid'), st = g ? g.scrollTop : 0;
+  node.outerHTML = rxPickerHtml(c.picker, c.picker.mid);
+  const ng = document.querySelector('#chatMsgs .rxgrid'); if(ng) ng.scrollTop = resetScroll ? 0 : st;
+}
+function editBoxHtml(c){
+  return `<div class="editwrap"><textarea id="editBox" rows="2" maxlength="2000">${aE(c.editDraft || '')}</textarea>
+    <div class="a-btns" style="margin:6px 0 0"><button class="a-btn primary" data-act="editSave" type="button">Save</button><button class="a-btn" data-act="editCancel" type="button">Cancel</button></div></div>`;
+}
+
+/* ---------- GIF picker (trending + search, like Discord) ---------- */
+const GIF_CATS = ['Trending','Reactions','Happy','Sad','Love','Funny','Hug','Thanks','Wow','Bye'];
+function mountGifPicker(box, onPick){
+  if(!GIPHY_API_KEY){
+    box.innerHTML = `<div class="gifp"><p class="hint" style="margin:0 0 8px">GIF search isn't switched on yet. The owner of this Kept needs to add a free Giphy key (see the setup note). Until then, paste a GIF link from Giphy, Tenor or Imgur.</p>
+      <div class="a-row"><div class="field" style="margin:0"><input type="text" class="gifp-url" placeholder="https://media.giphy.com/…/giphy.gif" autocomplete="off"></div>
+      <div class="field fixed" style="margin:0"><button class="a-btn primary gifp-send" type="button">Send</button></div></div></div>`;
+    box.querySelector('.gifp-send').addEventListener('click', ()=>{
+      const u = box.querySelector('.gifp-url').value.trim();
+      if(!/^https:\/\/([a-z0-9-]+\.)*(giphy\.com|tenor\.com|imgur\.com)\/\S+$/i.test(u)){ showToast('Use a direct https link from Giphy, Tenor or Imgur.'); return; }
+      onPick(u);
+    });
+    return;
+  }
+  box.innerHTML = `<div class="gifp"><input type="text" class="gifp-q" placeholder="Search GIPHY" autocomplete="off" autocapitalize="none">
+    <div class="gifp-cats">${GIF_CATS.map((c, i)=>`<button type="button" class="${i ? '' : 'on'}" data-q="${i ? aE(c) : ''}">${aE(c)}</button>`).join('')}</div>
+    <div class="gifp-scroll"><div class="gifp-cols"><div></div><div></div></div><p class="hint gifp-msg" style="text-align:center"></p></div>
+    <div class="gifp-attr">Powered by GIPHY</div></div>`;
+  const scroll = box.querySelector('.gifp-scroll'), cols = box.querySelectorAll('.gifp-cols > div'), msgEl = box.querySelector('.gifp-msg'), qIn = box.querySelector('.gifp-q');
+  const st = { q:'', offset:0, busy:false, done:false, seq:0, h:[0, 0] };
+  async function load(reset){
+    if(reset){ st.seq++; st.offset = 0; st.done = false; st.busy = false; st.h = [0, 0]; cols[0].innerHTML = ''; cols[1].innerHTML = ''; scroll.scrollTop = 0; }
+    if(st.busy || st.done) return;
+    st.busy = true; const seq = st.seq; msgEl.textContent = 'Loading…';
+    try{
+      const url = (st.q ? 'https://api.giphy.com/v1/gifs/search?q=' + encodeURIComponent(st.q) + '&' : 'https://api.giphy.com/v1/gifs/trending?')
+        + 'api_key=' + encodeURIComponent(GIPHY_API_KEY) + '&limit=24&offset=' + st.offset + '&rating=pg-13';
+      const res = await fetch(url); if(!res.ok) throw new Error('bad');
+      const j = await res.json(); if(seq !== st.seq) return;
+      const data = j.data || [];
+      data.forEach(g=>{
+        const prev = g.images && g.images.fixed_width, full = g.images && (g.images.downsized || g.images.original);
+        if(!prev || !full || !/^https:\/\//.test(full.url)) return;
+        const i = st.h[0] <= st.h[1] ? 0 : 1; st.h[i] += (+prev.height || 100) / (+prev.width || 100);
+        const b = document.createElement('button'); b.type = 'button'; b.title = g.title || 'GIF';
+        const im = document.createElement('img'); im.src = prev.url; im.alt = g.title || 'GIF'; im.loading = 'lazy'; b.appendChild(im);
+        b.addEventListener('click', ()=>onPick(full.url)); cols[i].appendChild(b);
+      });
+      st.offset += data.length; if(data.length < 24) st.done = true;
+      msgEl.textContent = (!st.offset && !data.length) ? 'No GIFs found.' : '';
+    }catch(e){ if(seq === st.seq) msgEl.textContent = "Couldn't load GIFs right now."; }
+    finally{ if(seq === st.seq) st.busy = false; }
+  }
+  scroll.addEventListener('scroll', ()=>{ if(scroll.scrollTop + scroll.clientHeight > scroll.scrollHeight - 160) load(false); });
+  let t = null;
+  qIn.addEventListener('input', ()=>{
+    clearTimeout(t); t = setTimeout(()=>{ st.q = qIn.value.trim(); box.querySelectorAll('.gifp-cats button').forEach(b=>b.classList.remove('on')); load(true); }, 350);
+  });
+  box.querySelector('.gifp-cats').addEventListener('click', ev=>{
+    const b = ev.target.closest('button'); if(!b) return;
+    box.querySelectorAll('.gifp-cats button').forEach(x=>x.classList.toggle('on', x === b));
+    st.q = b.dataset.q; qIn.value = st.q; load(true);
+  });
+  load(true);
+}
+
+/* ---------- chat: editing + reactions + GIF ---------- */
+Object.assign(INBOX_ACTIONS, {
+  async chatGif(){
+    const c = INBOX.chat; c.gif = !c.gif;
+    const box = $a('chatGif'); box.classList.toggle('hidden', !c.gif);
+    if(c.gif) mountGifPicker(box, async url=>{ if(await sendChat('gif', '', url)){ c.gif = false; box.classList.add('hidden'); box.innerHTML = ''; } });
+    else box.innerHTML = '';
+  },
+  async editMsg(el){
+    const c = INBOX.chat, m = c.msgs.find(x=>x.id === el.dataset.mid); if(!m) return;
+    c.menu = null; c.picker = null; c.editing = m.id; c.editDraft = m.body; c.editSel = null; c.atBottom = false; renderMessages();
+  },
+  async editCancel(){ const c = INBOX.chat; c.editing = null; renderMessages(); },
+  async editSave(){
+    const c = INBOX.chat; const box = $a('editBox'); if(box) c.editDraft = box.value;
+    const v = (c.editDraft || '').trim(), err = $a('chatErr');
+    if(!v){ if(err) err.textContent = "A message can't be empty."; return; }
+    const m = c.msgs.find(x=>x.id === c.editing);
+    try{
+      if(!m || v !== m.body) await rpc('edit_message', { mid: c.editing, b: v });
+      c.editing = null; if(err) err.textContent = ''; c.sig = ''; await pollChat(false); renderMessages();
+    }catch(e){ if(err) err.textContent = e.message; }
+  },
+  async rxMore(el){ const c = INBOX.chat; c.menu = el.dataset.mid; c.picker = { mid: el.dataset.mid, cat:'recent', editing:false, slot:null }; if(!rxRecent().length) c.picker.cat = emojiCats()[0].id; c.atBottom = false; renderMessages(); },
+  async rxClose(){ const c = INBOX.chat; c.picker = null; renderMessages(); },
+  async rxCat(el){ const c = INBOX.chat; if(!c.picker) return; c.picker.cat = el.dataset.c; rxRefresh(true); },
+  async rxEditToggle(){ const c = INBOX.chat; if(!c.picker) return; c.picker.editing = !c.picker.editing; c.picker.slot = null; rxRefresh(false); },
+  async rxSlot(el){
+    const c = INBOX.chat; if(!c.picker) return; const i = +el.dataset.i;
+    if(c.picker.editing){ c.picker.slot = c.picker.slot === i ? null : i; rxRefresh(false); return; }
+    const e = rxDefaults()[i]; c.picker = null; await INBOX_ACTIONS.react({ dataset:{ mid: el.dataset.mid, e } });
+  },
+  async rxPick(el){
+    const c = INBOX.chat; if(!c.picker) return; const e = el.dataset.e;
+    if(c.picker.editing){
+      if(c.picker.slot == null){ showToast('Tap one of the six slots first, then the emoji to put there.'); return; }
+      const d = rxDefaults(); d[c.picker.slot] = e; lsSet('kept-rx', d); c.picker.slot = null; rxRefresh(false); return;
+    }
+    rxAddRecent(e); const mid = el.dataset.mid; c.picker = null; await INBOX_ACTIONS.react({ dataset:{ mid, e } });
+  }
+});
+(function(){
+  const _menu = INBOX_ACTIONS.msgMenu, _react = INBOX_ACTIONS.react;
+  INBOX_ACTIONS.msgMenu = async el=>{ if(INBOX.chat){ INBOX.chat.picker = null; } return _menu(el); };
+  INBOX_ACTIONS.react = async el=>{ if(INBOX.chat) INBOX.chat.picker = null; return _react(el); };
+})();
+document.addEventListener('input', ev=>{
+  if(ev.target.id === 'editBox' && INBOX.chat){ INBOX.chat.editDraft = ev.target.value; INBOX.chat.editSel = ev.target.selectionStart; }
+});
+document.addEventListener('keydown', ev=>{
+  if(ev.target.id !== 'editBox') return;
+  if(ev.key === 'Escape'){ ev.preventDefault(); INBOX_ACTIONS.editCancel(); }
+  else if(ev.key === 'Enter' && !ev.shiftKey && window.matchMedia('(pointer:fine)').matches){ ev.preventDefault(); INBOX_ACTIONS.editSave(); }
+});
+
+/* ---------- posts ---------- */
+const POSTS = { byId:{}, ctx:null, files:[] };
+function splitTags(v){ return (v || '').split(/[,\n]|\s(?=#)/).map(s=>s.trim().replace(/^#+/, '')).filter(Boolean).slice(0, 20); }
+function postCardHtml(p){
+  POSTS.byId[p.id] = p;
+  const a = p.author || {}, id = aE(p.id);
+  const media = (p.media || []).map(m=>{
+    const u = postUrl(m.path);
+    return m.kind === 'video' ? `<video src="${aE(u)}" controls preload="metadata" playsinline></video>` : `<img src="${aE(u)}" alt="" loading="lazy" data-act="postImg" data-src="${aE(u)}">`;
+  }).join('');
+  return `<article class="post" data-post="${id}">
+    <header class="post-h">${avHtml(a)}<div class="who"><b>${aE(a.display_name || '@' + a.username)}</b><span>@${aE(a.username)} · ${aE(relTime(p.created_at))}${p.edited ? ' · edited' : ''}</span></div></header>
+    ${p.body ? `<div class="post-b">${aE(p.body)}</div>` : ''}
+    ${media ? `<div class="post-m n${Math.min((p.media || []).length, 4)}">${media}</div>` : ''}
+    ${(p.tags || []).length ? `<div class="post-t">${p.tags.map(t=>`<button type="button" data-act="postTag" data-t="${aE(t)}" data-u="${aE(a.username)}">#${aE(t)}</button>`).join('')}</div>` : ''}
+    <div class="post-e"></div>
+    <div class="post-a">${postActionsHtml(p)}</div>
+    <div class="post-c"></div></article>`;
+}
+function postActionsHtml(p){
+  const id = aE(p.id);
+  return `<button type="button" class="${p.liked ? 'on' : ''}" data-act="postLike" data-id="${id}">${p.liked ? '♥' : '♡'} ${p.likes || ''}</button>
+    <button type="button" data-act="postComments" data-id="${id}">💬 ${p.comments || ''}</button>
+    ${p.mine ? `<button type="button" class="link" data-act="postEdit" data-id="${id}">Edit</button><button type="button" class="link" data-act="postDel" data-id="${id}">Delete</button>` : ''}`;
+}
+function postEl(id){ return document.querySelector(`[data-post="${CSS.escape(id)}"]`); }
+function postPaint(id){ const el = postEl(id), p = POSTS.byId[id]; if(el && p){ const a = el.querySelector('.post-a'); if(a) a.innerHTML = postActionsHtml(p); } }
+function composerHtml(){
+  return `<div class="a-card pc">
+    <textarea class="pc-body" maxlength="5000" rows="3" placeholder="What's on your mind?"></textarea>
+    <input type="text" class="pc-tags" maxlength="200" placeholder="#tags, separated by commas" autocapitalize="none" autocomplete="off">
+    <div class="pc-prev"></div>
+    <div class="a-btns"><button class="a-btn" data-act="pcAttach" type="button">📷 Photo / video</button><button class="a-btn primary" data-act="pcPost" type="button">Post</button></div>
+    <input type="file" class="pc-files" accept="image/*,video/*" multiple hidden>
+    <div class="a-msg pc-msg"></div></div>`;
+}
+function postsPaint(){
+  const ctx = POSTS.ctx; if(!ctx) return;
+  const list = ctx.root.querySelector('.posts-list'), more = ctx.root.querySelector('.posts-more'), tag = ctx.root.querySelector('.posts-tag');
+  if(tag) tag.innerHTML = ctx.tag ? `<div class="a-chips" style="margin:0 0 10px"><span class="a-chip">#${aE(ctx.tag)}</span><button class="a-btn link" data-act="postsClearTag" type="button">Show all posts</button></div>` : '';
+  if(list) list.innerHTML = ctx.items.length ? ctx.items.map(postCardHtml).join('')
+    : `<p class="hint">${ctx.limited ? 'Their posts are limited. Connect with them (or follow them, if they allow it) to see more.' : ctx.kind === 'feed' ? 'Nothing here yet. Posts from people you follow and your connections show up here.' : ctx.tag ? 'No posts with that tag.' : ctx.isMe ? 'No posts yet. Write your first one above.' : 'No posts yet.'}</p>`;
+  if(more) more.innerHTML = ctx.more && ctx.items.length ? `<button class="a-btn" data-act="postsMore" type="button">Load more</button>` : '';
+}
+async function postsMore(reset){
+  const ctx = POSTS.ctx; if(!ctx || ctx.busy) return; ctx.busy = true;
+  try{
+    if(reset){ ctx.items = []; ctx.more = true; const l = ctx.root.querySelector('.posts-list'); if(l) l.innerHTML = '<p class="hint">Loading…</p>'; }
+    const before = ctx.items.length ? ctx.items[ctx.items.length - 1].created_at : null;
+    let rows;
+    if(ctx.kind === 'feed') rows = (await rpc('list_feed', { before, lim: 10 })) || [];
+    else{
+      const r = await rpc('list_posts', { uname: ctx.user, tg: ctx.tag, before, lim: 10 });
+      if(!r){ rows = []; ctx.limited = true; } else { ctx.limited = !!r.limited; rows = r.posts || []; }
+    }
+    if(POSTS.ctx !== ctx) return;
+    ctx.items.push(...rows); ctx.more = rows.length >= 10;
+    postsPaint();
+  }catch(e){
+    const l = ctx.root.querySelector('.posts-list'); if(l && !ctx.items.length) l.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`;
+  }finally{ ctx.busy = false; }
+}
+async function postsInit(){
+  const r = ACCT.pv, root = document.querySelector('#acctBody .posts-root'); if(!root || !r) return;
+  const tag = ACCT.postsTag || null; ACCT.postsTag = null;
+  POSTS.ctx = { kind:'profile', user:r.username, isMe:!!r.is_me, tag, items:[], more:true, busy:false, root, limited:false };
+  POSTS.files = [];
+  root.innerHTML = `${r.is_me ? composerHtml() : ''}<div class="posts-tag"></div><div class="posts-list"></div><div class="posts-more"></div>`;
+  await postsMore(true);
+}
+async function renderFeed(body){
+  POSTS.ctx = { kind:'feed', items:[], more:true, busy:false, root:body, limited:false };
+  body.innerHTML = `<div class="a-btns" style="margin:0 0 12px"><button class="a-btn primary" data-act="feedNew" type="button">Write a post</button></div><div class="posts-list"></div><div class="posts-more"></div>`;
+  await postsMore(true);
+}
+async function uploadPostFile(file){
+  const isVideo = /^video\//.test(file.type), isGif = file.type === 'image/gif';
+  let blob = file, ext, ct = file.type;
+  if(isVideo){
+    if(file.size > 25 * 1024 * 1024) throw new Error('Videos can be up to 25 MB.');
+    ext = ({ 'video/mp4':'mp4', 'video/webm':'webm', 'video/quicktime':'mov' })[file.type];
+    if(!ext) throw new Error('Use an MP4, MOV or WebM video.');
+  }else if(isGif){
+    if(file.size > 8 * 1024 * 1024) throw new Error('GIFs can be up to 8 MB.'); ext = 'gif';
+  }else if(/^image\//.test(file.type)){
+    blob = await resizeImage(file, 1600, 0.85); ext = 'jpg'; ct = 'image/jpeg';
+  }else throw new Error('That file type isn\'t supported.');
+  const path = `${currentUser.id}/${isVideo ? 'v' : 'p'}-${newId()}.${ext}`;
+  const { error } = await sb.storage.from(POST_BUCKET).upload(path, blob, { contentType: ct });
+  if(error) throw new Error(friendlyDbError(error));
+  return { kind: isVideo ? 'video' : 'image', path };
+}
+function pcPreview(root){
+  const box = root.querySelector('.pc-prev'); if(!box) return;
+  box.innerHTML = '';
+  POSTS.files.forEach((f, i)=>{
+    const d = document.createElement('div'), u = URL.createObjectURL(f);
+    d.innerHTML = (/^video\//.test(f.type) ? `<video src="${u}" muted></video>` : `<img src="${u}" alt="">`) + `<button type="button" data-act="pcRm" data-i="${i}" aria-label="Remove">✕</button>`;
+    box.appendChild(d);
+  });
+}
+document.addEventListener('change', ev=>{
+  const t = ev.target;
+  if(t.classList && t.classList.contains('pc-files')){
+    const root = t.closest('.pc'); const add = [...(t.files || [])]; t.value = '';
+    for(const f of add){
+      if(POSTS.files.length >= 10){ showToast('Up to 10 pictures or videos per post.'); break; }
+      if(/^video\//.test(f.type) && f.size > 25 * 1024 * 1024){ showToast('Videos can be up to 25 MB.'); continue; }
+      POSTS.files.push(f);
+    }
+    pcPreview(root);
+  }else if(t.classList && t.classList.contains('cm-file')){
+    const f = t.files && t.files[0]; t.value = ''; if(!f) return;
+    const post = t.closest('.post'); if(post) cmSendImage(post, f);
+  }
+});
+document.addEventListener('keydown', ev=>{
+  if(ev.target.classList && ev.target.classList.contains('cm-in') && ev.key === 'Enter'){
+    ev.preventDefault(); const post = ev.target.closest('.post'); if(post) cmSendText(post);
+  }
+});
+function commentHtml(c){
+  const a = c.author || {};
+  let inner = '';
+  if(c.kind === 'image') inner = `<img src="${aE(postUrl(c.media))}" alt="" data-act="postImg" data-src="${aE(postUrl(c.media))}">`;
+  else if(c.kind === 'gif' && /^https:\/\//.test(c.media)) inner = `<img src="${aE(c.media)}" alt="GIF" data-act="postImg" data-src="${aE(c.media)}">`;
+  else inner = aE(c.body);
+  return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}</small></b>${inner}
+    ${c.can_delete ? `<button type="button" class="cm-x" data-act="cmDel" data-id="${aE(c.id)}">delete</button>` : ''}</div></div>`;
+}
+async function cmLoad(post){
+  const id = post.dataset.post, box = post.querySelector('.post-c'), list = box.querySelector('.cm-list'); if(!list) return;
+  const rows = (await rpc('list_comments', { pid: id })) || [];
+  list.innerHTML = rows.length ? rows.map(commentHtml).join('') : '<p class="hint" style="margin:6px 0">No comments yet.</p>';
+  const p = POSTS.byId[id]; if(p){ p.comments = rows.length; postPaint(id); }
+}
+async function cmAfter(post, kind, body, media){
+  const msgEl = post.querySelector('.cm-msg'); msgEl.textContent = '';
+  try{
+    await rpc('add_comment', { pid: post.dataset.post, k: kind, b: body || '', m: media || '' });
+    await cmLoad(post); return true;
+  }catch(e){ msgEl.textContent = e.message; if(kind === 'image' && media){ try{ sb.storage.from(POST_BUCKET).remove([media]); }catch(x){} } return false; }
+}
+async function cmSendText(post){
+  const inp = post.querySelector('.cm-in'), v = inp.value.trim(); if(!v) return;
+  inp.value = ''; if(!(await cmAfter(post, 'text', v))) inp.value = v;
+}
+async function cmSendImage(post, f){
+  const msgEl = post.querySelector('.cm-msg'); msgEl.textContent = 'Sending picture…';
+  try{
+    const isGif = f.type === 'image/gif'; let blob = f, ext = 'gif';
+    if(isGif){ if(f.size > 6 * 1024 * 1024) throw new Error('GIFs can be up to 6 MB.'); }
+    else{ blob = await resizeImage(f, 1200, 0.85); ext = 'jpg'; }
+    const path = `${currentUser.id}/c-${newId()}.${ext}`;
+    const { error } = await sb.storage.from(POST_BUCKET).upload(path, blob, { contentType: isGif ? 'image/gif' : 'image/jpeg' });
+    if(error) throw new Error(friendlyDbError(error));
+    msgEl.textContent = ''; await cmAfter(post, 'image', '', path);
+  }catch(e){ msgEl.textContent = e.message; }
+}
+const POST_ACTIONS = safeActions({
+  async postImg(el){ openImageLightbox(el.dataset.src); },
+  async postsMore(){ await postsMore(false); },
+  async postsClearTag(){ const ctx = POSTS.ctx; if(ctx){ ctx.tag = null; await postsMore(true); } },
+  async postTag(el){
+    const ctx = POSTS.ctx;
+    if(ctx && ctx.kind === 'profile' && ctx.user === el.dataset.u){ ctx.tag = el.dataset.t; await postsMore(true); return; }
+    ACCT.pvTab = 'posts'; ACCT.postsTag = el.dataset.t;
+    const from = ctx && ctx.kind === 'feed' ? 'feed' : null;
+    if(from) await closeInbox();
+    openAcctView({ type:'profile', username: el.dataset.u }, from);
+  },
+  async feedNew(){ await closeInbox(); ACCT.pvTab = 'posts'; openAcctView({ type:'profile', username: ACCT.profile.username }, 'feed'); },
+  async pcAttach(el){ el.closest('.pc').querySelector('.pc-files').click(); },
+  async pcRm(el){ POSTS.files.splice(+el.dataset.i, 1); pcPreview(el.closest('.pc')); },
+  async pcPost(btn){
+    const root = btn.closest('.pc'), msgEl = root.querySelector('.pc-msg'); msgEl.textContent = '';
+    const body = root.querySelector('.pc-body').value, tags = splitTags(root.querySelector('.pc-tags').value);
+    if(!body.trim() && !POSTS.files.length){ msgEl.textContent = 'Write something or add a picture first.'; return; }
+    await withBtn(btn, async ()=>{
+      const done = [];
+      try{
+        for(let i = 0; i < POSTS.files.length; i++){ msgEl.textContent = `Uploading ${i + 1} of ${POSTS.files.length}…`; done.push(await uploadPostFile(POSTS.files[i])); }
+        msgEl.textContent = '';
+        const post = await rpc('create_post', { b: body, tg: tags, m: done });
+        root.querySelector('.pc-body').value = ''; root.querySelector('.pc-tags').value = ''; POSTS.files = []; pcPreview(root);
+        const ctx = POSTS.ctx; if(ctx && ctx.kind === 'profile' && ctx.isMe && !ctx.tag){ ctx.items.unshift(post); postsPaint(); }
+        showToastOk('Posted');
+      }catch(e){
+        msgEl.textContent = e.message;
+        if(done.length){ try{ sb.storage.from(POST_BUCKET).remove(done.map(d=>d.path)); }catch(x){} }
+      }
+    });
+  },
+  async postLike(btn){
+    const id = btn.dataset.id, p = POSTS.byId[id]; if(!p) return;
+    await withBtn(btn, async ()=>{
+      const on = await rpc('toggle_like', { pid: id });
+      p.likes = Math.max(0, (p.likes || 0) + (on ? 1 : -1)) ; p.liked = on; postPaint(id);
+    });
+  },
+  async postComments(btn){
+    const post = btn.closest('.post'), box = post.querySelector('.post-c');
+    if(box.innerHTML){ box.innerHTML = ''; return; }
+    box.innerHTML = `<div class="cm-list"><p class="hint">Loading…</p></div>
+      <div class="cm-compose"><input type="text" class="cm-in" maxlength="1000" placeholder="Add a comment…" autocomplete="off">
+        <button class="a-btn" data-act="cmImg" type="button" aria-label="Add a picture">📷</button><button class="a-btn" data-act="cmGif" type="button">GIF</button>
+        <button class="a-btn primary" data-act="cmSend" type="button">Send</button><input type="file" class="cm-file" accept="image/*" hidden></div>
+      <div class="cm-gif hidden"></div><div class="a-msg cm-msg"></div>`;
+    await cmLoad(post);
+  },
+  async cmSend(el){ await cmSendText(el.closest('.post')); },
+  async cmImg(el){ el.closest('.post').querySelector('.cm-file').click(); },
+  async cmGif(el){
+    const post = el.closest('.post'), box = post.querySelector('.cm-gif');
+    if(!box.classList.contains('hidden')){ box.classList.add('hidden'); box.innerHTML = ''; return; }
+    box.classList.remove('hidden');
+    mountGifPicker(box, async url=>{ if(await cmAfter(post, 'gif', '', url)){ box.classList.add('hidden'); box.innerHTML = ''; } });
+  },
+  async cmDel(el){
+    if(!confirm('Delete this comment?')) return;
+    const post = el.closest('.post');
+    const path = await rpc('delete_comment', { cid: el.dataset.id });
+    if(path){ try{ await sb.storage.from(POST_BUCKET).remove([path]); }catch(e){} }
+    await cmLoad(post);
+  },
+  async postEdit(btn){
+    const id = btn.dataset.id, p = POSTS.byId[id], el = postEl(id), box = el.querySelector('.post-e');
+    if(box.innerHTML){ box.innerHTML = ''; return; }
+    box.innerHTML = `<textarea class="pe-body" maxlength="5000" rows="4">${aE(p.body)}</textarea>
+      <input type="text" class="pe-tags" maxlength="200" value="${aE((p.tags || []).map(t=>'#' + t).join(', '))}" placeholder="#tags, separated by commas">
+      <div class="a-btns"><button class="a-btn primary" data-act="postEditSave" data-id="${aE(id)}" type="button">Save</button><button class="a-btn" data-act="postEdit" data-id="${aE(id)}" type="button">Cancel</button></div><div class="a-msg pe-msg"></div>`;
+  },
+  async postEditSave(btn){
+    const id = btn.dataset.id, el = postEl(id);
+    await withBtn(btn, async ()=>{
+      try{
+        const np = await rpc('edit_post', { pid: id, b: el.querySelector('.pe-body').value, tg: splitTags(el.querySelector('.pe-tags').value) });
+        const ctx = POSTS.ctx; if(ctx){ const i = ctx.items.findIndex(x=>x.id === id); if(i >= 0) ctx.items[i] = np; }
+        const open = !!el.querySelector('.post-c').innerHTML;
+        el.outerHTML = postCardHtml(np);
+        if(open){ const nel = postEl(id); const b = nel.querySelector('[data-act="postComments"]'); if(b) POST_ACTIONS.postComments(b); }
+      }catch(e){ el.querySelector('.pe-msg').textContent = e.message; }
+    });
+  },
+  async postDel(btn){
+    if(!confirm('Delete this post? Its pictures, videos and comments go with it.')) return;
+    const id = btn.dataset.id;
+    const paths = await rpc('delete_post', { pid: id });
+    if(paths && paths.length){ try{ await sb.storage.from(POST_BUCKET).remove(paths); }catch(e){} }
+    const ctx = POSTS.ctx; if(ctx){ ctx.items = ctx.items.filter(x=>x.id !== id); }
+    const el = postEl(id); if(el) el.remove();
+    if(ctx && !ctx.items.length) postsPaint();
+  }
+});
+Object.assign(ACTIONS, POST_ACTIONS);
+Object.assign(INBOX_ACTIONS, POST_ACTIONS);
 
 bindAccountHub();
 bindInbox();
@@ -6028,13 +6644,24 @@ function showBootError(msg){
     el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#B5677A;color:#fff;padding:12px 16px;font-family:monospace;font-size:0.78rem;z-index:9999;word-break:break-word;';
     document.body.prepend(el);
   }
-  el.textContent = 'Something went wrong loading Kept: ' + msg;
+  el.textContent = 'Something went wrong: ' + msg + '  (tap to dismiss)';
+  el.onclick = ()=>el.remove();
 }
 window.addEventListener('error', ev=>{
-  if(/ResizeObserver/i.test(ev.message || '')) return; // harmless browser noise
-  showBootError(ev.message);
+  const m = ev.message || '';
+  if(/ResizeObserver/i.test(m)) return;                       // harmless browser noise
+  // "Script error." with no file means a script from somewhere else (an extension, a blocked CDN file); nothing in Kept itself broke
+  if(!ev.filename || /^script error\.?$/i.test(m)) return;
+  try{ if(new URL(ev.filename, location.href).origin !== location.origin) return; }catch(e){ return; }
+  console.error(ev.error || m);
+  showBootError(m);
 });
-window.addEventListener('unhandledrejection', ev=>showBootError((ev.reason && ev.reason.message) || String(ev.reason)));
+window.addEventListener('unhandledrejection', ev=>{
+  const r = ev.reason, m = (r && r.message) || String(r);
+  console.warn(r);
+  if(!r || /^script error/i.test(m) || /Load failed|Failed to fetch|NetworkError|AbortError|cancelled/i.test(m)) return;
+  showBootError(m);
+});
 
 async function startApp(){
   document.getElementById('authGate').classList.add('hidden');
