@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>window.supabase||document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>')</script>
-<script>try{var __t=localStorage.getItem('kept-theme');if(__t==='lotus'||__t==='pandan')document.documentElement.setAttribute('data-theme',__t);}catch(e){}</script>
+<script>try{var __t=localStorage.getItem('kept-theme');if(__t&&/^[a-z]+$/.test(__t)&&__t!=='classic')document.documentElement.setAttribute('data-theme',__t);}catch(e){}</script>
 <style>
   #authGate{ position:fixed; inset:0; background:var(--paper); z-index:500; display:flex; align-items:center; justify-content:center; padding:20px; }
   #authGate.hidden{ display:none !important; }
@@ -156,7 +156,7 @@
   .pv-bannerbtn{ position:absolute !important; right:8px; bottom:8px; background:var(--card) !important; }
   .pv-bannerbtn.rm{ right:8px; left:auto; bottom:auto; top:8px; padding:6px 10px; }
   .pv-avrow{ position:relative; z-index:2; display:flex; align-items:flex-end; gap:14px; margin:-34px 0 12px 14px; }
-  .pv-avrow .a-btns{ padding-bottom:6px; }
+  
   .pv-head{ position:relative; z-index:2; display:flex; align-items:flex-end; gap:12px; margin:-34px 0 0 14px; }
   .pv-avwrap{ flex:none; line-height:0; }
   .a-row{ align-items:flex-end; }
@@ -351,6 +351,81 @@
   .chat-post{ display:block; width:min(250px,70vw); text-align:left; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:8px; color:var(--ink); font:inherit; cursor:pointer; }
   .chat-post img{ width:100%; border-radius:8px; margin-bottom:6px; max-height:140px; object-fit:cover; display:block; }
   .chat-post b{ display:block; font-size:0.8rem; } .chat-post span{ font-size:0.82rem; color:var(--ink-soft); display:block; word-break:break-word; }
+  /* ---- update 6 ---- */
+  header.top{ position:relative; }
+  .me-chip{ position:absolute; top:2px; right:0; display:flex; align-items:center; gap:10px; background:none; border:none; cursor:pointer; color:var(--ink); font:inherit; padding:2px; max-width:62%; }
+  .me-chip .me-t{ display:flex; flex-direction:column; align-items:flex-end; min-width:0; line-height:1.15; }
+  .me-chip .me-t b{ font-family:'Fraunces',serif; font-size:1rem; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .me-chip .me-t small{ color:var(--ink-soft); font-size:0.74rem; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .me-chip .av{ width:46px; height:46px; border-radius:50%; background:var(--paper-dark); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex:none; border:2px solid var(--line); }
+  #inboxDot{ background:#d6322c; position:absolute; top:-7px; right:-5px; box-shadow:0 0 0 2px var(--paper); }
+  .pv-avrow{ align-items:flex-start; }
+  .pv-avrow .a-btns{ padding:42px 0 0; }
+  .nseg{ display:flex; border:1px solid var(--line); border-radius:10px; overflow:hidden; margin-bottom:12px; }
+  .nseg button{ flex:1; padding:8px 6px; background:var(--card); color:var(--ink); border:none; font:inherit; font-size:0.84rem; cursor:pointer; }
+  .nseg button.on{ background:var(--ink); color:var(--paper); }
+  .nseg .acct-dot{ background:#d6322c; }
+  .cm-acts{ display:flex; gap:12px; margin-top:3px; flex-wrap:wrap; }
+  .cm-acts button{ background:none; border:none; padding:0; font:inherit; font-size:0.72rem; color:var(--ink-soft); cursor:pointer; }
+  .cm-acts button.on{ color:#d6322c; font-weight:600; } .cm-acts .cm-x{ margin-left:auto; }
+  .cm-edit textarea{ width:100%; box-sizing:border-box; font:inherit; font-size:0.86rem; border:1px solid var(--line); border-radius:8px; padding:6px; background:var(--card); color:var(--ink); }
+  .shop-tabs{ display:flex; gap:2px; border-bottom:1px solid var(--line); margin:0 0 12px; overflow-x:auto; }
+  .shop-tabs button{ background:none; border:none; border-bottom:2px solid transparent; padding:9px 11px; font:inherit; font-size:0.84rem; color:var(--ink-soft); cursor:pointer; white-space:nowrap; }
+  .shop-tabs button.on{ color:var(--ink); border-bottom-color:var(--moss); font-weight:600; }
+  .shop-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:14px; }
+  .shop-tile{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; background:none; border:none; padding:0; cursor:pointer; color:var(--ink); font:inherit; min-width:0; }
+  .shop-tile b{ font-size:0.7rem; font-weight:600; line-height:1.2; max-width:100%; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .shop-tile small{ font-size:0.66rem; color:var(--ink-soft); }
+  .shop-tile.on .shop-tp{ outline:2px solid var(--moss); outline-offset:2px; }
+  .shop-tile.static{ cursor:default; } .shop-tile.static .a-btn{ padding:5px 8px; font-size:0.7rem; }
+  .shop-tp{ width:100%; aspect-ratio:1; border:1px solid var(--line); border-radius:10px; background:var(--card); display:flex; align-items:center; justify-content:center; overflow:visible; }
+  .sp-theme{ width:100%; height:100%; border-radius:9px; padding:10px 8px; box-sizing:border-box; display:flex; flex-direction:column; gap:5px; justify-content:center; }
+  .sp-theme i{ display:block; height:6px; border-radius:3px; } .sp-theme.big{ padding:22px 18px; gap:9px; border:1px solid var(--line); } .sp-theme.big i{ height:10px; border-radius:5px; }
+  .sp-center .av{ border:2px solid var(--paper); } .sp-center.big{ padding:20px 0; }
+  .sp-banner{ width:calc(100% - 10px); height:38px; border-radius:6px; } .sp-banner.big{ width:100%; height:100px; border-radius:10px; }
+  .shop-big{ display:flex; justify-content:center; } .shop-big > *{ width:100%; }
+  .shop-sheet{ max-width:360px; max-height:90vh; overflow-y:auto; }
+  .sw-row{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px; font-size:0.66rem; color:var(--ink-soft); }
+  .sw-row span{ display:flex; align-items:center; gap:4px; } .sw-row i{ width:16px; height:16px; border-radius:50%; border:1px solid var(--line); display:inline-block; }
+  .gift-h{ display:flex; gap:10px; align-items:center; } .gift-m{ margin:8px 0; padding:8px 10px; background:var(--paper); border-radius:8px; font-size:0.86rem; white-space:pre-wrap; }
+  .av[data-deco="a-gold"]{ box-shadow:0 0 0 2px var(--card),0 0 0 4px #d4a72c,0 0 0 5px var(--card),0 0 0 7px #f0cf65; }
+  .av[data-deco="a-rose"]{ box-shadow:0 0 0 3px #f5b7c5,0 0 14px 6px rgba(224,102,140,0.55); }
+  .av[data-deco="a-leaf"]{ outline:3px dashed #7fa06c; outline-offset:3px; }
+  .av[data-deco="a-night"]{ box-shadow:0 0 0 3px #2b2f6b,0 0 0 5px #7b83e6,0 0 16px 5px rgba(123,131,230,0.6); }
+  .av[data-deco="a-candy"]{ box-shadow:0 0 0 3px #ff8fb1,0 0 0 6px #8fd3ff; }
+  .pv-banner[data-deco]::after, .sp-banner::after{ content:''; position:absolute; inset:0; pointer-events:none; }
+  .pv-banner .pv-bannerbtn{ z-index:2; }
+  .pv-banner[data-deco="b-frame"]::after{ box-shadow:inset 0 0 0 3px rgba(255,255,255,0.85), inset 0 0 0 4px rgba(0,0,0,0.35); }
+  .pv-banner[data-deco="b-dots"]::after{ background-image:radial-gradient(rgba(255,255,255,0.6) 1.2px, transparent 1.6px); background-size:10px 10px; }
+  .pv-banner[data-deco="b-film"]::after{ background:repeating-linear-gradient(90deg,#111 0 8px,transparent 8px 16px) top/100% 12px no-repeat, repeating-linear-gradient(90deg,#111 0 8px,transparent 8px 16px) bottom/100% 12px no-repeat; }
+  .pv-banner[data-deco="b-aurora"]::after{ background:linear-gradient(120deg,rgba(120,255,200,0.4),rgba(150,120,255,0.4),rgba(255,150,200,0.4),rgba(120,255,200,0.4)); background-size:300% 100%; animation:auroraShift 8s linear infinite; mix-blend-mode:soft-light; }
+  .pv-banner[data-deco="b-vignette"]::after{ box-shadow:inset 0 0 40px 10px rgba(0,0,0,0.55); }
+  @keyframes auroraShift{ to{ background-position:300% 0; } }
+  @media (prefers-reduced-motion:reduce){ .pv-banner[data-deco="b-aurora"]::after{ animation:none; } }
+  :root[data-theme="honey"]{
+    --paper:#FBF5E6; --paper-dark:#F3E6C4; --card:#FFFDF6; --ink:#3D3220; --ink-soft:#8A7650;
+    --rose:#C26A4A; --rose-soft:#F6DFCF; --moss:#8A9A5B; --moss-soft:#EAEED8; --slate:#6C7A86; --slate-soft:#E4E9EC;
+    --amber:#C98A2B; --amber-soft:#F7E8C6; --seal:#A66A1E; --line:#E9DBB4; --shadow:0 6px 16px rgba(90,65,20,0.12);
+  }
+  :root[data-theme="ocean"]{
+    --paper:#F0F6F8; --paper-dark:#DCEAEF; --card:#FFFFFF; --ink:#22343B; --ink-soft:#5F7A84;
+    --rose:#C9667A; --rose-soft:#F4DDE3; --moss:#4F9A8A; --moss-soft:#D9EEE9; --slate:#4E7491; --slate-soft:#DAE7F0;
+    --amber:#3E8E9B; --amber-soft:#D6EBEF; --seal:#2E7482; --line:#CFE0E6; --shadow:0 6px 16px rgba(30,70,85,0.12);
+  }
+  :root[data-theme="dusk"]{
+    color-scheme:dark;
+    --paper:#1A1520; --paper-dark:#231C2B; --card:#271F30; --ink:#EDE6F2; --ink-soft:#A99BB8;
+    --rose:#D58C9D; --rose-soft:#3A2B36; --moss:#9CC090; --moss-soft:#27342A; --slate:#8FA6C8; --slate-soft:#27303F;
+    --amber:#B79AE0; --amber-soft:#332A44; --seal:#9B7FD0; --line:#3A3046; --shadow:0 6px 16px rgba(0,0,0,0.5);
+  }
+  :root[data-theme="ember"]{
+    color-scheme:dark;
+    --paper:#1B1816; --paper-dark:#241F1C; --card:#2A2522; --ink:#F1E8DE; --ink-soft:#AE9F90;
+    --rose:#E07A5F; --rose-soft:#3D2A25; --moss:#A8B98A; --moss-soft:#2B3224; --slate:#93A5B5; --slate-soft:#262E36;
+    --amber:#E8833A; --amber-soft:#3D2C1E; --seal:#C96A22; --line:#3A332E; --shadow:0 6px 16px rgba(0,0,0,0.5);
+  }
+  :root[data-theme="dusk"] body, :root[data-theme="ember"] body{ background-image:radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); }
+  :root[data-theme="dusk"] .overlay, :root[data-theme="ember"] .overlay{ background:rgba(0,0,0,0.6); }
 </style>
 <style>
   :root{
@@ -779,6 +854,7 @@
 
 <div class="wrap">
   <header class="top">
+    <button class="me-chip hidden" id="meChip" type="button" aria-label="My profile and posts"></button>
     <h1>Kept</h1>
     <p>A small archive of the people who've mattered — the ones still around, and the ones who aren't.</p>
     <div class="stats" id="stats"></div>
@@ -788,7 +864,7 @@
   <div class="tabs-row">
     <nav class="tabs" id="tabs"></nav>
     <button class="grid-toggle" id="settingsBtn" type="button">⚙️</button>
-    <button class="grid-toggle" id="profileBtn" type="button">👤 Account</button>
+    <button class="grid-toggle" id="profileBtn" type="button">🔒 Account</button>
     <button class="grid-toggle" id="gridModeBtn" type="button">⊞ 4 per row</button>
   </div>
 
@@ -831,7 +907,7 @@
 <!-- account hub -->
 <div class="overlay hidden" id="acctOverlay">
   <div class="acct" role="dialog" aria-label="Account">
-    <div class="acct-head"><h2>Account</h2><span class="acct-save" id="acctSaved"></span><button class="acct-x" id="acctClose" type="button" aria-label="Close">✕</button></div>
+    <div class="acct-head"><h2 id="acctTitle">Account</h2><span class="acct-save" id="acctSaved"></span><button class="acct-x" id="acctClose" type="button" aria-label="Close">✕</button></div>
     <div class="acct-tabs" id="acctTabs"></div>
     <div class="acct-body" id="acctBody"></div>
   </div>
@@ -2388,6 +2464,7 @@ function syncCounts(){
 
 /* ---------- profile autosave ---------- */
 function queueProfile(patch, silent){
+  setTimeout(()=>{ try{ updateMeChip(); }catch(e){} }, 0);
   Object.assign(ACCT.dirty, patch);
   Object.assign(ACCT.profile, patch);
   clearTimeout(ACCT.profileTimer);
@@ -2454,10 +2531,18 @@ function attentionCount(){
   if(acctUsable() && ACCT.profile && !ACCT.profile.username) n++;
   return n;
 }
+function updateMeChip(){
+  const c = document.getElementById('meChip'); if(!c) return;
+  const p = ACCT.profile;
+  if(!acctUsable() || !p || !p.username){ c.classList.add('hidden'); return; }
+  c.classList.remove('hidden');
+  c.innerHTML = `<span class="me-t"><b>${aE(p.display_name || p.username)}</b><small>@${aE(p.username)}</small></span>${avHtml(p, 'chip')}`;
+}
 function updateAcctBadge(){
   const btn = $a('profileBtn'); if(!btn) return;
+  updateMeChip();
   const n = attentionCount();
-  btn.innerHTML = '👤 Account' + (n ? `<span class="top-dot">${n}</span>` : '');
+  btn.innerHTML = '🔒 Account' + (n ? `<span class="top-dot">${n}</span>` : '');
   const tb = $a('acctTabPeopleDot'); if(tb) tb.textContent = '';
 }
 
@@ -2492,10 +2577,11 @@ function acctTyping(){
 function acctTabs(){
   if(!acctSignedIn()) return [['profile','Profile']];
   if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'],['account','Account']];
-  return [['profile','Profile'],['posts','Posts'],['privacy','Privacy'],['security','Security'],['account','Account']];
+  return ['profile','posts'].includes(ACCT.tab) ? [['profile','Profile'],['posts','Posts']] : [['privacy','Privacy'],['security','Security'],['account','Account']];
 }
 function updateAcctTabs(){
   const tabs = acctTabs();
+  const ttl = document.getElementById('acctTitle'); if(ttl) ttl.textContent = tabs.some(t=>t[0] === 'posts') ? 'My profile' : 'Account';
   const need = attentionCount();
   const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received') || (l.status==='accepted'&&l.page_pending_for_me)).length;
   $a('acctTabs').innerHTML = tabs.map(([id,label])=>
@@ -2685,8 +2771,8 @@ function cssBg(v){
 }
 function avHtml(o, cls){
   o = o || {};
-  const u = avatarUrl(o.avatar || o.avatar_path), bg = u ? '' : cssBg(o.emoji_bg);
-  return `<div class="av ${cls || ''}"${bg ? ` style="background:${bg}"` : ''}>${u ? `<img src="${aE(u)}" alt="" loading="lazy">` : aE(o.emoji || '🙂')}</div>`;
+  const u = avatarUrl(o.avatar || o.avatar_path), bg = u ? '' : cssBg(o.emoji_bg), dc = o.deco || o.avatar_deco;
+  return `<div class="av ${cls || ''}"${dc && /^[a-z0-9-]+$/.test(dc) ? ` data-deco="${dc}"` : ''}${bg ? ` style="background:${bg}"` : ''}>${u ? `<img src="${aE(u)}" alt="" loading="lazy">` : aE(o.emoji || '🙂')}</div>`;
 }
 function cropToBlob(file, w, h, q){
   return new Promise((resolve, reject)=>{
@@ -2726,7 +2812,7 @@ function syncFeatured(){
 function profileImagesHtml(p){
   const bu = avatarUrl(p.banner_path);
   return `
-    <div class="pv-banner pv-edit">${bu ? `<img src="${aE(bu)}" alt="">` : ''}
+    <div class="pv-banner pv-edit"${p.banner_deco && /^[a-z0-9-]+$/.test(p.banner_deco) ? ` data-deco="${p.banner_deco}"` : ''}>${bu ? `<img src="${aE(bu)}" alt="">` : ''}
       <button class="a-btn pv-bannerbtn" data-act="pickBanner" type="button">${bu ? 'Change banner' : 'Add a banner'}</button>
       ${bu ? `<button class="a-btn pv-bannerbtn rm" data-act="removeBanner" type="button" aria-label="Remove banner">✕</button>` : ''}</div>
     <div class="pv-avrow">
@@ -2823,6 +2909,7 @@ function renderProfileBody(body){
   if(!r.limited || r.is_me) tabs.push(['posts','Posts']);
   if(!r.limited && (rels.length || r.is_me)) tabs.push(['rels', 'Relationships' + (rels.length ? ' ' + rels.length : '')]);
   if(!r.limited && (feat.length || r.is_me)) tabs.push(['kept', 'Kept' + (feat.length ? ' ' + feat.length : '')]);
+  if(!r.is_me && r.wishlist_count) tabs.push(['wish', 'Wishlist ' + r.wishlist_count]);
   if(!tabs.some(t=>t[0] === ACCT.pvTab)) ACCT.pvTab = 'overview';
   const counts = r.counts || {}, lc = r.linked_counts || {};
   const countBoxes = COUNT_KEYS.filter(([k])=>k in counts).map(([k,l])=>`<div class="a-count"><b>${aE(counts[k])}</b><span>${aE(l)}</span></div>`).join('');
@@ -2830,7 +2917,7 @@ function renderProfileBody(body){
   const bu = avatarUrl(r.banner);
   const myLink = !r.is_me && r.connected ? (ACCT.links || []).find(l=>l.status === 'accepted' && l.other.username === r.username) : null;
   let content = '';
-  if(r.limited){
+  if(r.limited && ACCT.pvTab !== 'wish'){
     content = `<p class="hint" style="margin-top:14px">${r.connected ? 'This profile is private — only their name shows.' : 'Only their name shows for now. Their profile is limited, and connecting with them (or following them, if they allow it) may show more.'}</p>`;
   } else if(ACCT.pvTab === 'overview'){
     content = `
@@ -2839,6 +2926,8 @@ function renderProfileBody(body){
       ${r.is_me && !countBoxes && !linkedBoxes && !r.about ? '<p class="hint">Fill in "About you" in the Profile tab to see it here.</p>' : ''}`;
   } else if(ACCT.pvTab === 'posts'){
     content = '<div class="posts-root"></div>';
+  } else if(ACCT.pvTab === 'wish'){
+    content = '<div class="wl-root"><p class="hint">Loading…</p></div>';
   } else if(ACCT.pvTab === 'rels'){
     content = rels.length ? rels.map(x=>relCardHtml(x, r)).join('') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
   } else {
@@ -2846,7 +2935,7 @@ function renderProfileBody(body){
     if(r.is_me && r.featured_visible === false) content += `<p class="hint">Hidden from others right now (Privacy tab).</p>`;
   }
   body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
-    <div class="pv-banner">${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>
+    <div class="pv-banner"${r.banner_deco && /^[a-z0-9-]+$/.test(r.banner_deco) ? ` data-deco="${r.banner_deco}"` : ''}>${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>
     <div class="pv-head">${avHtml(r, 'xl')}
       <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age != null ? ' · ' + aE(r.age) : ''}${r.followers ? ' · ' + aE(r.followers) + (r.followers == 1 ? ' follower' : ' followers') : ''}</span></div></div>
     ${(r.nicknames || []).length ? `<div class="a-chips" style="margin:8px 0">${r.nicknames.map(n=>`<span class="a-chip">${aE(n)}</span>`).join('')}</div>` : ''}
@@ -2857,6 +2946,7 @@ function renderProfileBody(body){
     <div class="pv-tabs">${tabs.map(([id,l])=>`<button class="pv-tab ${ACCT.pvTab === id ? 'active' : ''}" data-pvtab="${id}" type="button">${aE(l)}</button>`).join('')}</div>
     ${content}`;
   if(ACCT.pvTab === 'posts' && !r.limited) postsInit();
+  if(ACCT.pvTab === 'wish') wlProfileLoad(r.username);
 }
 
 /* ---------- RELATIONSHIP PAGE (between two people) ---------- */
@@ -3406,68 +3496,197 @@ function bindAccountHub(){
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden){ flushProfile(); flushSides(); flushShared(); } });
 }
 
-/* ---------- SHOP & THEMES ----------
-   Prototype: "petals" are free play money (everyone starts with 100) and the
-   purchase record is kept in the person's own archive. Real payments will need
-   a server-side check later. */
+/* ---------- SHOP: themes, avatar & banner decorations, wishlist, gifts ----------
+   Petals are still play money for now. Everything you own is stored on the server
+   (supabase_update_6.sql), so gifts and decorations work between people. */
 const SHOP_KEY = 'kept-shop';
 const THEMES = {
-  classic:{ name:'Cream & Forest', price:0,  desc:'The original Kept look: cream paper with forest-green accents.', sw:['#F7F5EC','#EDEADB','#7C8F63','#5F7053','#31352C'], bg:'#F7F5EC', ink:'#31352C', bar:'#7C8F63' },
-  lotus:  { name:'Lotus Dawn',     price:40, desc:'Light. Blush paper, lotus-pink accents and little leaf-green details.', sw:['#FBF3F4','#F4D9DF','#C97B8E','#7D9A74','#3B2B31'], bg:'#FBF3F4', ink:'#3B2B31', bar:'#C2566F' },
-  pandan: { name:'Pandan Night',   price:40, desc:'Dark. Deep pandan-leaf green with a soft sage glow.', sw:['#141B17','#212C25','#A5BD86','#7FA06C','#E8EDE2'], bg:'#141B17', ink:'#E8EDE2', bar:'#A5BD86' }
+  classic:{ sw:['#F7F5EC','#EDEADB','#7C8F63','#5F7053','#31352C'], bg:'#F7F5EC', ink:'#31352C', bar:'#7C8F63' },
+  lotus:  { sw:['#FBF3F4','#F4D9DF','#C97B8E','#7D9A74','#3B2B31'], bg:'#FBF3F4', ink:'#3B2B31', bar:'#C2566F' },
+  pandan: { sw:['#141B17','#212C25','#A5BD86','#7FA06C','#E8EDE2'], bg:'#141B17', ink:'#E8EDE2', bar:'#A5BD86' },
+  honey:  { sw:['#FBF5E6','#F3E6C4','#C98A2B','#8A9A5B','#3D3220'], bg:'#FBF5E6', ink:'#3D3220', bar:'#C98A2B' },
+  ocean:  { sw:['#F0F6F8','#DCEAEF','#3E8E9B','#7DB7A6','#22343B'], bg:'#F0F6F8', ink:'#22343B', bar:'#3E8E9B' },
+  dusk:   { sw:['#1A1520','#271F30','#B79AE0','#D58C9D','#EDE6F2'], bg:'#1A1520', ink:'#EDE6F2', bar:'#B79AE0' },
+  ember:  { sw:['#1B1816','#2A2522','#E8833A','#C9A66B','#F1E8DE'], bg:'#1B1816', ink:'#F1E8DE', bar:'#E8833A' }
 };
-let SHOP = { petals:100, owned:['classic'], active:'classic' };
+const SHOP_TABS = [['theme','Themes'],['avatar','Avatar decoration'],['banner','Banner decoration'],['wish','Wishlist']];
+let SHOP = { petals:100, owned:['classic'], theme:'classic', avatar:null, banner:null, wishlist:[], vis:'off', items:[], loaded:false, tab:'theme', gifts:null };
+const shopOpen = ()=>!$a('shopOverlay').classList.contains('hidden');
+function shopItem(id){ return SHOP.items.find(i=>i.id === id) || null; }
 function applyTheme(id){
-  if(!THEMES[id] || !SHOP.owned.includes(id)) id = 'classic';
-  SHOP.active = id;
+  if(!THEMES[id]) id = 'classic';
   if(id === 'classic') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme', id);
   try{ localStorage.setItem('kept-theme', id); }catch(e){}
 }
+function shopApplyState(s){
+  if(!s) return;
+  SHOP.petals = s.petals; SHOP.owned = s.owned || ['classic']; SHOP.theme = s.theme || 'classic';
+  SHOP.avatar = s.avatar || null; SHOP.banner = s.banner || null; SHOP.wishlist = s.wishlist || []; SHOP.vis = s.wishlist_vis || 'off';
+  SHOP.items = s.items || SHOP.items; SHOP.loaded = true;
+  if(ACCT.profile){ ACCT.profile.avatar_deco = SHOP.avatar; ACCT.profile.banner_deco = SHOP.banner; ACCT.profile.wishlist_vis = SHOP.vis; }
+  applyTheme(SHOP.owned.includes(SHOP.theme) ? SHOP.theme : 'classic');
+  try{ updateMeChip(); }catch(e){}
+}
 async function loadShop(){
-  try{
-    const r = await storage.get(SHOP_KEY, false);
-    const s = JSON.parse(r.value);
-    SHOP = { petals: Number.isFinite(s.petals) ? s.petals : 100,
-             owned: ['classic'].concat((s.owned || []).filter(x=>THEMES[x] && x !== 'classic')),
-             active: s.active };
-  }catch(e){ /* first time: starter petals */ }
-  applyTheme(SHOP.active);
+  if(!acctUsable()) return;
+  let s = await rpc('shop_state');
+  if(s && !s.imported){
+    let owned = [], active = 'classic';
+    try{ const r = await storage.get(SHOP_KEY, false); const o = JSON.parse(r.value); owned = (o.owned || []).filter(x=>typeof x === 'string'); active = o.active || 'classic'; }catch(e){}
+    try{ s = await rpc('shop_import', { owned, active }); }catch(e){}
+  }
+  shopApplyState(s);
+  if(shopOpen()) renderShop();
 }
-async function saveShop(){
-  try{ await storage.set(SHOP_KEY, JSON.stringify(SHOP), false); setSave('saved'); }
-  catch(e){ setSave('error', "Couldn't save purchase"); }
+async function shopCall(name, args){ const s = await rpc(name, args); shopApplyState(s); return s; }
+
+/* previews */
+function shopPreviewHtml(it, big){
+  if(it.kind === 'theme'){
+    const t = THEMES[it.id] || THEMES.classic;
+    return `<div class="sp-theme ${big ? 'big' : ''}" style="background:${t.bg}"><i style="background:${t.ink};width:70%"></i><i style="background:${t.bar};width:100%"></i><i style="background:${t.ink};opacity:.35;width:50%"></i></div>`;
+  }
+  if(it.kind === 'avatar'){
+    return `<div class="sp-center ${big ? 'big' : ''}">${avHtml(Object.assign({}, ACCT.profile || {}, { deco: it.id, avatar_deco: it.id }), big ? 'xl' : 'md')}</div>`;
+  }
+  const bu = ACCT.profile && avatarUrl(ACCT.profile.banner_path);
+  return `<div class="pv-banner sp-banner ${big ? 'big' : ''}" data-deco="${aE(it.id)}">${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>`;
 }
-function themeCardHtml(id){
-  const t = THEMES[id], owned = SHOP.owned.includes(id), active = SHOP.active === id;
-  const action = active ? `<button class="a-btn" disabled type="button">In use</button>`
-    : owned ? `<button class="a-btn primary" data-act="applyTheme" data-id="${id}" type="button">Use this theme</button>`
-    : `<button class="a-btn primary" data-act="buyTheme" data-id="${id}" type="button" ${SHOP.petals < t.price ? 'disabled' : ''}>Buy · ${t.price} 🌸</button>`;
-  return `<div class="a-card theme-card">
-    <div class="theme-prev" style="background:${t.bg}"><i style="background:${t.ink};width:70%"></i><i style="background:${t.bar};width:100%"></i><i style="background:${t.ink};opacity:.35;width:50%"></i><div class="sw">${t.sw.map(c=>`<b style="background:${c}"></b>`).join('')}</div></div>
-    <div class="theme-info"><b>${aE(t.name)}</b>${owned && id!=='classic' ? '<span class="a-badge">Owned</span>' : ''}<p>${aE(t.desc)}</p>
-    <div class="a-btns">${action}</div>${!owned && SHOP.petals < t.price ? '<div class="a-msg">Not enough petals yet.</div>' : ''}</div></div>`;
+function shopTileHtml(it){
+  const owned = SHOP.owned.includes(it.id), active = it.kind === 'theme' ? SHOP.theme === it.id : (it.kind === 'avatar' ? SHOP.avatar : SHOP.banner) === it.id;
+  const tag = active ? 'In use' : owned ? 'Owned' : `${it.price} 🌸`;
+  return `<button type="button" class="shop-tile ${active ? 'on' : ''}" data-act="shopOpen" data-id="${aE(it.id)}">
+    <div class="shop-tp">${shopPreviewHtml(it)}</div><b>${aE(it.name)}</b><small>${aE(tag)}${SHOP.wishlist.includes(it.id) ? ' · ♥' : ''}</small></button>`;
 }
+
+/* shop page */
 function renderShop(){
   const body = $a('shopBody'); if(!body) return;
-  const forSale = Object.keys(THEMES).filter(id=>!SHOP.owned.includes(id));
-  const owned = SHOP.owned.filter(id=>THEMES[id]);
   $a('shopCoins').textContent = '🌸 ' + SHOP.petals + ' petals';
-  body.innerHTML = `
-    <p class="hint">Prototype: petals are free play money for now, so you can try the shop. More themes are coming later.</p>
-    <h3>Owned themes</h3>${owned.map(themeCardHtml).join('')}
-    <h3>Theme shop</h3>${forSale.length ? forSale.map(themeCardHtml).join('') : '<p class="hint">You own everything in the shop right now. ✨</p>'}`;
+  const tabs = `<div class="shop-tabs">${SHOP_TABS.map(([id, l])=>`<button type="button" class="${SHOP.tab === id ? 'on' : ''}" data-act="shopTab" data-t="${id}">${l}${id === 'wish' && SHOP.gifts && SHOP.gifts.incoming.length ? `<span class="acct-dot">${SHOP.gifts.incoming.length}</span>` : ''}</button>`).join('')}</div>`;
+  if(!acctUsable()){ body.innerHTML = tabs + `<p class="hint">Create an account and choose a username to use the shop.</p>`; return; }
+  if(SHOP.tab === 'wish'){ body.innerHTML = tabs + wishPageHtml(); loadGifts(); return; }
+  const list = SHOP.items.filter(i=>i.kind === SHOP.tab);
+  const own = list.filter(i=>SHOP.owned.includes(i.id)), sale = list.filter(i=>!SHOP.owned.includes(i.id));
+  body.innerHTML = tabs + `<p class="hint" style="margin-top:0">Prototype: petals are free play money for now. Tap anything to see it up close.</p>
+    ${own.length ? `<h3>Yours</h3><div class="shop-grid">${own.map(shopTileHtml).join('')}</div>` : ''}
+    <h3>${own.length ? 'In the shop' : 'The shop'}</h3>${sale.length ? `<div class="shop-grid">${sale.map(shopTileHtml).join('')}</div>` : '<p class="hint">You own everything here right now. ✨</p>'}`;
 }
-function openShop(){ renderShop(); $a('shopOverlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
-function closeShop(){ $a('shopOverlay').classList.add('hidden'); document.body.style.overflow = ''; }
-ACTIONS.applyTheme = async (btn)=>{ applyTheme(btn.dataset.id); await saveShop(); renderShop(); };
-ACTIONS.buyTheme = async (btn)=>{
-  const id = btn.dataset.id, t = THEMES[id];
-  if(!t || SHOP.owned.includes(id) || SHOP.petals < t.price) return;
-  SHOP.petals -= t.price; SHOP.owned.push(id);
-  applyTheme(id);
-  await saveShop(); renderShop();
-};
+function wishPageHtml(){
+  const my = SHOP.items.filter(i=>SHOP.wishlist.includes(i.id));
+  return `<div class="a-card"><b>Who can see my wishlist?</b>
+      <div class="seg" style="margin-top:8px">${[['off', 'Nobody'], ['friends', 'Connections'], ['public', 'Everyone']].map(([v, l])=>`<button type="button" class="${SHOP.vis === v ? 'on' : ''}" data-act="wlVis" data-v="${v}">${l}</button>`).join('')}</div>
+      <p class="hint" style="margin:0">${SHOP.vis === 'off' ? 'Your wishlist is private.' : 'It shows as a Wishlist tab on your profile. People who can see it may buy things from it as a gift, with a little note. You choose to accept or reject each one.'}</p></div>
+    <h3>My wishlist</h3>${my.length ? `<div class="shop-grid">${my.map(shopTileHtml).join('')}</div>` : '<p class="hint">Nothing here yet. Open an item in the shop and tap “Add to wishlist”.</p>'}
+    <div id="giftBox"></div>`;
+}
+async function loadGifts(){
+  try{ SHOP.gifts = await rpc('list_gifts'); }catch(e){ return; }
+  const box = $a('giftBox'); if(!box || SHOP.tab !== 'wish') { return; }
+  const inc = SHOP.gifts.incoming, out = SHOP.gifts.outgoing;
+  box.innerHTML = `<h3>Gifts for you ${inc.length ? `<span class="acct-dot">${inc.length}</span>` : ''}</h3>` + (inc.length ? inc.map(g=>`<div class="a-card gift-card">
+      <div class="gift-h">${avHtml(g.from)}<div><b>${aE((g.from.display_name || '@' + g.from.username))}</b> sent you <b>${aE(g.name)}</b> 🎁<br><small>${aE(relTime(g.created_at))}</small></div></div>
+      ${g.message ? `<p class="gift-m">“${aE(g.message)}”</p>` : ''}
+      <div class="a-btns"><button class="a-btn primary" data-act="giftYes" data-id="${aE(g.id)}" type="button">Accept</button><button class="a-btn" data-act="giftNo" data-id="${aE(g.id)}" type="button">Reject</button></div></div>`).join('') : '<p class="hint">No gifts waiting.</p>') +
+    (out.length ? `<h3>Gifts you sent</h3>` + out.map(g=>`<div class="a-person"><div class="who"><b>${aE(g.name)}</b> → ${aE(g.to.display_name || '@' + g.to.username)}<br><small>${g.status === 'pending' ? 'Waiting for them' : g.status === 'accepted' ? 'Accepted 💚' : 'Declined — it came back to you'} · ${aE(relTime(g.created_at))}</small></div></div>`).join('') : '');
+  const wt = document.querySelector('.shop-tabs [data-t="wish"]'); if(wt && !wt.querySelector('.acct-dot') && inc.length) wt.insertAdjacentHTML('beforeend', `<span class="acct-dot">${inc.length}</span>`);
+}
+async function openShop(tab){
+  if(tab) SHOP.tab = tab;
+  renderShop(); $a('shopOverlay').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  if(acctUsable() && !SHOP.loaded){ try{ await loadShop(); }catch(e){ showToast(e.message); } }
+  if(acctUsable()) loadGifts().then(()=>{ const wt = document.querySelector('.shop-tabs [data-t="wish"]'); if(wt && SHOP.gifts && SHOP.gifts.incoming.length && !wt.querySelector('.acct-dot')) wt.insertAdjacentHTML('beforeend', `<span class="acct-dot">${SHOP.gifts.incoming.length}</span>`); });
+}
+function closeShop(){ const m = document.getElementById('shopItemOv'); if(m) m.remove(); $a('shopOverlay').classList.add('hidden'); document.body.style.overflow = ''; }
+
+/* item sheet */
+function openShopItem(id, step){
+  const it = shopItem(id); if(!it) return;
+  const old = document.getElementById('shopItemOv'); if(old) old.remove();
+  const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'shopItemOv';
+  document.body.appendChild(ov);
+  const paint = (stp)=>{
+    const owned = SHOP.owned.includes(id), wished = SHOP.wishlist.includes(id);
+    const active = it.kind === 'theme' ? SHOP.theme === id : (it.kind === 'avatar' ? SHOP.avatar : SHOP.banner) === id;
+    const t = THEMES[id];
+    const colors = it.kind === 'theme' && t ? `<div class="sw-row">${t.sw.map(c=>`<span><i style="background:${c}"></i>${c}</span>`).join('')}</div>` : '';
+    let btns;
+    if(stp === 'bought') btns = `<p class="hint" style="margin:0 0 8px">It's yours now. Want to use it right away?</p><div class="a-btns"><button class="a-btn primary" data-s="apply">Set it now</button><button class="a-btn" data-s="later">Maybe later</button></div>`;
+    else if(owned) btns = `<div class="a-btns">${active ? (it.kind === 'theme' ? '<button class="a-btn" disabled>In use</button>' : '<button class="a-btn" data-s="clear">Take it off</button>') : '<button class="a-btn primary" data-s="apply">Use it</button>'}${it.kind === 'theme' && !active ? '<button class="a-btn" data-s="try">Try it live</button>' : ''}<button class="a-btn link" data-s="close">Close</button></div>`;
+    else btns = `<div class="a-btns"><button class="a-btn primary" data-s="buy" ${SHOP.petals < it.price ? 'disabled' : ''}>Buy · ${it.price} 🌸</button><button class="a-btn" data-s="wish">${wished ? '♥ On my wishlist' : '♡ Add to wishlist'}</button>${it.kind === 'theme' ? '<button class="a-btn" data-s="try">Try it live</button>' : ''}<button class="a-btn link" data-s="close">Close</button></div>${SHOP.petals < it.price ? '<div class="a-msg">Not enough petals yet — add it to your wishlist so someone can gift it.</div>' : ''}`;
+    ov.innerHTML = `<div class="rep-box shop-sheet" role="dialog" aria-label="${aE(it.name)}">
+      <div class="shop-big">${shopPreviewHtml(it, true)}</div>
+      <h3 style="margin:10px 0 2px">${aE(it.name)}</h3><div class="hint" style="margin:0 0 6px">${it.kind === 'theme' ? 'Theme' : it.kind === 'avatar' ? 'Avatar decoration' : 'Banner decoration'}${owned ? ' · Owned' : ' · ' + it.price + ' 🌸'}</div>
+      <p style="margin:0 0 8px;font-size:0.88rem">${aE(it.descr)}</p>${colors}${btns}<div class="a-msg" id="shopSheetMsg"></div></div>`;
+  };
+  paint(step);
+  let timer = null;
+  ov.addEventListener('click', async ev=>{
+    if(ev.target === ov){ ov.remove(); return; }
+    const b = ev.target.closest('[data-s]'); if(!b) return;
+    const s = b.dataset.s, msg = ()=>document.getElementById('shopSheetMsg');
+    try{
+      if(s === 'close' || s === 'later'){ ov.remove(); renderShop(); }
+      else if(s === 'buy'){ b.disabled = true; await shopCall('shop_buy', { item: id }); renderShop(); paint('bought'); }
+      else if(s === 'wish'){ await shopCall('wishlist_set', { item: id, want: !SHOP.wishlist.includes(id) }); renderShop(); paint(); }
+      else if(s === 'apply'){ await shopCall('shop_apply', { item: id }); ov.remove(); renderShop(); showToastOk(it.name + ' is on'); }
+      else if(s === 'clear'){ await shopCall('shop_clear', { k: it.kind }); ov.remove(); renderShop(); showToastOk('Taken off'); }
+      else if(s === 'try'){ applyTheme(id); clearTimeout(timer); timer = setTimeout(()=>applyTheme(SHOP.theme), 6000); showToast('Previewing ' + it.name + ' for a few seconds'); }
+    }catch(e){ if(msg()) msg().textContent = e.message; }
+  });
+}
+
+/* sending a wishlist item to someone as a gift */
+function openGiftModal(uname, itemId, display){
+  const it = shopItem(itemId); if(!it) return;
+  const old = document.getElementById('giftOv'); if(old) old.remove();
+  const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'giftOv';
+  ov.innerHTML = `<div class="rep-box shop-sheet" role="dialog" aria-label="Send a gift"><h3>Gift for ${aE(display)} 🎁</h3>
+    <div class="shop-big">${shopPreviewHtml(it, true)}</div><p style="margin:8px 0 4px"><b>${aE(it.name)}</b> · ${it.price} 🌸 <span class="hint">(you have ${SHOP.petals})</span></p>
+    <div class="field"><label for="giftMsg">Leave a little message (optional)</label><textarea id="giftMsg" rows="3" maxlength="200" placeholder="Thinking of you…"></textarea></div>
+    <p class="hint" style="margin:0 0 8px">They can accept it or send it back. If they send it back, it becomes yours.</p>
+    <div class="a-btns"><button class="a-btn primary" data-g="send" ${SHOP.petals < it.price ? 'disabled' : ''}>Send gift</button><button class="a-btn" data-g="cancel">Cancel</button></div><div class="a-msg" id="giftMsgErr"></div></div>`;
+  document.body.appendChild(ov);
+  ov.addEventListener('click', async ev=>{
+    if(ev.target === ov){ ov.remove(); return; }
+    const b = ev.target.closest('[data-g]'); if(!b) return;
+    if(b.dataset.g === 'cancel'){ ov.remove(); return; }
+    b.disabled = true;
+    try{ await shopCall('send_gift', { uname, item: itemId, msg: ov.querySelector('#giftMsg').value }); ov.remove(); showToastOk('Gift sent 🎁'); wlProfileLoad(uname); }
+    catch(e){ ov.querySelector('#giftMsgErr').textContent = e.message; b.disabled = false; }
+  });
+}
+async function wlProfileLoad(uname){
+  const box = document.querySelector('.wl-root'); if(!box) return;
+  if(!SHOP.loaded){ try{ await loadShop(); }catch(e){} }
+  try{
+    const rows = await rpc('get_wishlist', { uname });
+    if(!document.querySelector('.wl-root')) return;
+    const name = (ACCT.pv && (ACCT.pv.display_name || '@' + ACCT.pv.username)) || uname;
+    box.innerHTML = rows && rows.length ? `<div class="shop-grid">${rows.map(it=>`<div class="shop-tile static"><div class="shop-tp">${shopPreviewHtml(it)}</div><b>${aE(it.name)}</b><small>${it.price} 🌸</small>
+      ${it.pending_from_me ? '<em class="hint">Gift sent</em>' : `<button class="a-btn" data-act="giftOpen" data-u="${aE(uname)}" data-id="${aE(it.id)}" data-n="${aE(name)}" type="button">🎁 Gift</button>`}</div>`).join('')}</div>`
+      : '<p class="hint">Nothing on this wishlist right now.</p>';
+  }catch(e){ box.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+Object.assign(ACTIONS, safeActions({
+  async shopTab(b){ SHOP.tab = b.dataset.t; renderShop(); },
+  async shopOpen(b){ openShopItem(b.dataset.id); },
+  async wlVis(b){ await shopCall('set_wishlist_vis', { v: b.dataset.v }); renderShop(); },
+  async giftOpen(b){ openGiftModal(b.dataset.u, b.dataset.id, b.dataset.n || b.dataset.u); },
+  async giftYes(b){
+    const g = (SHOP.gifts.incoming || []).find(x=>x.id === b.dataset.id);
+    b.disabled = true; await shopCall('respond_gift', { gid: b.dataset.id, accept: true });
+    showToastOk('Added to what you own 💚');
+    if(g){ SHOP.tab = g.kind; renderShop(); openShopItem(g.item); } else renderShop();
+    loadGifts();
+  },
+  async giftNo(b){
+    if(!confirm('Send this gift back? It will become theirs to keep.')) return;
+    b.disabled = true; await shopCall('respond_gift', { gid: b.dataset.id, accept: false }); showToast('Sent back'); renderShop();
+  }
+}));
+
 
 
 /* =====================================================================
@@ -3646,12 +3865,22 @@ async function renderInbox(quiet){
           <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}</div></div>`;
       }).join('') : `<p class="hint">No chats yet. Once someone accepts your request, you can message them here.</p>`;
     } else {
-      INBOX.notifs = (await rpc('list_notifications', { lim: 40 })) || [];
+      INBOX.notifs = (await rpc('list_notifications', { lim: 60 })) || [];
       if(INBOX.chat || INBOX.tab !== 'notifs') return;
-      body.innerHTML = (INBOX.notifs.some(n=>!n.read) ? `<div class="a-btns" style="margin:0 0 10px"><button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button></div>` : '') +
-        (INBOX.notifs.length ? INBOX.notifs.map(n=>`<div class="a-card chat-row ${n.read ? '' : 'unread'}" data-act="openNotif" data-nid="${aE(n.id)}">
-          ${avHtml(n.actor)}<div class="who"><b>${aE(notifText(n))}</b><span>${aE(relTime(n.created_at))}</span></div>${n.read ? '' : '<i class="udot"></i>'}</div>`).join('')
-          : `<p class="hint">Nothing new yet. Requests, replies to your relationship page changes and new messages will show up here.</p>`);
+      const msgsAll = INBOX.notifs.filter(n=>n.kind === 'message'), seen = new Set(), stacks = [];
+      msgsAll.forEach(n=>{ const k = n.link_id || (n.actor && n.actor.username); if(seen.has(k)) return; seen.add(k); stacks.push(n); });
+      const acts = INBOX.notifs.filter(n=>n.kind !== 'message');
+      const unM = stacks.filter(n=>!n.read).length, unA = acts.filter(n=>!n.read).length;
+      if(!INBOX.nseg) INBOX.nseg = (unM > unA ? 'msgs' : 'posts');
+      const row = n=>`<div class="a-card chat-row ${n.read ? '' : 'unread'}" data-act="openNotif" data-nid="${aE(n.id)}">
+          ${avHtml(n.actor)}<div class="who"><b>${aE(notifText(n))}</b><span>${aE(relTime(n.created_at))}</span></div>${n.read ? '' : '<i class="udot"></i>'}</div>`;
+      const list = INBOX.nseg === 'msgs' ? stacks : acts;
+      body.innerHTML = `<div class="nseg"><button type="button" class="${INBOX.nseg === 'posts' ? 'on' : ''}" data-act="nseg" data-s="posts">Posts &amp; activity${unA ? ` <span class="acct-dot">${unA}</span>` : ''}</button>
+          <button type="button" class="${INBOX.nseg === 'msgs' ? 'on' : ''}" data-act="nseg" data-s="msgs">Messages${unM ? ` <span class="acct-dot">${unM}</span>` : ''}</button></div>` +
+        (list.some(n=>!n.read) ? `<div class="a-btns" style="margin:0 0 10px"><button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button></div>` : '') +
+        (list.length ? list.map(row).join('')
+          : INBOX.nseg === 'msgs' ? `<p class="hint">No new messages. When someone writes to you, they show up here, one spot per person.</p>`
+          : `<p class="hint">Nothing new yet. Likes, comments, shares and reposts of your posts show up here, along with requests and gifts.</p>`);
     }
   }catch(e){ body.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
 }
@@ -3662,13 +3891,18 @@ function notifText(n){
     case 'link_accepted': return `${who} accepted your request`;
     case 'followed': return `${who} started following you`;
     case 'post_like': return `${who} liked your post`;
+    case 'post_share': return `${who} shared your post`;
+    case 'comment_like': return `${who} liked your comment`;
+    case 'gift_received': return `${who} sent you a gift 🎁${shopItem((n.data || {}).item) ? ' · ' + shopItem(n.data.item).name : ''}`;
+    case 'gift_accepted': return `${who} accepted your gift 💚`;
+    case 'gift_rejected': return `${who} sent your gift back — it's yours now`;
     case 'post_repost': return `${who} reposted your post`;
     case 'post_comment': return `${who} commented on your post`;
     case 'page_created': return `${who} started a relationship page with you`;
     case 'page_proposal': return `${who} suggested changes to your shared page`;
     case 'page_accepted': return `${who} accepted your changes`;
     case 'page_declined': return `${who} declined your changes`;
-    case 'message': { const c = (n.data || {}).count || 1; return `${who} sent you ${c} message${c > 1 ? 's' : ''}`; }
+    case 'message': { const c = (n.data || {}).count || 1; return `${who} sent you ${c} new message${c > 1 ? 's' : ''}`; }
     default: return `${who} did something`;
   }
 }
@@ -3970,13 +4204,15 @@ const INBOX_ACTIONS = {
   },
   async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openImageLightbox(i2.src); },
   async loadEarlier(){ await loadEarlier(); },
-  async markAllRead(){ try{ await rpc('mark_notifications_read', {}); }catch(e){} await inboxTick(); renderInbox(true); },
+  async nseg(el){ INBOX.nseg = el.dataset.s; renderInbox(true); },
+  async markAllRead(){ try{ const ids = (INBOX.notifs || []).filter(n=>(INBOX.nseg === 'msgs') === (n.kind === 'message')).map(n=>n.id); await rpc('mark_notifications_read', { ids }); }catch(e){} await inboxTick(); renderInbox(true); },
   async openNotif(el){
     const n = INBOX.notifs.find(x=>x.id === el.dataset.nid); if(!n) return;
     try{ await rpc('mark_notifications_read', { ids: [n.id] }); }catch(e){}
     inboxTick();
     if(n.kind === 'link_request'){ INBOX.tab = 'people'; INBOX.q = ''; renderInbox(); }
-    else if(['post_like', 'post_comment', 'post_repost'].includes(n.kind)){ await closeInbox(); if(n.data && n.data.post) openAcctView({ type:'post', id: n.data.post }, 'notifs'); else { ACCT.pvTab = 'posts'; openAcctView({ type:'profile', username: (ACCT.profile || {}).username }, 'notifs'); } }
+    else if(['gift_received', 'gift_accepted', 'gift_rejected'].includes(n.kind)){ await closeInbox(); openShop('wish'); }
+    else if(['post_like', 'post_comment', 'post_repost', 'post_share', 'comment_like'].includes(n.kind)){ await closeInbox(); if(n.data && n.data.post) openAcctView({ type:'post', id: n.data.post }, 'notifs'); else { ACCT.pvTab = 'posts'; openAcctView({ type:'profile', username: (ACCT.profile || {}).username }, 'notifs'); } }
     else if(n.kind === 'followed' && n.actor && n.actor.username){ await closeInbox(); ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: n.actor.username }, 'notifs'); }
     else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
     else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }, 'notifs'); }
@@ -4484,7 +4720,7 @@ async function renderPostView(body){
   }catch(e){ body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><div class="a-msg">${aE(e.message)}</div>`; }
 }
 function handleHash(){
-  const m = /#post=([0-9a-f-]{36})/i.exec(location.hash || ''); if(!m) return;
+  const m = /#post=([0-9a-f-]{36})(?:&c=[0-9a-f-]{36})?$/i.exec(location.hash || ''); if(!m) return;
   if(!acctUsable()){ return; }
   try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){}
   openAcctView({ type:'post', id: m[1] }, null);
@@ -4754,9 +4990,15 @@ function commentHtml(c){
   let inner = '';
   if(c.kind === 'image') inner = `<img src="${aE(postUrl(c.media))}" alt="" data-act="postImg" data-src="${aE(postUrl(c.media))}">`;
   else if(c.kind === 'gif' && /^https:\/\//.test(c.media)) inner = `<img src="${aE(c.media)}" alt="GIF" data-act="postImg" data-src="${aE(c.media)}">`;
-  else inner = aE(c.body);
-  return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}</small></b>${inner}
-    ${c.can_delete ? `<button type="button" class="cm-x" data-act="cmDel" data-id="${aE(c.id)}">delete</button>` : ''}</div></div>`;
+  else inner = `<span class="cm-t">${aE(c.body)}</span>`;
+  const acts = [];
+  if(c.can_like) acts.push(`<button type="button" class="${c.liked ? 'on' : ''}" data-act="cmLike" data-id="${aE(c.id)}">${c.liked ? '♥' : '♡'}${c.likes ? ' ' + c.likes : ''}</button>`);
+  else if(c.likes) acts.push(`<button type="button" disabled>♥ ${c.likes}</button>`);
+  if(c.can_edit) acts.push(`<button type="button" data-act="cmEdit" data-id="${aE(c.id)}">edit</button>`);
+  if(c.can_share) acts.push(`<button type="button" data-act="cmShare" data-id="${aE(c.id)}">share</button>`);
+  if(c.can_delete) acts.push(`<button type="button" class="cm-x" data-act="cmDel" data-id="${aE(c.id)}">delete</button>`);
+  return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}${c.edited ? ' · edited' : ''}</small></b>${inner}
+    ${acts.length ? `<div class="cm-acts">${acts.join('')}</div>` : ''}</div></div>`;
 }
 async function cmLoad(post){
   const id = post.dataset.post, box = post.querySelector('.post-c'), list = box.querySelector('.cm-list'); if(!list) return;
@@ -4892,6 +5134,26 @@ const POST_ACTIONS = safeActions({
     box.classList.remove('hidden');
     mountGifPicker(box, async url=>{ if(await cmAfter(post, 'gif', '', url)){ box.classList.add('hidden'); box.innerHTML = ''; } });
   },
+  async cmLike(el){
+    const post = el.closest('.post'); await rpc('toggle_comment_like', { cid: el.dataset.id }); await cmLoad(post);
+  },
+  async cmEdit(el){
+    const item = el.closest('.cm-item'), t = item.querySelector('.cm-t'); if(!t || item.querySelector('.cm-edit')) return;
+    const box = document.createElement('div'); box.className = 'cm-edit';
+    box.innerHTML = `<textarea rows="3" maxlength="1000"></textarea><div class="cm-acts"><button type="button" data-act="cmSave" data-id="${aE(el.dataset.id)}">save</button><button type="button" data-act="cmCancel">cancel</button></div>`;
+    const a0 = item.querySelector('.cm-b > .cm-acts'); if(a0) a0.remove();
+    box.querySelector('textarea').value = t.textContent; t.replaceWith(box); box.querySelector('textarea').focus();
+  },
+  async cmSave(el){
+    const post = el.closest('.post'), v = el.closest('.cm-edit').querySelector('textarea').value;
+    await rpc('edit_comment', { cid: el.dataset.id, b: v }); await cmLoad(post);
+  },
+  async cmCancel(el){ await cmLoad(el.closest('.post')); },
+  async cmShare(el){
+    const post = el.closest('.post'), url = postLink(post.dataset.post) + '&c=' + el.dataset.id;
+    if(navigator.share){ try{ await navigator.share({ url, title:'A comment on Kept' }); return; }catch(e){ if(e && e.name === 'AbortError') return; } }
+    try{ await navigator.clipboard.writeText(url); showToastOk('Link copied'); }catch(e){ window.prompt('Copy this link:', url); }
+  },
   async cmDel(el){
     if(!confirm('Delete this comment?')) return;
     const post = el.closest('.post');
@@ -5002,11 +5264,12 @@ Object.assign(ACTIONS, safeActions({
 
 bindAccountHub();
 bindInbox();
-$a('shopBtn').addEventListener('click', openShop);
+$a('shopBtn').addEventListener('click', ()=>openShop());
 $a('shopClose').addEventListener('click', closeShop);
 $a('shopOverlay').addEventListener('click', ev=>{ if(ev.target === $a('shopOverlay')) closeShop(); });
 $a('shopBody').addEventListener('click', async ev=>{ const b = ev.target.closest('[data-act]'); if(b && ACTIONS[b.dataset.act]) await ACTIONS[b.dataset.act](b); });
-document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub());
+document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub(acctSignedIn() && !acctIsGuest() && !ACCT.setupError ? (['privacy','security','account'].includes(ACCT.tab) ? ACCT.tab : 'privacy') : undefined));
+document.getElementById('meChip').addEventListener('click', ()=>openAccountHub(['profile','posts'].includes(ACCT.tab) ? ACCT.tab : 'profile'));
 
 
 function coverSrc(entry){
@@ -7183,8 +7446,7 @@ async function startApp(){
   renderStats();
   renderGrid();
   maybeShowOnboardingHints();
-  loadShop().catch(()=>{});
-  acctInit().catch(()=>{});
+  acctInit().then(()=>loadShop()).catch(()=>{});
   setTimeout(handleHash, 1000);
 }
 
