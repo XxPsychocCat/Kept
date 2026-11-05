@@ -494,6 +494,16 @@
   .deco-grid button.on{ outline:2px solid var(--moss); }
   .deco-grid button .av{ margin:4px auto 6px; }
   .deco-grid .pv-banner{ height:34px; margin:0 0 6px; border-radius:8px; }
+
+  .av.chip{ background-size:cover; background-position:center; background-repeat:no-repeat; box-sizing:border-box; }
+  .nseg{ position:sticky; top:0; z-index:3; background:var(--paper); }
+  #chatSearch{ width:100%; box-sizing:border-box; }
+  .hrt{ color:var(--moss); letter-spacing:1px; font-variant-emoji:text; }
+  .closeness-hearts span{ color:var(--moss); font-variant-emoji:text; }
+  .pin-btn svg{ display:block; }
+  .pinmark svg{ vertical-align:-2px; }
+  .cm-acts .rp{ color:var(--rose); }
+  .chat-row .pinmark{ position:static !important; display:inline-block; margin-left:6px; color:var(--moss); }
 </style>
 <style>
   :root{
@@ -1084,7 +1094,7 @@
         <div class="field hidden" id="f-closenessField">
           <label>How close are you?</label>
           <div class="closeness-hearts" id="f-closenessHearts">
-            <span data-v="1">🤍</span><span data-v="2">🤍</span><span data-v="3">🤍</span><span data-v="4">🤍</span><span data-v="5">🤍</span>
+            <span data-v="1">♥︎</span><span data-v="2">♥︎</span><span data-v="3">♥︎</span><span data-v="4">♥︎</span><span data-v="5">♥︎</span>
           </div>
           <input type="text" id="f-closenessTag" placeholder="or a tag — e.g. inner circle, close, acquaintance" maxlength="30" style="margin-top:8px;">
         </div>
@@ -2735,7 +2745,7 @@ function updateAcctTabs(){
   const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received') || (l.status==='accepted'&&l.page_pending_for_me)).length;
   $a('acctTabs').innerHTML = tabs.map(([id,label])=>
     `<button class="acct-tab ${ACCT.tab===id && !ACCT.view ? 'active':''}" data-tab="${id}" type="button">${aE(label)}${id==='people'&&peopleN?`<span class="acct-dot">${peopleN}</span>`:''}${id==='profile'&&need-peopleN>0?`<span class="acct-dot">!</span>`:''}</button>`).join('') +
-    (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab go-chip" data-go="shop" type="button">🛍 Shop</button><button class="acct-tab go-chip" data-go="inbox" type="button">📥 Inbox</button>` : '');
+    (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab go-chip" data-go="shop" type="button">Shop</button><button class="acct-tab go-chip" data-go="inbox" type="button">Inbox</button>` : '');
 }
 function acctRender(){
   stopPagePoll();
@@ -2756,7 +2766,7 @@ function restoreAppSettings(){
   [...host.querySelectorAll('.settings-group')].forEach(g=>m.insertBefore(g, anchor));
 }
 function renderTabApp(body){
-  body.innerHTML = '<div id="appSetHost" class="app-set"></div>';
+  body.innerHTML = '<div id="appSetHost" class="app-set"></div><p class="hint" style="text-align:center;margin-top:18px">Kept build · update 9</p>';
   populateSettingsForm();
   const host = document.getElementById('appSetHost');
   document.querySelectorAll('#settingsOverlay .modal .settings-group').forEach(g=>host.appendChild(g));
@@ -2901,6 +2911,7 @@ function renderTabPrivacy(body){
     <p class="hint" id="followInfo"></p>
     <div id="blockedList"><p class="hint">Loading…</p></div>
     <h3>What your profile shows</h3>
+    ${switchHtml('allow_comment_share','Let others share my comments','Turns the “share” button on or off for your comments under any post.', p.allow_comment_share !== false)}
     ${switchHtml('show_counts','Show counts from my archive','e.g. how many friendships, partners, exes or family members you\'ve kept. Only the numbers — never names.', p.show_counts)}
     <div class="a-sub" id="countPicks" style="${p.show_counts?'':'display:none'}">
       ${COUNT_KEYS.map(([k,l])=>`<label><input type="checkbox" data-count="${k}" ${k in chosen?'checked':''}> ${aE(l)}</label>`).join('')}
@@ -2981,6 +2992,7 @@ function cssBg(v){
 function avHtml(o, cls){
   o = o || {};
   const u = avatarUrl(o.avatar || o.avatar_path), bg = u ? '' : cssBg(o.emoji_bg), dc = o.deco || o.avatar_deco;
+  if(cls === 'chip' && u) return `<div class="av chip"${dc && /^[a-z0-9-]+$/.test(dc) ? ` data-deco="${dc}"` : ''} style="background-image:url('${aE(u)}')" role="img" aria-label="Avatar"></div>`;
   return `<div class="av ${cls || ''}"${dc && /^[a-z0-9-]+$/.test(dc) ? ` data-deco="${dc}"` : ''}${bg ? ` style="background:${bg}"` : ''}>${u ? `<img src="${aE(u)}" alt="" loading="lazy">` : aE(o.emoji || '🙂')}</div>`;
 }
 function cropToBlob(file, w, h, q){
@@ -3030,9 +3042,9 @@ function profileImagesHtml(p){
       <div class="a-btns" style="margin:0">
         <button class="a-btn" data-act="pickAvatar" type="button">${p.avatar_path ? 'Change photo' : 'Upload a photo'}</button>
         ${p.avatar_path ? `<button class="a-btn" data-act="removeAvatar" type="button">Remove photo</button>` : ''}
-        <button class="a-btn" data-act="pickEmoji" type="button">${p.emoji && !p.avatar_path ? 'Change emoji' : '😀 Choose an emoji'}</button>
+        <button class="a-btn" data-act="pickEmoji" type="button">${p.emoji && !p.avatar_path ? 'Change emoji' : 'Choose an emoji'}</button>
         ${!p.avatar_path && p.emoji ? `<button class="a-btn" data-act="removeEmoji" type="button">Remove emoji</button>` : ''}
-        <button class="a-btn" data-act="pickDeco" type="button">✨ Decoration</button>
+        <button class="a-btn" data-act="pickDeco" type="button">Decoration</button>
       </div>
     </div>
     ${Object.keys(DRAFT.f).length ? `<div class="a-banner">You have unsaved changes to your images. Use <b>Save</b> (bottom of the screen) to confirm, or <b>Revert</b> to undo them.</div>` : ''}
@@ -3439,12 +3451,12 @@ function addFormHtml(pfx, uname, act){
     <p class="hint" style="margin:6px 0 0">They'll get a request and choose whether to accept.</p></div>`;
 }
 const REPORT_REASONS = [['spam','Spam or scam'],['harassment','Harassment or bullying'],['impersonation','Pretending to be someone else'],['inappropriate','Inappropriate content'],['underage','Seems to be under 13'],['other','Something else']];
-function openReport(username, mid, done){
+function openReport(username, mid, done, content){
   const old = document.getElementById('repOv'); if(old) old.remove();
   const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'repOv';
   ov.innerHTML = `<div class="rep-box" role="dialog" aria-label="Report">
-    <h3>Report @${aE(username)}</h3>
-    <p class="hint" style="margin:0 0 12px">${mid ? 'This message and the details below are sent to the Kept team to review.' : 'The details below are sent to the Kept team to review. They won\'t be told who reported them.'}</p>
+    <h3>${content ? 'Report this ' + content.kind : 'Report @' + aE(username)}</h3>
+    <p class="hint" style="margin:0 0 12px">${mid || content ? 'This ' + (content ? content.kind : 'message') + ' and the details below are sent to the Kept team to review.' : 'The details below are sent to the Kept team to review. They won\'t be told who reported them.'}</p>
     <div class="field"><label>What's wrong?</label><select id="rep-why">${REPORT_REASONS.map(([v,l])=>`<option value="${v}">${aE(l)}</option>`).join('')}</select></div>
     <div class="field"><label>Details (optional)</label><textarea id="rep-d" maxlength="1000" rows="3" placeholder="Anything that helps us understand"></textarea></div>
     <div class="field"><label class="chk"><input type="checkbox" id="rep-block"> Also block @${aE(username)}</label></div>
@@ -3458,7 +3470,8 @@ function openReport(username, mid, done){
     const btn = ev.currentTarget; btn.disabled = true;
     const why = ov.querySelector('#rep-why').value, d = ov.querySelector('#rep-d').value.trim(), blk = ov.querySelector('#rep-block').checked;
     try{
-      await rpc('report_user', { uname: username, why, d, mid: mid || null });
+      if(content) await rpc('report_content', { kind: content.kind, cid: content.id, why, d });
+      else await rpc('report_user', { uname: username, why, d, mid: mid || null });
       if(blk){ try{ await rpc('block_user', { uname: username }); }catch(e){} }
       close(); showToastOk(blk ? 'Report sent and person blocked' : 'Report sent. Thank you.');
       if(done) done(blk);
@@ -4219,9 +4232,10 @@ async function renderInbox(quiet){
 }
 let _lastEv = null; document.addEventListener('click', e=>{ _lastEv = e; }, true);
 function ev_stop(){ if(_lastEv) _lastEv.stopPropagation(); }
+function starSvg(on){ return '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2C12.8 7.5 16.5 11.2 22 12C16.5 12.8 12.8 16.5 12 22C11.2 16.5 7.5 12.8 2 12C7.5 11.2 11.2 7.5 12 2Z" fill="' + (on ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>'; }
 function chatListPaint(body){
   if(!$a('chatSearch')){
-    body.innerHTML = `<div class="field" style="margin:0 0 10px"><input type="search" id="chatSearch" maxlength="40" autocomplete="off" placeholder="Search chats by username or nickname…" value="${aE(INBOX.cq || '')}"></div><div id="chatList"></div>`;
+    body.innerHTML = `<div class="field" style="margin:0 0 10px"><input type="search" id="chatSearch" maxlength="40" autocomplete="off" placeholder="Search by username or nickname" value="${aE(INBOX.cq || '')}"></div><div id="chatList"></div>`;
   }
   const q = (INBOX.cq || '').trim().toLowerCase().replace(/^@/, '');
   const hit = c=>{
@@ -4236,10 +4250,10 @@ function chatListPaint(body){
     const o = c.other, last = c.last;
     const preview = !last ? 'Say hi 👋' : last.deleted ? 'Message deleted' : (last.kind === 'image' ? '📷 Photo' : last.kind === 'gif' ? 'GIF' : last.kind === 'post' ? '🔗 Shared a post' : last.kind === 'rel' ? '💞 Shared a relationship page' : last.body);
     return `<div class="a-card chat-row" data-act="openChatRow" data-link="${aE(c.link_id)}">
-      ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}${c.pinned ? ' <span class="pinmark">📌</span>' : ''}</b>
+      ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}${c.pinned ? ` <span class="pinmark">${starSvg(true)}</span>` : ''}</b>
       <span>${last ? (last.mine ? 'You: ' : '') : ''}${aE(preview)}</span></div>
       <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}
-      <button class="pin-btn ${c.pinned ? 'on' : ''}" data-act="pinChat" data-link="${aE(c.link_id)}" data-on="${c.pinned ? '0' : '1'}" type="button" title="${c.pinned ? 'Unpin chat' : 'Pin chat'}" aria-label="${c.pinned ? 'Unpin chat' : 'Pin chat'}">📌</button></div></div>`;
+      <button class="pin-btn ${c.pinned ? 'on' : ''}" data-act="pinChat" data-link="${aE(c.link_id)}" data-on="${c.pinned ? '0' : '1'}" type="button" title="${c.pinned ? 'Unpin chat' : 'Pin chat'}" aria-label="${c.pinned ? 'Unpin chat' : 'Pin chat'}">${starSvg(!!c.pinned)}</button></div></div>`;
   }).join('') : (q ? `<p class="hint">No chat matches “${aE(INBOX.cq)}”.</p>` : `<p class="hint">No chats yet. Once someone accepts your request, you can message them here.</p>`);
 }
 function notifText(n){
@@ -5047,6 +5061,7 @@ function postActionsHtml(p){
     ${p.no_comments && !p.mine ? '' : `<button type="button" data-act="postComments" data-id="${id}" aria-label="Comments">💬 ${p.comments || ''}</button>`}
     ${p.no_share && !p.mine ? '' : `<button type="button" data-act="postRepost" data-id="${id}" aria-label="Repost">↻ ${p.reposts || ''}</button>
     <button type="button" data-act="postShare" data-id="${id}" aria-label="Share">↗</button>`}
+    ${p.mine ? '' : `<button type="button" class="link" data-act="postReport" data-id="${id}" aria-label="Report this post">Report</button>`}
     ${p.mine ? `<button type="button" class="link" data-act="postEdit" data-id="${id}">Edit</button><button type="button" class="link" data-act="postDel" data-id="${id}">Delete</button>` : ''}`;
 }
 function postEl(id){ return document.querySelector(`[data-post="${CSS.escape(id)}"]`); }
@@ -5519,6 +5534,7 @@ function commentHtml(c){
   else if(c.likes) acts.push(`<button type="button" disabled>♥ ${c.likes}</button>`);
   if(c.can_edit) acts.push(`<button type="button" data-act="cmEdit" data-id="${aE(c.id)}">edit</button>`);
   if(c.can_share) acts.push(`<button type="button" data-act="cmShare" data-id="${aE(c.id)}">share</button>`);
+  if(c.can_report) acts.push(`<button type="button" class="cm-x rp" data-act="cmReport" data-id="${aE(c.id)}" data-u="${aE(a.username)}">report</button>`);
   if(c.can_delete) acts.push(`<button type="button" class="cm-x" data-act="cmDel" data-id="${aE(c.id)}">delete</button>`);
   return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}${c.edited ? ' · edited' : ''}</small></b>${c.reply ? `<div class="cm-quote">↪ ${aE((c.reply.author || {}).display_name || '@' + (c.reply.author || {}).username)}: ${aE(c.reply.kind === 'text' ? c.reply.body : c.reply.kind === 'gif' ? 'GIF' : '📷 Picture')}</div>` : ''}${inner}
     ${acts.length ? `<div class="cm-acts">${acts.join('')}</div>` : ''}</div></div>`;
@@ -5576,6 +5592,8 @@ function sharePanelHtml(id){
     <div class="a-msg sh-msg"></div></div>`;
 }
 const POST_ACTIONS = safeActions({
+  async postReport(el){ const p = POSTS.byId[el.dataset.id]; if(!p) return; openReport(p.author.username, null, null, { kind:'post', id: p.id }); },
+  async cmReport(el){ openReport(el.dataset.u, null, ()=>{ const post = el.closest('.post'); if(post) cmLoad(post); }, { kind:'comment', id: el.dataset.id }); },
   async cmReply(el){
     const post = el.closest('.post'); if(!post) return;
     post.dataset.reply = el.dataset.id;
@@ -5956,7 +5974,7 @@ function renderGrid(){
       ? `<img class="thumb" src="${src}" alt="${escapeHtml(e.name)}" loading="lazy">`
       : `<div class="thumb placeholder">${escapeHtml(e.name.charAt(0).toUpperCase())}</div>`;
 
-    const heartsHtml = (settings.closeness && e.closenessRating) ? `<span title="closeness">${'💚'.repeat(e.closenessRating)}</span>` : '';
+    const heartsHtml = (settings.closeness && e.closenessRating) ? `<span class="hrt" title="closeness">${'♥︎'.repeat(e.closenessRating)}</span>` : '';
     const endedTagHtml = (ended && e.endLabel) ? `<span class="ended-tag">${escapeHtml(e.endLabel)}</span>` : '';
 
     if(gridMode === 'compact'){
@@ -6146,7 +6164,7 @@ function wireHeartPicker(containerId, tagInputId, getVal, setVal){
   container._paint = ()=>{
     const v = container._get();
     container.querySelectorAll('span').forEach(s=>{
-      s.textContent = Number(s.dataset.v) <= v ? '💚' : '🤍';
+      s.textContent = '♥︎';
       s.classList.toggle('filled', Number(s.dataset.v) <= v);
     });
   };
@@ -6463,7 +6481,7 @@ function renderDetailInfo(e, meta, ended, days){
     <div class="detail-meta-row">
       ${e.status ? `<span class="status">${escapeHtml(e.status)}</span>` : ''}
       <span class="since">since ${formatDate(e.startDate)}${ended ? ` · ended ${formatDate(e.endDate)}` : ''}${(ended && e.endLabel) ? `<span class="ended-tag">${escapeHtml(e.endLabel)}</span>` : ''}</span>
-      ${(settings.closeness && e.closenessRating) ? `<span title="closeness">${'💚'.repeat(e.closenessRating)}</span>` : ''}
+      ${(settings.closeness && e.closenessRating) ? `<span class="hrt" title="closeness">${'♥︎'.repeat(e.closenessRating)}</span>` : ''}
       ${(settings.closeness && e.closenessTag) ? `<span class="ended-tag">${escapeHtml(e.closenessTag)}</span>` : ''}
     </div>
     ${rows.length ? `<div class="info-rows">${rows.map(r=>`<div class="info-row"><b>${r.label}</b>${escapeHtml(r.value)}</div>`).join('')}</div>` : ''}
@@ -6572,7 +6590,7 @@ function renderDetailEditForm(e){
     <div class="field ${settings.closeness?'':'hidden'}" id="de-closenessField">
       <label>How close are you? (optional)</label>
       <div class="closeness-hearts" id="de-closenessHearts">
-        <span data-v="1">${(e.closenessRating||0)>=1?'💚':'🤍'}</span><span data-v="2">${(e.closenessRating||0)>=2?'💚':'🤍'}</span><span data-v="3">${(e.closenessRating||0)>=3?'💚':'🤍'}</span><span data-v="4">${(e.closenessRating||0)>=4?'💚':'🤍'}</span><span data-v="5">${(e.closenessRating||0)>=5?'💚':'🤍'}</span>
+        <span data-v="1">♥︎</span><span data-v="2">♥︎</span><span data-v="3">♥︎</span><span data-v="4">♥︎</span><span data-v="5">♥︎</span>
       </div>
       <input type="text" id="de-closenessTag" placeholder="or a tag — e.g. inner circle, close, acquaintance" maxlength="30" value="${escapeHtml(e.closenessTag||'')}" style="margin-top:8px;">
     </div>
