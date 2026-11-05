@@ -496,7 +496,7 @@
   .deco-grid .pv-banner{ height:34px; margin:0 0 6px; border-radius:8px; }
 
   .av.chip{ background-size:cover; background-position:center; background-repeat:no-repeat; box-sizing:border-box; }
-  .nseg{ position:sticky; top:0; z-index:3; background:var(--paper); }
+  .n-more{ text-align:center; padding:14px 0 6px; }
   #chatSearch{ width:100%; box-sizing:border-box; }
   .hrt{ color:var(--moss); letter-spacing:1px; font-variant-emoji:text; }
   .closeness-hearts span{ color:var(--moss); font-variant-emoji:text; }
@@ -511,6 +511,7 @@
   .notif-banner b{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
   .nsel-box{ width:20px; height:20px; border:2px solid var(--line); border-radius:6px; flex:none; display:flex; align-items:center; justify-content:center; font-size:.8rem; color:var(--paper); }
   .nsel-box.on{ background:var(--ink); border-color:var(--ink); }
+  .inbox-body > *{ flex-shrink:0; }
 </style>
 <style>
   :root{
@@ -2690,7 +2691,6 @@ function attentionCount(){
   let n = 0;
   (ACCT.links || []).forEach(l=>{
     if(l.status === 'pending' && l.direction === 'received') n++;
-    if(l.status === 'accepted' && l.page_pending_for_me) n++;
   });
   if(acctUsable() && ACCT.profile && !ACCT.profile.username) n++;
   return n;
@@ -2749,7 +2749,7 @@ function updateAcctTabs(){
   const tabs = acctTabs();
   const ttl = document.getElementById('acctTitle'); if(ttl) ttl.textContent = tabs.some(t=>t[0] === 'posts') ? 'My profile' : 'Settings';
   const need = attentionCount();
-  const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received') || (l.status==='accepted'&&l.page_pending_for_me)).length;
+  const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received')).length;
   $a('acctTabs').innerHTML = tabs.map(([id,label])=>
     `<button class="acct-tab ${ACCT.tab===id && !ACCT.view ? 'active':''}" data-tab="${id}" type="button">${aE(label)}${id==='people'&&peopleN?`<span class="acct-dot">${peopleN}</span>`:''}${id==='profile'&&need-peopleN>0?`<span class="acct-dot">!</span>`:''}</button>`).join('') +
     (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab go-chip" data-go="shop" type="button">Shop</button><button class="acct-tab go-chip" data-go="inbox" type="button">Inbox</button>` : '');
@@ -4084,6 +4084,7 @@ function startInboxTick(){
 
 /* ---------- open / close ---------- */
 async function openInbox(tab, lid){
+  INBOX.nshow = { posts:10, msgs:10 };
   INBOX.solo = (tab === 'notifs');
   INBOX.tab = tab || INBOX.tab || 'chats';
   if(INBOX.tab === 'notifs' && !INBOX.solo) INBOX.tab = 'chats';
@@ -4227,7 +4228,7 @@ async function renderInbox(quiet){
       if(INBOX.chat || INBOX.tab !== 'chats') return;
       chatListPaint(body);
     } else {
-      INBOX.notifs = (await rpc('list_notifications', { lim: 60 })) || [];
+      INBOX.notifs = (await rpc('list_notifications', { lim: 150 })) || [];
       if(INBOX.chat || INBOX.tab !== 'notifs') return;
       const msgsAll = INBOX.notifs.filter(n=>n.kind === 'message'), seen = new Set(), stacks = [];
       msgsAll.forEach(n=>{ const k = n.link_id || (n.actor && n.actor.username); if(seen.has(k)) return; seen.add(k); stacks.push(n); });
@@ -4245,11 +4246,20 @@ async function renderInbox(quiet){
         (list.length ? `<div class="a-btns" style="margin:0 0 10px">${sel
             ? `<button class="a-btn danger" data-act="nDelSel" type="button" ${INBOX.nsel.size ? '' : 'disabled'}>Delete selected (${INBOX.nsel.size})</button><button class="a-btn" data-act="nSelOff" type="button">Cancel</button>`
             : `${list.some(n=>!n.read) ? '<button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button>' : ''}<button class="a-btn" data-act="nSelOn" type="button">Select</button><button class="a-btn danger" data-act="nDelAll" type="button">Delete all</button>`}</div>` : '') +
-        (list.length ? list.map(row).join('')
+        (list.length ? list.slice(0, (INBOX.nshow = INBOX.nshow || { posts:10, msgs:10 })[INBOX.nseg]).map(row).join('') + (list.length > INBOX.nshow[INBOX.nseg] ? '<p class="hint n-more" id="nMore">Scroll down for older notifications</p>' : '')
           : INBOX.nseg === 'msgs' ? `<p class="hint">No new messages. When someone writes to you, they show up here, one spot per person.</p>`
           : `<p class="hint">Nothing new yet. Likes, comments, shares and reposts of your posts show up here, along with requests and gifts.</p>`);
     }
   }catch(e){ body.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+let _nLoading = false;
+function nMoreCheck(){
+  const body = $a('inboxBody'), m = $a('nMore');
+  if(!body || !m || _nLoading || INBOX.tab !== 'notifs' || INBOX.nselOn && false) return;
+  const bb = body.getBoundingClientRect(), mb = m.getBoundingClientRect();
+  if(mb.top > bb.bottom + 40) return;
+  _nLoading = true; m.textContent = 'Loading…';
+  setTimeout(()=>{ _nLoading = false; if(INBOX.nshow) INBOX.nshow[INBOX.nseg] += 10; renderInbox(true); }, 700);
 }
 let _lastEv = null; document.addEventListener('click', e=>{ _lastEv = e; }, true);
 function ev_stop(){ if(_lastEv) _lastEv.stopPropagation(); }
@@ -4636,7 +4646,7 @@ const INBOX_ACTIONS = {
   },
   async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openImageLightbox(i2.src); },
   async loadEarlier(){ await loadEarlier(); },
-  async nseg(el){ INBOX.nseg = el.dataset.s; INBOX.nselOn = false; INBOX.nsel = new Set(); renderInbox(true); },
+  async nseg(el){ INBOX.nseg = el.dataset.s; INBOX.nshow = { posts:10, msgs:10 }; INBOX.nselOn = false; INBOX.nsel = new Set(); renderInbox(true); },
   async nSelOn(){ INBOX.nselOn = true; INBOX.nsel = new Set(); renderInbox(true); },
   async nSelOff(){ INBOX.nselOn = false; INBOX.nsel = new Set(); renderInbox(true); },
   async nselTog(el){ const k = el.dataset.k; INBOX.nsel = INBOX.nsel || new Set(); if(INBOX.nsel.has(k)) INBOX.nsel.delete(k); else INBOX.nsel.add(k); renderInbox(true); },
@@ -4684,6 +4694,7 @@ function bindInbox(){
     if(t){ INBOX.tab = t.dataset.itab; renderInbox(); return; }
     const b = ev.target.closest('[data-act]'); if(b && INBOX_ACTIONS[b.dataset.act]) INBOX_ACTIONS[b.dataset.act](b);
   });
+  $a('inboxBody').addEventListener('scroll', nMoreCheck, { passive:true });
   $a('inboxBody').addEventListener('click', ev=>{
     if(ev.target.closest('.mmenu input')) return;
     const b = ev.target.closest('[data-act]');
