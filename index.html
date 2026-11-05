@@ -426,6 +426,52 @@
   }
   :root[data-theme="dusk"] body, :root[data-theme="ember"] body{ background-image:radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px); }
   :root[data-theme="dusk"] .overlay, :root[data-theme="ember"] .overlay{ background:rgba(0,0,0,0.6); }
+
+  /* update 7 */
+  #bootScreen{ position:fixed; inset:0; z-index:9999; background:var(--paper); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; transition:opacity .45s ease; }
+  #bootScreen.gone{ opacity:0; pointer-events:none; }
+  #bootScreen h1{ font-family:'Fraunces',serif; font-weight:600; font-size:2.8rem; margin:0 0 6px; letter-spacing:-0.01em; color:var(--ink); }
+  #bootScreen p{ margin:0 0 26px; color:var(--ink-soft); font-size:0.95rem; max-width:34ch; line-height:1.4; }
+  #bootScreen .bs{ font-size:0.85rem; color:var(--ink-soft); letter-spacing:.04em; }
+  #bootScreen .bs i{ font-style:normal; display:inline-block; animation:bsDot 1.2s infinite ease-in-out; }
+  #bootScreen .bs i:nth-child(2){ animation-delay:.2s; } #bootScreen .bs i:nth-child(3){ animation-delay:.4s; }
+  @keyframes bsDot{ 0%,80%,100%{ opacity:.2; transform:translateY(0);} 40%{ opacity:1; transform:translateY(-3px);} }
+  .me-chip{ position:static !important; display:flex; margin:0 0 14px auto; max-width:100% !important; padding:8px 10px 8px 12px !important; overflow:visible; }
+  .me-chip .av{ overflow:visible; }
+  .notif-banner{ position:fixed; top:10px; left:50%; transform:translate(-50%,-140%); width:min(92vw,420px); z-index:9000; background:var(--card); color:var(--ink); border:1px solid var(--line); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.22); padding:10px 14px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:transform .45s cubic-bezier(.2,.9,.3,1); }
+  .notif-banner.show{ transform:translate(-50%,0); }
+  .notif-banner b{ display:block; font-size:.9rem; line-height:1.25; }
+  .notif-banner small{ color:var(--ink-soft); font-size:.74rem; }
+  .app-set .settings-group{ margin-bottom:14px; }
+  .save-bar{ position:fixed; left:50%; bottom:16px; transform:translateX(-50%); z-index:9100; background:var(--card); border:1px solid var(--line); border-radius:999px; box-shadow:0 8px 26px rgba(0,0,0,.25); padding:8px 10px 8px 16px; display:flex; align-items:center; gap:8px; font-size:.85rem; max-width:94vw; }
+  .save-bar.hidden{ display:none; }
+  .pin-btn{ background:none; border:none; cursor:pointer; font-size:1rem; padding:4px; opacity:.45; }
+  .pin-btn.on{ opacity:1; }
+  .chips-pick{ display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 8px; }
+  .chips-pick button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:6px 12px; font:inherit; font-size:.82rem; cursor:pointer; }
+  .chips-pick button.on{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .fold-h{ display:flex; align-items:center; justify-content:space-between; cursor:pointer; margin:16px 0 8px; }
+  .fold-h h3{ margin:0; }
+  .rel-tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .rel-tiles .rt{ border:1px solid var(--line); background:var(--card); border-radius:12px; padding:8px 4px; text-align:center; font-size:.72rem; line-height:1.25; cursor:pointer; min-width:0; overflow-wrap:anywhere; }
+  .rel-tiles .rt .av{ margin:0 auto 4px; }
+  .rel-tiles .rt b{ display:block; font-size:.76rem; }
+  textarea.grow{ resize:none; overflow:hidden; min-height:38px; }
+  .ms-card{ border:1px solid var(--line); border-radius:12px; padding:10px; margin-bottom:8px; background:var(--card); }
+
+  .post-opts{ margin:10px 0; }
+  .post-opts .field{ margin-bottom:8px; }
+  .subtabs{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 12px; }
+  .subtabs button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:6px 14px; font:inherit; font-size:.85rem; cursor:pointer; }
+  .subtabs button.on{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .post-meta{ font-size:.74rem; color:var(--ink-soft); margin:0 0 6px; }
+
+  .ms-top{ display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  .ms-top input[type=text]{ flex:1; min-width:0; }
+  .ms-card textarea{ width:100%; box-sizing:border-box; }
+  .rel-sliders .sl[data-feelrow]{ grid-template-columns:minmax(90px,150px) 1fr 30px 26px; }
+  .sl .feel-x{ flex:none; padding:2px 4px; }
+  .ms-row.ms-card{ display:block; }
 </style>
 <style>
   :root{
@@ -800,6 +846,7 @@
 </style>
 </head>
 <body>
+<div id="bootScreen" aria-live="polite"><h1>Kept</h1><p>A small archive of the people who've mattered.</p><div class="bs">loading<i>.</i><i>.</i><i>.</i></div></div>
 
 <div id="authGate" class="hidden">
   <div class="auth-box" id="authBoxWelcome">
@@ -863,8 +910,8 @@
 
   <div class="tabs-row">
     <nav class="tabs" id="tabs"></nav>
-    <button class="grid-toggle" id="settingsBtn" type="button">⚙️</button>
-    <button class="grid-toggle" id="profileBtn" type="button">🔒 Account</button>
+    <button class="grid-toggle hidden" id="settingsBtn" type="button">⚙️</button>
+    <button class="grid-toggle" id="profileBtn" type="button">⚙️ Settings</button>
     <button class="grid-toggle" id="gridModeBtn" type="button">⊞ 4 per row</button>
   </div>
 
@@ -883,11 +930,12 @@
   <div class="filter-chip-row" id="filterChipRow"></div>
 
   <div id="content">
-    <div class="loading">opening the archive…</div>
+    
   </div>
 </div>
 
 <div class="fab-left">
+  <button class="fab-pill hidden" id="notifBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg><span>Notifications</span><b class="top-dot hidden" id="notifDot" style="background:#d6322c;position:absolute;top:-7px;right:-5px;box-shadow:0 0 0 2px var(--paper)"></b></button>
   <button class="fab-pill hidden" id="inboxBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M4 5h16v11H9l-5 4z"/></svg><span>Inbox</span><b class="pill-dot hidden" id="inboxDot"></b></button>
   <button class="fab-pill" id="shopBtn" type="button"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg><span>Shop</span></button>
 </div>
@@ -2358,7 +2406,7 @@ function runOnboardingHints(){
     showHintBubble(target, 'Timeline', 'Open anyone you\'ve kept to see their Timeline — first meetings, birthdays, and anniversaries, year after year.', step3, false);
   };
   const step3 = ()=>{
-    const target = document.getElementById('settingsBtn');
+    const target = document.getElementById('profileBtn');
     showHintBubble(target, 'Connections', 'Inside someone\'s page, "Connections" links them to other people you\'ve kept — like family members to each other.', null, true);
   };
   step1();
@@ -2394,10 +2442,10 @@ const ACCT = {
   page:null, pageEff:null, sharedPatch:{}, sharedTimer:null, sideTimer:null, sideShow:null,
   pageSig:'', pageTimer:null, sideDirty:false, privTimer:null, linksTimer:null, deferRender:false, countsSig:''
 };
-const REL_TYPES = [['romantic','Romantic'],['platonic','Friends'],['qpr','Queerplatonic'],['family','Family'],['ex','Ex / former'],['crush','Crush'],['rivals','Rivals'],['mentor','Mentor / student'],['coworkers','Colleagues'],['other','Other']];
+const REL_TYPES = [['romantic','Romantic'],['platonic','Friends'],['qpr','Queerplatonic'],['family','Family'],['ex','Ex / former'],['rivals','Rivals'],['mentor','Mentor / student'],['coworkers','Colleagues'],['other','Other'],['custom','Custom…']];
 const REL_ENDINGS = [['','Not decided'],['ongoing','Still going'],['happy','Happy ending'],['neutral','Neutral ending'],['bad','Bad ending']];
 const REL_CATS = [['','—'],['real','Real life'],['online','Online'],['distance','Long-distance'],['past','In the past'],['fiction','Fictional / roleplay']];
-const REL_SHARING = [['ok','Ok! sharing'],['selective','Selective'],['non','Non-sharing']];
+const REL_SHARING = [['public','Public'],['friends','Friends only'],['selective','Selective friends'],['private','Private']];
 const LINK_KINDS = [['friend','Friend'],['partner','Partner'],['ex','Ex'],['family','Family'],['other','Other']];
 const COUNT_KEYS = [['friend','Friendships'],['partner','Partners'],['ex','Exes'],['family','Family members'],['other','Others'],['total','Everyone kept']];
 const SLIDER_DEFAULTS = { aff:'Closeness', lib:'Trust', conf:'Comfort' };
@@ -2461,6 +2509,83 @@ function syncCounts(){
     queueProfile({ counts: next }, true);
   }
 }
+
+
+/* ---------- staged (unsaved) profile images & decorations ---------- */
+const DRAFT = { f:{}, up:[] };
+const PRESET_PRON = ['She/Her','They/Them','He/Him','It/Its','Any'];
+function draftDirty(){ return Object.keys(DRAFT.f).length > 0; }
+function profView(){ return Object.assign({}, ACCT.profile || {}, DRAFT.f); }
+function effDeco(k){ const key = k === 'avatar' ? 'avatar_deco' : 'banner_deco'; return key in DRAFT.f ? DRAFT.f[key] : (k === 'avatar' ? SHOP.avatar : SHOP.banner); }
+function stage(patch){
+  Object.assign(DRAFT.f, patch);
+  Object.keys(patch).forEach(k=>{ if((DRAFT.f[k] || null) === ((ACCT.profile || {})[k] || null)) delete DRAFT.f[k]; });
+  paintDraftBar();
+  if(!$a('acctOverlay').classList.contains('hidden') && !ACCT.view && ACCT.tab === 'profile') renderTabProfile($a('acctBody'));
+  if(typeof shopOpen === 'function' && shopOpen()) { try{ renderShop(); }catch(e){} }
+}
+function dropUp(path){
+  if(path && DRAFT.up.includes(path)){ DRAFT.up = DRAFT.up.filter(x=>x !== path); try{ sb.storage.from(AVATAR_BUCKET).remove([path]); }catch(e){} }
+}
+function paintDraftBar(){
+  let b = document.getElementById('draftBar');
+  if(!b){
+    b = document.createElement('div'); b.id = 'draftBar'; b.className = 'save-bar hidden';
+    b.innerHTML = `<span>Unsaved profile changes</span><button class="a-btn" type="button" data-d="revert">Revert</button><button class="a-btn primary" type="button" data-d="save">Save</button>`;
+    document.body.appendChild(b);
+    b.addEventListener('click', ev=>{ const t = ev.target.closest('[data-d]'); if(!t) return; if(t.dataset.d === 'save') saveDraft(); else revertDraft(true); });
+  }
+  b.classList.toggle('hidden', !draftDirty());
+}
+function choiceDialog(title, text, buttons){
+  return new Promise(res=>{
+    const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.style.zIndex = 9500;
+    ov.innerHTML = `<div class="rep-box" role="dialog" aria-label="${aE(title)}"><h3>${aE(title)}</h3><p style="margin:0 0 12px">${aE(text)}</p>
+      <div class="a-btns">${buttons.map(([k,l,pri])=>`<button class="a-btn ${pri ? 'primary' : ''}" data-k="${k}" type="button">${aE(l)}</button>`).join('')}</div></div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click', ev=>{ const b = ev.target.closest('[data-k]'); if(!b) return; ov.remove(); res(b.dataset.k); });
+  });
+}
+async function saveDraft(skipConfirm){
+  if(!draftDirty()) return true;
+  if(!skipConfirm){
+    const k = await choiceDialog('Save these changes?', 'Your new photo, banner, emoji or decoration will go live on your profile for everyone who can see it.', [['yes','Yes, save',true],['no','Not yet']]);
+    if(k !== 'yes') return false;
+  }
+  const f = Object.assign({}, DRAFT.f), cur = Object.assign({}, ACCT.profile || {});
+  try{
+    const patch = {}; ['avatar_path','banner_path','emoji','emoji_bg'].forEach(k=>{ if(k in f) patch[k] = f[k]; });
+    if(Object.keys(patch).length){ queueProfile(patch); await flushProfile(); if(Object.keys(ACCT.dirty).length) throw new Error('Could not save — try again'); }
+    if('avatar_deco' in f){ if(f.avatar_deco) await shopCall('shop_apply', { item: f.avatar_deco }); else await shopCall('shop_clear', { k:'avatar' }); }
+    if('banner_deco' in f){ if(f.banner_deco) await shopCall('shop_apply', { item: f.banner_deco }); else await shopCall('shop_clear', { k:'banner' }); }
+    const keep = new Set([ACCT.profile.avatar_path, ACCT.profile.banner_path]);
+    const junk = [cur.avatar_path, cur.banner_path].concat(DRAFT.up).filter(x=>x && !keep.has(x));
+    if(junk.length){ try{ sb.storage.from(AVATAR_BUCKET).remove(junk); }catch(e){} }
+    DRAFT.f = {}; DRAFT.up = [];
+    paintDraftBar(); showToastOk('Saved');
+    if(!$a('acctOverlay').classList.contains('hidden') && !ACCT.view && ACCT.tab === 'profile') renderTabProfile($a('acctBody'));
+    if(shopOpen()) renderShop();
+    return true;
+  }catch(e){ showToast(e.message); return false; }
+}
+async function revertDraft(ask){
+  if(!draftDirty()) return true;
+  if(ask){ const k = await choiceDialog('Revert changes?', 'Your unsaved photo, banner, emoji and decoration changes will be thrown away.', [['yes','Revert',true],['no','Keep editing']]); if(k !== 'yes') return false; }
+  if(DRAFT.up.length){ try{ sb.storage.from(AVATAR_BUCKET).remove(DRAFT.up); }catch(e){} }
+  DRAFT.f = {}; DRAFT.up = [];
+  paintDraftBar();
+  if(!$a('acctOverlay').classList.contains('hidden') && !ACCT.view && ACCT.tab === 'profile') renderTabProfile($a('acctBody'));
+  if(typeof shopOpen === 'function' && shopOpen()) renderShop();
+  return true;
+}
+async function draftGuard(){
+  if(!draftDirty()) return true;
+  const k = await choiceDialog('You have unsaved changes', 'Your profile photo, banner, emoji or decoration changes have not been saved yet.', [['save','Save changes',true],['discard','Discard'],['stay','Keep editing']]);
+  if(k === 'save') return await saveDraft(true);
+  if(k === 'discard') return await revertDraft(false);
+  return false;
+}
+window.addEventListener('beforeunload', ev=>{ if(draftDirty()){ ev.preventDefault(); ev.returnValue = ''; return ''; } });
 
 /* ---------- profile autosave ---------- */
 function queueProfile(patch, silent){
@@ -2542,7 +2667,7 @@ function updateAcctBadge(){
   const btn = $a('profileBtn'); if(!btn) return;
   updateMeChip();
   const n = attentionCount();
-  btn.innerHTML = '🔒 Account' + (n ? `<span class="top-dot">${n}</span>` : '');
+  btn.innerHTML = '⚙️ Settings' + (n ? `<span class="top-dot">${n}</span>` : '');
   const tb = $a('acctTabPeopleDot'); if(tb) tb.textContent = '';
 }
 
@@ -2560,6 +2685,8 @@ function openAccountHub(tab){
   }
 }
 async function closeAccountHub(){
+  if(typeof draftGuard === 'function' && !(await draftGuard())) return;
+  restoreAppSettings();
   await flushSides();
   await flushProfile();
   stopPagePoll();
@@ -2577,15 +2704,16 @@ function acctTyping(){
 function acctTabs(){
   if(!acctSignedIn()) return [['profile','Profile']];
   if(acctIsGuest() || ACCT.setupError) return [['profile','Profile'],['account','Account']];
-  return ['profile','posts'].includes(ACCT.tab) ? [['profile','Profile'],['posts','Posts']] : [['privacy','Privacy'],['security','Security'],['account','Account']];
+  return ['profile','posts'].includes(ACCT.tab) ? [['profile','Profile'],['posts','Posts']] : [['privacy','Privacy'],['security','Security'],['account','Account'],['app','App']];
 }
 function updateAcctTabs(){
   const tabs = acctTabs();
-  const ttl = document.getElementById('acctTitle'); if(ttl) ttl.textContent = tabs.some(t=>t[0] === 'posts') ? 'My profile' : 'Account';
+  const ttl = document.getElementById('acctTitle'); if(ttl) ttl.textContent = tabs.some(t=>t[0] === 'posts') ? 'My profile' : 'Settings';
   const need = attentionCount();
   const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received') || (l.status==='accepted'&&l.page_pending_for_me)).length;
   $a('acctTabs').innerHTML = tabs.map(([id,label])=>
-    `<button class="acct-tab ${ACCT.tab===id && !ACCT.view ? 'active':''}" data-tab="${id}" type="button">${aE(label)}${id==='people'&&peopleN?`<span class="acct-dot">${peopleN}</span>`:''}${id==='profile'&&need-peopleN>0?`<span class="acct-dot">!</span>`:''}</button>`).join('');
+    `<button class="acct-tab ${ACCT.tab===id && !ACCT.view ? 'active':''}" data-tab="${id}" type="button">${aE(label)}${id==='people'&&peopleN?`<span class="acct-dot">${peopleN}</span>`:''}${id==='profile'&&need-peopleN>0?`<span class="acct-dot">!</span>`:''}</button>`).join('') +
+    (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab" data-go="inbox" type="button" style="margin-left:auto;background:#f3d878;color:#3a3010;border-radius:999px">📥 Inbox</button>` : '');
 }
 function acctRender(){
   stopPagePoll();
@@ -2595,8 +2723,21 @@ function acctRender(){
   const body = $a('acctBody');
   if(ACCT.view && ACCT.view.type === 'profile'){ renderProfileView(body); return; }
   if(ACCT.view && ACCT.view.type === 'post'){ renderPostView(body); return; }
+  if(ACCT.view && ACCT.view.type === 'compose'){ renderCompose(body); return; }
   if(ACCT.view && ACCT.view.type === 'page'){ renderPageView(body); return; }
-  ({ profile:renderTabProfile, posts:renderTabPosts, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount }[ACCT.tab])(body);
+  restoreAppSettings();
+  ({ profile:renderTabProfile, posts:renderTabPosts, privacy:renderTabPrivacy, security:renderTabSecurity, account:renderTabAccount, app:renderTabApp }[ACCT.tab])(body);
+}
+function restoreAppSettings(){
+  const host = document.getElementById('appSetHost'); if(!host) return;
+  const m = document.querySelector('#settingsOverlay .modal'), anchor = document.getElementById('settingsErr');
+  [...host.querySelectorAll('.settings-group')].forEach(g=>m.insertBefore(g, anchor));
+}
+function renderTabApp(body){
+  body.innerHTML = '<div id="appSetHost" class="app-set"></div>';
+  populateSettingsForm();
+  const host = document.getElementById('appSetHost');
+  document.querySelectorAll('#settingsOverlay .modal .settings-group').forEach(g=>host.appendChild(g));
 }
 function setupBanner(){
   return ACCT.setupError ? `<div class="a-banner alert"><b>Account features aren't switched on yet.</b><br>${aE(ACCT.setupError)}</div>` : '';
@@ -2637,30 +2778,77 @@ function renderTabProfile(body){
   const hasUser = !!p.username;
   body.innerHTML = `
     ${setupBanner()}
-    ${profileImagesHtml(p)}
+    ${profileImagesHtml(profView())}
     <h3>Username</h3>
     ${hasUser ? `
-      <div class="a-person"><div class="who"><b>@${aE(p.username)}</b><span>People search for this to find and add you. You can hide from searches in Privacy.</span></div>
+      <div class="a-person"><div class="who"><b>@${aE(p.username)}</b><span>${aE(userChangeNote(p))}</span></div>
       <button class="a-btn" data-act="chgUser" type="button">Change</button></div>
       <div id="userEdit"></div>` : `
       <div class="a-banner alert">You don't have a username yet. Pick one so people can find and add you.</div>
       ${userEditHtml('')}`}
     <h3>About you</h3>
     <p class="hint">What connections (or everyone, if you choose) can see. Changes save automatically.</p>
-    <div class="a-row">
-      <div class="field"><label>Name</label><input type="text" data-p="display_name" maxlength="60" value="${aE(p.display_name||'')}"></div>
-    </div>
-    <div class="a-row">
-      <div class="field"><label>Pronouns</label><input type="text" data-p="pronouns" maxlength="40" value="${aE(p.pronouns||'')}"></div>
-      <div class="field"><label>Age</label><input type="number" data-p="age" min="0" max="150" value="${p.age==null?'':aE(p.age)}"></div>
-    </div>
+    <div class="field"><label>Name</label><input type="text" data-p="display_name" maxlength="60" value="${aE(p.display_name||'')}"></div>
+    <div class="field"><label>Pronouns <small>(pick as many as you like)</small></label>${pronounPickHtml(p.pronouns)}</div>
+    <div class="field"><label>Age</label>
+      <div class="chips-pick">${[['minor','Minor'],['adult','Adult'],['number','My age']].map(([k,l])=>`<button type="button" class="${(p.age_mode||'number') === k ? 'on' : ''}" data-act="ageMode" data-m="${k}">${l}</button>`).join('')}</div>
+      ${(p.age_mode||'number') === 'number' ? `<input type="number" data-p="age" min="0" max="150" placeholder="Your age" value="${p.age==null?'':aE(p.age)}">` : ''}
+      ${switchHtml('show_age','Show my age','',p.show_age)}</div>
+    <div class="field"><label>Gender</label>${genderPickHtml(p)}
+      ${switchHtml('show_gender','Show my gender','',p.show_gender)}</div>
+    <div class="field"><label>Date of birth</label><input type="date" data-p="dob" value="${aE(p.dob||'')}">
+      ${switchHtml('show_dob','Show my date of birth','',p.show_dob)}</div>
     <div class="field"><label>Nicknames (separate with commas)</label><input type="text" data-p="nicknames" maxlength="200" value="${aE((p.nicknames||[]).join(', '))}"></div>
-    <div class="field"><label>About me</label><textarea data-p="about" maxlength="1500">${aE(p.about||'')}</textarea></div>
+    <h3>About me</h3>
+    <p class="hint">Build it like a post: text, pictures, links. Everyone who can see your profile sees this.</p>
+    <div id="aboutEd"></div>
     <h3>Kept people on my profile</h3>
-    <p class="hint">Pick anyone from your archive to show: their name, how you know them and how long. Photos and notes are never shown.</p>
+    <p class="hint">Search your archive and tap a name to show them: name, how you know them and how long. Tap again to hide. Photos and notes are never shown.</p>
     ${featuredPickerHtml(p)}
     <div class="a-btns"><button class="a-btn" data-act="viewMe" type="button" ${hasUser?'':'disabled'}>Preview how others see me</button></div>
-    ${privateProfileFields()}`;
+    <h3>Just for you</h3>
+    <p class="hint">Kept privately. Never shown to anyone else.</p>
+    <div class="field"><label>Private note to self</label><textarea data-p="private_note" maxlength="3000">${aE(p.private_note||'')}</textarea></div>`;
+  mountAbout();
+  migrateLocalProfile();
+}
+function userChangeNote(p){
+  const t = p.username_changed_at ? new Date(p.username_changed_at).getTime() : 0;
+  const left = t ? Math.ceil((t + 30 * 864e5 - Date.now()) / 864e5) : 0;
+  return left > 0 ? `You can change your username again in ${left} day${left > 1 ? 's' : ''}.` : 'People search for this to find you. You can change it once every 30 days.';
+}
+function pronList(v){ return String(v || '').split(',').map(x=>x.trim()).filter(Boolean); }
+function pronounPickHtml(v){
+  const cur = pronList(v), custom = cur.filter(x=>!PRESET_PRON.includes(x));
+  return `<div class="chips-pick">${PRESET_PRON.map(x=>`<button type="button" class="${cur.includes(x) ? 'on' : ''}" data-act="pronTog" data-v="${aE(x)}">${aE(x)}</button>`).join('')}
+    ${custom.map(x=>`<button type="button" class="on" data-act="pronTog" data-v="${aE(x)}">${aE(x)} ✕</button>`).join('')}</div>
+    <div class="a-row"><input type="text" id="pr-custom" maxlength="30" placeholder="Custom pronouns (e.g. xe/xem)"><button class="a-btn" data-act="pronAdd" type="button">Add</button></div>`;
+}
+const GENDERS = ['Female','Male','Non-binary'];
+function genderPickHtml(p){
+  const g = p.gender || '', custom = ACCT.genderCustom || (g && !GENDERS.includes(g));
+  return `<div class="chips-pick">${GENDERS.map(x=>`<button type="button" class="${g === x && !custom ? 'on' : ''}" data-act="genderPick" data-v="${x}">${x}</button>`).join('')}
+    <button type="button" class="${custom ? 'on' : ''}" data-act="genderPick" data-v="__custom">Custom</button></div>
+    ${custom ? `<input type="text" data-p="gender" maxlength="30" placeholder="Your gender" value="${aE(GENDERS.includes(g) ? '' : g)}">` : ''}`;
+}
+async function migrateLocalProfile(){
+  if(ACCT.migrated || !ACCT.profile) return; ACCT.migrated = true;
+  const p = ACCT.profile, patch = {};
+  if(!p.dob && profileData.dob) patch.dob = profileData.dob;
+  if(!p.gender && profileData.gender) patch.gender = String(profileData.gender).slice(0, 30);
+  if(!p.private_note && profileData.bio) patch.private_note = profileData.bio;
+  if(Object.keys(patch).length){
+    queueProfile(patch, true); await flushProfile();
+    try{ profileData = Object.assign({}, profileData, { dob:'', gender:'', bio:'' }); await storage.set(PROFILE_KEY, JSON.stringify(profileData), false); }catch(e){}
+    if(!ACCT.view && ACCT.tab === 'profile' && !acctTyping()) renderTabProfile($a('acctBody'));
+  }
+}
+let _aboutBlocks = null;
+function mountAbout(){
+  const host = $a('aboutEd'); if(!host) return;
+  const bl = (ACCT.profile.about_blocks || []).length ? legacyToBlocks({ blocks: ACCT.profile.about_blocks }) : (ACCT.profile.about ? [Object.assign(edNew('text'), { x: ACCT.profile.about })] : [edNew('text')]);
+  mountEditor(host, { mode:'about', blocks: bl, noPoll:true, noTags:true, allowEmpty:true, label:'Save About me',
+    submit: async payload=>{ const r = await rpc('set_about', { blocks: payload }); ACCT.profile.about_blocks = r || payload; showToastOk('About me saved'); setTimeout(mountAbout, 0); return null; } });
 }
 function userEditHtml(cur){
   return `<div class="a-card" style="margin-top:10px"><div class="field"><label>New username</label>
@@ -2691,11 +2879,11 @@ function renderTabPrivacy(body){
     <p class="hint" id="followInfo"></p>
     <div id="blockedList"><p class="hint">Loading…</p></div>
     <h3>What your profile shows</h3>
-    ${switchHtml('show_age','Show my age','',p.show_age)}
     ${switchHtml('show_counts','Show counts from my archive','e.g. how many friendships, partners, exes or family members you\'ve kept. Only the numbers — never names.', p.show_counts)}
     <div class="a-sub" id="countPicks" style="${p.show_counts?'':'display:none'}">
       ${COUNT_KEYS.map(([k,l])=>`<label><input type="checkbox" data-count="${k}" ${k in chosen?'checked':''}> ${aE(l)}</label>`).join('')}
     </div>
+    <div class="field" style="margin-top:6px"><label>Relationship pages on my profile</label><div class="chips-pick">${[['grid4','4 per row'],['full','Full page']].map(([v,l])=>`<button type="button" class="${(p.rels_layout || 'grid4') === v ? 'on' : ''}" data-act="relLayout" data-v="${v}">${l}</button>`).join('')}</div></div>
     ${switchHtml('show_featured','Show the Kept people I picked','Hide them all at once without un-picking. Pick who in the Profile tab.', p.show_featured !== false)}
     ${switchHtml('show_relationships','Show relationship pages I\'ve chosen to display','You pick which pages appear — open a page and turn on "Show on my profile". Each page\'s sharing status also applies.', p.show_relationships)}
     <p class="hint" style="margin-top:14px">Your archive (people, photos, notes) is always private to you. Changes here save automatically.</p>`;
@@ -2811,6 +2999,7 @@ function syncFeatured(){
 }
 function profileImagesHtml(p){
   const bu = avatarUrl(p.banner_path);
+  const dirty = k=>k in DRAFT.f;
   return `
     <div class="pv-banner pv-edit"${p.banner_deco && /^[a-z0-9-]+$/.test(p.banner_deco) ? ` data-deco="${p.banner_deco}"` : ''}>${bu ? `<img src="${aE(bu)}" alt="">` : ''}
       <button class="a-btn pv-bannerbtn" data-act="pickBanner" type="button">${bu ? 'Change banner' : 'Add a banner'}</button>
@@ -2819,19 +3008,29 @@ function profileImagesHtml(p){
       <div class="pv-avwrap">${avHtml(p, 'xl')}</div>
       <div class="a-btns" style="margin:0">
         <button class="a-btn" data-act="pickAvatar" type="button">${p.avatar_path ? 'Change photo' : 'Upload a photo'}</button>
+        ${p.avatar_path ? `<button class="a-btn" data-act="removeAvatar" type="button">Remove photo</button>` : ''}
         <button class="a-btn" data-act="pickEmoji" type="button">${p.emoji && !p.avatar_path ? 'Change emoji' : '😀 Choose an emoji'}</button>
-        ${p.avatar_path ? `<button class="a-btn link" data-act="removeAvatar" type="button">Remove photo</button>` : p.emoji ? `<button class="a-btn link" data-act="removeEmoji" type="button">Remove emoji</button>` : ''}
+        ${!p.avatar_path && p.emoji ? `<button class="a-btn" data-act="removeEmoji" type="button">Remove emoji</button>` : ''}
+        ${p.avatar_deco ? `<button class="a-btn link" data-act="removeAvDeco" type="button">Take off avatar decoration</button>` : ''}
+        ${p.banner_deco ? `<button class="a-btn link" data-act="removeBnDeco" type="button">Take off banner decoration</button>` : ''}
       </div>
     </div>
+    ${Object.keys(DRAFT.f).length ? `<div class="a-banner">You have unsaved changes to your images. Use <b>Save</b> (bottom of the screen) to confirm, or <b>Revert</b> to undo them.</div>` : ''}
     <input type="file" id="avatarFile" accept="image/*" hidden><input type="file" id="bannerFile" accept="image/*" hidden>
     <div class="a-msg" id="img-msg"></div>`;
 }
 function featuredPickerHtml(p){
-  const sel = new Set((p.featured || []).map(f=>f.id));
+  const sel = (p.featured || []).map(f=>f.id);
   if(!entries.length) return `<p class="hint">Once you've kept someone, you can choose to show them here.</p>`;
-  return `<div class="a-picklist">${entries.map(e=>`
-    <label class="a-switch"><input type="checkbox" data-feat="${aE(e.id)}" ${sel.has(e.id) ? 'checked' : ''}>
-      <span>${aE(e.name)}<small>${aE(catLabelOf(e.category))}${e.status ? ' · ' + aE(e.status) : ''}</small></span></label>`).join('')}</div>`;
+  const q = (ACCT.featQ || '').trim().toLowerCase();
+  const hits = q ? entries.filter(e=>!sel.includes(e.id) && (e.name || '').toLowerCase().includes(q)).slice(0, 8) : [];
+  return `<div class="chips-pick" id="featChips">${sel.map(id=>{ const e = entries.find(x=>x.id === id); const f = (p.featured || []).find(x=>x.id === id); return `<button type="button" class="on" data-act="featDel" data-id="${aE(id)}">${aE((e && e.name) || (f && f.name) || 'Someone')} ✕</button>`; }).join('') || '<span class="hint">No one is shown yet.</span>'}</div>
+    <div class="field"><input type="search" id="feat-q" maxlength="40" autocomplete="off" placeholder="Type a name from your archive…" value="${aE(ACCT.featQ || '')}"></div>
+    <div id="featHits">${featHitsHtml(hits, q)}</div>`;
+}
+function featHitsHtml(hits, q){
+  if(!q) return '';
+  return hits.length ? `<div class="chips-pick">${hits.map(e=>`<button type="button" data-act="featAdd" data-id="${aE(e.id)}">＋ ${aE(e.name)} <small>${aE(catLabelOf(e.category))}</small></button>`).join('')}</div>` : `<p class="hint">No match among people you haven't picked.</p>`;
 }
 
 /* ---------- viewing a profile ---------- */
@@ -2845,14 +3044,38 @@ function daysSince(iso){
   const n = daysBetween(iso, todayStr());
   return (typeof n === 'number' && isFinite(n) && n >= 0) ? n : null;
 }
+
+function ageText(r){ return r.age_mode === 'minor' ? 'Minor' : r.age_mode === 'adult' ? 'Adult' : (r.age != null ? String(r.age) : ''); }
+function relTypeLabel(t, s){ return t === 'custom' ? ((s && s.custom_type) || 'Custom') : (pick(REL_TYPES, t) || t); }
+function autoGrow(el){ el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight + 2, 360) + 'px'; }
+function autoGrowAll(root){ (root || document).querySelectorAll('textarea.grow').forEach(autoGrow); }
+function msSplit(m){
+  const t = (m.text || '');
+  const title = m.title != null ? m.title : t.slice(0, 80);
+  const desc = m.desc != null ? m.desc : (t.length > 80 ? t.slice(80) : '');
+  return { date: m.date || '', title, desc };
+}
+function feelRowHtml(f, dis){
+  return `<div class="sl" data-feelrow><input type="text" data-feelname maxlength="24" placeholder="Feeling" value="${aE(f.name || '')}" ${dis}>
+    <input type="range" min="0" max="100" data-feelval value="${num01(f.val == null ? 50 : f.val)}" ${dis}><output>${num01(f.val == null ? 50 : f.val)}</output>
+    <button class="a-btn link feel-x" data-act="delFeel" type="button" aria-label="Remove" ${dis}>✕</button></div>`;
+}
+function relTilesHtml(rels, owner, layout){
+  if(layout === 'full') return rels.map(x=>relCardHtml(x, owner)).join('');
+  return `<div class="rel-tiles">${rels.map((r, i)=>{
+    const s = r.shared || {}, withName = (r.with && (r.with.display_name || r.with.username)) || 'someone';
+    return `<button type="button" class="rt" data-act="relTile" data-i="${i}">${avHtml(r.with || {}, 'md')}<b>${aE(withName)}</b>${aE(s.title || pick(LINK_KINDS, r.kind) || '')}</button>`;
+  }).join('')}</div>`;
+}
 function relCardHtml(r, owner){
-  const s = r.shared || {}, full = r.sharing === 'ok';
-  const types = (s.types || []).map(t=>`<span class="a-chip">${aE(pick(REL_TYPES,t) || t)}</span>`).join('');
+  const s = r.shared || {}, full = true;
+  const types = (s.types || []).map(t=>`<span class="a-chip">${aE(relTypeLabel(t, s))}</span>`).join('');
   const lab = Object.assign({}, SLIDER_DEFAULTS, s.labels || {});
   const side = r.side || {}, oth = r.other_side || {};
   const days = daysSince(s.since);
   const bars = full ? ['aff','lib','conf'].filter(k=>s[k]!=null).map(k=>`
-      <div style="margin:6px 0;font-size:0.8rem">${aE(lab[k])}<div class="bar"><i style="width:${num01(s[k])}%"></i></div></div>`).join('') : '';
+      <div style="margin:6px 0;font-size:0.8rem">${aE(lab[k])}<div class="bar"><i style="width:${num01(s[k])}%"></i></div></div>`).join('') + (s.feels || []).map(f=>`
+      <div style="margin:6px 0;font-size:0.8rem">${aE(f.name)}<div class="bar"><i style="width:${num01(f.val)}%"></i></div></div>`).join('') : '';
   const mine = ACCT.links.find(l=>l.page_id === r.page_id);
   const withName = (r.with && (r.with.display_name || r.with.username)) || 'someone';
   const ownerName = (owner && (owner.display_name || owner.username)) || 'them';
@@ -2865,7 +3088,7 @@ function relCardHtml(r, owner){
       ${s.notes ? `<div style="white-space:pre-wrap;font-size:0.88rem;margin:10px 0">${aE(s.notes)}</div>` : ''}
       ${s.how_met ? `<div class="hint"><b>How we met:</b> ${aE(s.how_met)}</div>` : ''}
       ${(s.jokes || []).length ? `<div class="a-chips" style="margin:8px 0">${s.jokes.map(j=>`<span class="a-chip">${aE(j)}</span>`).join('')}</div>` : ''}
-      ${(s.milestones || []).length ? `<div style="margin:8px 0">${s.milestones.slice(0, 6).map(m=>`<div class="ms-view"><span>${aE(sinceText(m.date) || m.date || '')}</span> ${aE(m.text || '')}</div>`).join('')}</div>` : ''}
+      ${(s.milestones || []).length ? `<div style="margin:8px 0">${s.milestones.slice(0, 6).map(m=>{ const q = msSplit(m); return `<div class="ms-view"><span>${aE(sinceText(q.date) || q.date || '')}</span> <b>${aE(q.title)}</b>${q.desc ? `<div class="hint" style="white-space:pre-wrap;margin:2px 0 6px">${aE(q.desc)}</div>` : ''}</div>`; }).join('')}</div>` : ''}
       ${side.love || side.nickname ? `<div class="hint" style="margin-top:8px">${side.nickname ? `${aE(ownerName)} calls ${aE(withName)} “${aE(side.nickname)}”. ` : ''}${side.love ? `<i>${aE(side.love)}</i>` : ''}</div>` : ''}
       ${bars}` : ''}
     ${mine ? `<div class="a-btns" style="justify-content:center"><button class="a-btn" data-act="openPage" data-id="${aE(mine.id)}" data-page="${aE(mine.page_id)}" type="button">Open our page</button></div>` : ''}
@@ -2921,7 +3144,8 @@ function renderProfileBody(body){
     content = `<p class="hint" style="margin-top:14px">${r.connected ? 'This profile is private — only their name shows.' : 'Only their name shows for now. Their profile is limited, and connecting with them (or following them, if they allow it) may show more.'}</p>`;
   } else if(ACCT.pvTab === 'overview'){
     content = `
-      ${r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
+      ${(r.gender || r.dob) ? `<div class="a-chips" style="margin:0 0 8px">${r.gender ? `<span class="a-chip">${aE(r.gender)}</span>` : ''}${r.dob ? `<span class="a-chip">🎂 ${aE(sinceText(r.dob) || r.dob)}</span>` : ''}</div>` : ''}
+      ${(r.about_blocks || []).length ? `<div class="a-card about-blocks">${blocksHtml({ blocks: r.about_blocks }, null, false)}</div>` : r.about ? `<div class="a-card" style="white-space:pre-wrap;font-size:0.9rem">${aE(r.about)}</div>` : ''}
       ${(countBoxes || linkedBoxes) ? `<h3>In numbers</h3><div>${countBoxes}${linkedBoxes}</div>` : ''}
       ${r.is_me && !countBoxes && !linkedBoxes && !r.about ? '<p class="hint">Fill in "About you" in the Profile tab to see it here.</p>' : ''}`;
   } else if(ACCT.pvTab === 'posts'){
@@ -2929,7 +3153,7 @@ function renderProfileBody(body){
   } else if(ACCT.pvTab === 'wish'){
     content = '<div class="wl-root"><p class="hint">Loading…</p></div>';
   } else if(ACCT.pvTab === 'rels'){
-    content = rels.length ? rels.map(x=>relCardHtml(x, r)).join('') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
+    ACCT.pvRels = rels; content = rels.length ? relTilesHtml(rels, r, r.rels_layout || 'grid4') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
   } else {
     content = feat.length ? featuredCardsHtml(feat) : `<p class="hint">Nobody is shown yet. Pick people from your archive in the Profile tab.</p>`;
     if(r.is_me && r.featured_visible === false) content += `<p class="hint">Hidden from others right now (Privacy tab).</p>`;
@@ -2937,7 +3161,7 @@ function renderProfileBody(body){
   body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button>
     <div class="pv-banner"${r.banner_deco && /^[a-z0-9-]+$/.test(r.banner_deco) ? ` data-deco="${r.banner_deco}"` : ''}>${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>
     <div class="pv-head">${avHtml(r, 'xl')}
-      <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${r.age != null ? ' · ' + aE(r.age) : ''}${r.followers ? ' · ' + aE(r.followers) + (r.followers == 1 ? ' follower' : ' followers') : ''}</span></div></div>
+      <div class="pv-name"><b>${aE(r.display_name || '@' + r.username)}</b><span>@${aE(r.username)}${r.pronouns ? ' · ' + aE(r.pronouns) : ''}${ageText(r) ? ' · ' + aE(ageText(r)) : ''}${r.followers ? ' · ' + aE(r.followers) + (r.followers == 1 ? ' follower' : ' followers') : ''}</span></div></div>
     ${(r.nicknames || []).length ? `<div class="a-chips" style="margin:8px 0">${r.nicknames.map(n=>`<span class="a-chip">${aE(n)}</span>`).join('')}</div>` : ''}
     ${r.is_me ? '<div class="hint">This is how others see you.</div>' : ''}
     ${r.is_me ? '' : profileActionsHtml(r)}
@@ -2954,7 +3178,7 @@ function stopPagePoll(){ clearInterval(ACCT.pageTimer); ACCT.pageTimer = null; }
 function pageSig(pg){ return JSON.stringify([pg.shared, pg.pending, pg.pending_by_me, pg.their_side, pg.version]); }
 function effectiveShared(pg){ return Object.assign({}, pg.shared || {}, pg.pending || {}); }
 function theirPending(pg){ return !!pg.pending && !pg.pending_by_me; }
-const SHARED_DEFAULTS = { title:'', types:[], ending:'', since:'', how_met:'', notes:'', sharing:'selective', jokes:[], milestones:[], aff:50, lib:50, conf:50 };
+const SHARED_DEFAULTS = { title:'', types:[], ending:'', since:'', how_met:'', notes:'', sharing:'friends', jokes:[], milestones:[], aff:50, lib:50, conf:50, feels:[], custom_type:'' };
 
 async function renderPageView(body){
   stopPagePoll();
@@ -2971,8 +3195,8 @@ async function renderPageView(body){
         <div id="relMine"></div>
         <div id="relTheirs"></div>
       </div>
-      <div class="a-btns"><button class="a-btn primary" data-act="openChat" data-link="${aE(pg.link_id)}" type="button">Message ${aE(name)}</button></div>
-      <label class="a-switch" style="margin-top:12px"><input type="checkbox" id="relShow" ${pg.my_side.show_on_profile ? 'checked' : ''}><span>Show this page on my profile<small>Only you decide this for your own profile. Sharing status “Selective” shows only a short summary; “Non-sharing” hides it.</small></span></label>
+      <div class="a-btns"><button class="a-btn primary" data-act="openChat" data-link="${aE(pg.link_id)}" type="button">Text ${aE(name)}</button><button class="a-btn" data-act="relSend" type="button">Text about relationship</button></div>
+      <label class="a-switch" style="margin-top:12px"><input type="checkbox" id="relShow" ${pg.my_side.show_on_profile ? 'checked' : ''}><span>Show this page on my profile<small>Only you decide this for your own profile. Who sees it depends on the Sharing setting below.</small></span></label>
       <p class="hint">What you write in “From you” saves right away and only you can edit it. The shared parts at the top need ${aE(name)} to accept your changes.</p>`;
     renderRelBar(); renderRelShared(); renderRelMine(); renderRelTheirs();
     ACCT.pageTimer = setInterval(pollPage, 6000);
@@ -2983,13 +3207,14 @@ async function renderPageView(body){
 function diffList(pg){
   const lab = Object.assign({}, SLIDER_DEFAULTS, (pg.shared || {}).labels || {}, (pg.pending || {}).labels || {});
   const names = { title:'Title', types:'Type of relationship', ending:'Where things stand', category:'Category', notes:'Our story', sharing:'Sharing', tropes:'Tropes',
-    aff:lab.aff, lib:lab.lib, conf:lab.conf, labels:'Level names', since:'Together since', how_met:'How we met', milestones:'Milestones', jokes:'Things we share' };
+    aff:lab.aff, lib:lab.lib, conf:lab.conf, labels:'Level names', since:'Together since', how_met:'How we met', milestones:'Milestones', jokes:'Things we share', feels:'Extra feelings', custom_type:'Custom label' };
   const show = (k, v) => {
     if(v == null || v === '') return '—';
     if(k === 'types') return (v || []).map(t=>pick(REL_TYPES, t) || t).join(', ') || '—';
     if(k === 'ending') return pick(REL_STATUS, v) || '—';
     if(k === 'category') return pick(REL_CATS, v) || '—';
-    if(k === 'sharing') return pick(REL_SHARING, v);
+    if(k === 'sharing') return pick(REL_SHARING, v) || v;
+    if(k === 'feels') return (v || []).map(f=>f.name).join(', ') || '—';
     if(k === 'since') return sinceText(v) || v;
     if(k === 'labels') return Object.values(v).join(' / ');
     if(Array.isArray(v)) return v.length + (v.length === 1 ? ' item' : ' items');
@@ -3011,9 +3236,11 @@ function renderRelBar(){
       <button class="a-btn" data-act="declineChange" type="button">Decline</button></div></div>`;
   }
 }
-function msRowHtml(m, dis){
-  return `<div class="ms-row"><input type="date" data-msdate value="${aE(m.date || '')}" ${dis}><input type="text" data-mstext maxlength="300" placeholder="What happened?" value="${aE(m.text || '')}" ${dis}>
-    <button class="a-btn link" data-act="delMilestone" type="button" aria-label="Remove" ${dis}>✕</button></div>`;
+function msRowHtml(m0, dis){
+  const m = msSplit(m0);
+  return `<div class="ms-row ms-card"><div class="ms-top"><input type="date" data-msdate value="${aE(m.date)}" ${dis}><input type="text" data-mstitle maxlength="80" placeholder="Title" value="${aE(m.title)}" ${dis}>
+    <button class="a-btn link" data-act="delMilestone" type="button" aria-label="Remove" ${dis}>✕</button></div>
+    <textarea class="grow" data-msdesc maxlength="600" rows="2" placeholder="What happened? (up to 600 characters)" ${dis}>${aE(m.desc)}</textarea></div>`;
 }
 function renderRelShared(){
   const box = $a('relShared'); if(!box || !ACCT.page) return;
@@ -3033,15 +3260,16 @@ function renderRelShared(){
     </div>
     <div class="a-card"><h3>About us</h3>
       <div class="field"><label>What are we to each other?</label><div class="a-chips">${REL_TYPES.map(([v,l])=>
-        `<label class="a-chip"><input type="checkbox" data-shtype="${v}" ${types.includes(v) ? 'checked' : ''} ${dis}> ${aE(l)}</label>`).join('')}</div></div>
+        `<label class="a-chip"><input type="checkbox" data-shtype="${v}" ${types.includes(v) ? 'checked' : ''} ${dis}> ${aE(l)}</label>`).join('')}</div>
+        <input type="text" data-shcustom maxlength="40" placeholder="Your own label (e.g. 'my person')" value="${aE(s.custom_type || '')}" style="margin-top:6px;${types.includes('custom') ? '' : 'display:none'}" ${dis}></div>
       <div class="a-row">
         <div class="field"><label>Together since</label><input type="date" data-sh="since" value="${aE(s.since || '')}" ${dis}></div>
         <div class="field"><label>Where things stand</label>${sel('ending', REL_STATUS, s.ending || '')}</div>
       </div>
-      <div class="field"><label>How we met</label><textarea data-sh="how_met" maxlength="600" style="min-height:56px" ${dis}>${aE(s.how_met || '')}</textarea></div>
+      <div class="field"><label>How we met</label><textarea class="grow" data-sh="how_met" maxlength="600" style="min-height:56px" ${dis}>${aE(s.how_met || '')}</textarea></div>
     </div>
     <div class="a-card"><h3>Our story</h3>
-      <textarea data-sh="notes" maxlength="3000" placeholder="Whatever describes the two of you…" ${dis}>${aE(s.notes || '')}</textarea></div>
+      <textarea class="grow" data-sh="notes" maxlength="3000" placeholder="Whatever describes the two of you…" ${dis}>${aE(s.notes || '')}</textarea></div>
     <div class="a-card"><h3>Milestones</h3>
       <div id="msList">${(s.milestones || []).map(m=>msRowHtml(m, dis)).join('')}</div>
       <button class="a-btn" data-act="addMilestone" type="button" ${dis}>+ Add a milestone</button></div>
@@ -3050,8 +3278,13 @@ function renderRelShared(){
     <div class="a-card rel-sliders"><h3>How it feels</h3>
       ${['aff','lib','conf'].map(k=>`<div class="sl"><input type="text" data-shlabel="${k}" maxlength="30" value="${aE(lab[k])}" ${dis}>
         <input type="range" min="0" max="100" data-sh="${k}" value="${s[k] == null ? 50 : num01(s[k])}" ${dis}><output>${s[k] == null ? 50 : num01(s[k])}</output></div>`).join('')}
+      <div id="feelList">${(s.feels || []).map(f=>feelRowHtml(f, dis)).join('')}</div>
+      <button class="a-btn" data-act="addFeel" type="button" ${dis || (s.feels || []).length >= 2 ? 'disabled' : ''}>+ Add a feeling (up to 2)</button>
     </div>
-    <div class="a-card"><h3>Sharing</h3><p class="hint">How much of this page may appear on profiles.</p>${sel('sharing', REL_SHARING, s.sharing || 'selective')}</div>`;
+    <div class="a-card"><h3>Sharing</h3><p class="hint">Who can see this page when you show it on your profile.</p>${sel('sharing', REL_SHARING, ['public','friends','selective','private'].includes(s.sharing) ? s.sharing : 'friends')}
+      <div id="relSelBox" class="${s.sharing === 'selective' ? '' : 'hidden'}" style="margin-top:8px"><div class="hint" style="margin:0 0 4px">Pick which friends can see it:</div><div class="sel-pick" data-scope="rels">${selInner('rels')}</div></div></div>`;
+  autoGrowAll(box);
+  if(s.sharing === 'selective') loadSel().then(selRepaint);
 }
 function sideForm(d){
   return `
@@ -3099,8 +3332,10 @@ function readSharedFromDom(){
     notes: g('notes').value, sharing: g('sharing').value,
     jokes: g('jokes').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0, 30).map(x=>x.slice(0, 200)),
     milestones: [...document.querySelectorAll('#msList .ms-row')].map(r=>({
-      date: r.querySelector('[data-msdate]').value || '', text: r.querySelector('[data-mstext]').value.trim().slice(0, 300)
-    })).filter(m=>m.text || m.date).slice(0, 40),
+      date: r.querySelector('[data-msdate]').value || '', title: r.querySelector('[data-mstitle]').value.trim().slice(0, 80), desc: r.querySelector('[data-msdesc]').value.trim().slice(0, 600)
+    })).filter(m=>m.title || m.desc || m.date).slice(0, 40),
+    feels: [...document.querySelectorAll('#feelList [data-feelrow]')].map(r=>({ name: r.querySelector('[data-feelname]').value.trim().slice(0, 24), val: num01(r.querySelector('[data-feelval]').value) })).filter(f=>f.name).slice(0, 2),
+    custom_type: [...document.querySelectorAll('[data-shtype]')].some(i=>i.dataset.shtype === 'custom' && i.checked) ? ((document.querySelector('[data-shcustom]') || {}).value || '').trim().slice(0, 40) : '',
     aff: num01(g('aff').value), lib: num01(g('lib').value), conf: num01(g('conf').value),
     labels: Object.fromEntries(['aff','lib','conf'].map(k=>[k, (document.querySelector(`[data-shlabel="${k}"]`).value.trim() || SLIDER_DEFAULTS[k])]))
   };
@@ -3212,19 +3447,37 @@ function openReport(username, mid, done){
 const ACTIONS = {
   async pickAvatar(){ $a('avatarFile').click(); },
   async pickBanner(){ $a('bannerFile').click(); },
-  async removeAvatar(){
-    const old = ACCT.profile.avatar_path; queueProfile({ avatar_path: null });
-    if(old){ try{ await sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
-    renderTabProfile($a('acctBody'));
+  async removeAvatar(){ dropUp(DRAFT.f.avatar_path); stage({ avatar_path: null }); },
+  async removeBanner(){ dropUp(DRAFT.f.banner_path); stage({ banner_path: null }); },
+  async removeAvDeco(){ stage({ avatar_deco: null }); },
+  async removeBnDeco(){ stage({ banner_deco: null }); },
+  async addFeel(el){
+    const l = $a('feelList'); if(!l || l.children.length >= 2) return;
+    l.insertAdjacentHTML('beforeend', feelRowHtml({ name:'', val:50 }, ''));
+    if(l.children.length >= 2) el.disabled = true;
+    const i = l.lastElementChild.querySelector('input'); if(i) i.focus();
   },
-  async removeBanner(){
-    const old = ACCT.profile.banner_path; queueProfile({ banner_path: null });
-    if(old){ try{ await sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
-    renderTabProfile($a('acctBody'));
+  async delFeel(el){
+    const row = el.closest('[data-feelrow]'); if(row) row.remove();
+    const b = document.querySelector('[data-act="addFeel"]'); if(b) b.disabled = false;
+    onSharedInput();
+  },
+  async relTile(el){
+    const r = (ACCT.pvRels || [])[+el.dataset.i]; if(!r) return;
+    const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.style.zIndex = 9400;
+    ov.innerHTML = `<div class="rep-box" style="max-height:88vh;overflow:auto">${relCardHtml(r, ACCT.pv || {})}<div class="a-btns"><button class="a-btn" data-k="x" type="button">Close</button></div></div>`;
+    document.body.appendChild(ov);
+    ov.addEventListener('click', ev=>{ if(ev.target === ov || ev.target.closest('[data-k]')) ov.remove(); else { const b = ev.target.closest('[data-act="openPage"]'); if(b){ ov.remove(); } } });
+  },
+  async relLayout(el){ queueProfile({ rels_layout: el.dataset.v }); renderTabPrivacy($a('acctBody')); },
+  async relSend(){
+    const pg = ACCT.page; if(!pg) return;
+    try{ await rpc('send_message', { lid: pg.link_id, k:'rel', b:'', m: pg.id }); showToastOk('Sent to ' + (pg.other.display_name || '@' + pg.other.username)); await closeAccountHub(); openInbox('chats', pg.link_id); }
+    catch(e){ showToast(e.message); }
   },
   async addMilestone(){
     const list = $a('msList'); if(!list) return;
-    list.insertAdjacentHTML('beforeend', msRowHtml({ date: todayStr(), text: '' }, ''));
+    list.insertAdjacentHTML('beforeend', msRowHtml({ date: todayStr(), title: '', desc: '' }, ''));
     const last = list.lastElementChild.querySelector('[data-mstext]'); if(last) last.focus();
     onSharedInput();
   },
@@ -3238,7 +3491,7 @@ const ACTIONS = {
       try{
         const bad = await checkUsername(u);
         if(bad){ msg('un-msg', bad); return; }
-        ACCT.profile.username = await rpc('set_username', { u });
+        ACCT.profile.username = await rpc('set_username', { u }); ACCT.profile.username_changed_at = new Date().toISOString();
         updateAcctBadge(); acctRender();
         setSave('saved');
       }catch(e){ msg('un-msg', e.message); }
@@ -3248,7 +3501,7 @@ const ACTIONS = {
   async viewUser(btn){ ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: btn.dataset.u }; acctRender(); },
   async back(){
     await flushSides(); await flushShared(); ACCT.view = null; ACCT.page = null;
-    if(ACCT.returnTo){ const t = ACCT.returnTo; ACCT.returnTo = null; await closeAccountHub(); openInbox(t); return; }
+    if(ACCT.returnTo){ const t = ACCT.returnTo; ACCT.returnTo = null; await closeAccountHub(); if(String(t).startsWith('chat:')) openInbox('chats', t.slice(5)); else openInbox(t); return; }
     await refreshLinks().catch(()=>{}); acctRender();
   },
   async unblock(btn){ await withBtn(btn, async ()=>{ try{ await rpc('unblock_user', { uname: btn.dataset.u }); showToastOk('Unblocked'); loadBlocked(); }catch(e){ showToast(e.message); } }); },
@@ -3412,6 +3665,8 @@ function bindAccountHub(){
   $a('acctClose').addEventListener('click', closeAccountHub);
   ov.addEventListener('click', ev=>{ if(ev.target === ov) closeAccountHub(); });
   $a('acctTabs').addEventListener('click', async ev=>{
+    const g = ev.target.closest('[data-go="inbox"]');
+    if(g){ if(!(await draftGuard())) return; await closeAccountHub(); openInbox('chats'); return; }
     const b = ev.target.closest('[data-tab]'); if(!b) return;
     await flushProfile();
     ACCT.tab = b.dataset.tab; ACCT.view = null; acctRender();
@@ -3431,15 +3686,22 @@ function bindAccountHub(){
       const k = t.dataset.p; let v = t.value;
       if(k === 'age'){ v = v === '' ? null : Math.max(0, Math.min(150, Math.floor(Number(v)))); if(v !== null && !isFinite(v)) return; }
       if(k === 'nicknames') v = v.split(',').map(s=>s.trim()).filter(Boolean).slice(0, 12);
+      if(k === 'dob' && !v) v = null;
       queueProfile({ [k]: v });
+    } else if(t.id === 'postFind'){
+      clearTimeout(ACCT.findTimer); const v = t.value; ACCT.findTimer = setTimeout(()=>postFind(v), 300);
+    } else if(t.id === 'feat-q'){
+      ACCT.featQ = t.value; const q = t.value.trim().toLowerCase(), sel = (ACCT.profile.featured || []).map(f=>f.id);
+      $a('featHits').innerHTML = featHitsHtml(q ? entries.filter(e=>!sel.includes(e.id) && (e.name || '').toLowerCase().includes(q)).slice(0, 8) : [], q);
     } else if(t.id === 'pv-name' || t.id === 'pv-dob' || t.id === 'pv-gender' || t.id === 'pv-bio'){   // private (local) profile
       profileData = Object.assign({}, profileData, { name: t.id==='pv-name' ? t.value.trim() : profileData.name,
         dob: t.id==='pv-dob' ? t.value : profileData.dob, gender: t.id==='pv-gender' ? t.value.trim() : profileData.gender,
         bio: t.id==='pv-bio' ? t.value.trim() : profileData.bio });
       clearTimeout(ACCT.privTimer); setSave('saving');
       ACCT.privTimer = setTimeout(async ()=>{ try{ await storage.set(PROFILE_KEY, JSON.stringify(profileData), false); setSave('saved'); }catch(e){ setSave('error', 'Not saved'); } }, 600);
-    } else if(t.dataset.sh || t.dataset.shlabel || t.dataset.shtype || t.dataset.msdate !== undefined || t.dataset.mstext !== undefined){
+    } else if(t.dataset.sh || t.dataset.shlabel || t.dataset.shtype || t.dataset.msdate !== undefined || t.dataset.mstitle !== undefined || t.dataset.msdesc !== undefined || t.dataset.feelname !== undefined || t.dataset.feelval !== undefined || t.dataset.shcustom !== undefined){
       if(t.type === 'range' && t.nextElementSibling) t.nextElementSibling.textContent = t.value;
+      if(t.classList.contains('grow')) autoGrow(t);
       onSharedInput();
     } else if(t.dataset.sd){
       onSideInput();
@@ -3457,14 +3719,10 @@ function bindAccountHub(){
       uploadProfileImage(kind, f).then(ok=>{ msg('img-msg', ''); if(ok) renderTabProfile($a('acctBody')); }).catch(e=>msg('img-msg', e.message));
       return;
     }
-    if(t.dataset.feat !== undefined){
-      const ids = [...document.querySelectorAll('[data-feat]')].filter(c=>c.checked).map(c=>c.dataset.feat);
-      if(ids.length > 30){ t.checked = false; msg('img-msg', 'You can show up to 30 people.'); return; }
-      queueProfile({ featured: featuredSnapshot(ids) }); return;
-    }
     if(t.dataset.vis){ queueProfile({ visibility: t.dataset.vis }); return; }
     if(t.dataset.pc){
       const k = t.dataset.pc, patch = { [k]: t.checked };
+      if(k === 'show_gender' || k === 'show_dob' || k === 'show_age'){ queueProfile(patch); return; }
       if(k === 'show_counts'){
         $a('countPicks').style.display = t.checked ? '' : 'none';
         if(t.checked){
@@ -3479,8 +3737,14 @@ function bindAccountHub(){
       const chosen = {}; $a('countPicks').querySelectorAll('[data-count]').forEach(c=>{ if(c.checked) chosen[c.dataset.count] = 1; });
       queueProfile({ counts: publishedCounts(chosen) }); return;
     }
-    if(t.dataset.sh && t.tagName === 'SELECT'){ onSharedInput(); return; }
-    if(t.dataset.shtype){ onSharedInput(); return; }
+    if(t.dataset.sh && t.tagName === 'SELECT'){
+      if(t.dataset.sh === 'sharing'){ const bx = $a('relSelBox'); if(bx){ bx.classList.toggle('hidden', t.value !== 'selective'); if(t.value === 'selective') loadSel().then(selRepaint); } }
+      onSharedInput(); return;
+    }
+    if(t.dataset.shtype){
+      if(t.dataset.shtype === 'custom'){ const c = document.querySelector('[data-shcustom]'); if(c){ c.style.display = t.checked ? '' : 'none'; if(t.checked) c.focus(); } }
+      onSharedInput(); return;
+    }
     if(t.id === 'relShow'){
       if(!ACCT.page) return;
       setSave('saving');
@@ -3554,7 +3818,7 @@ function shopPreviewHtml(it, big){
   return `<div class="pv-banner sp-banner ${big ? 'big' : ''}" data-deco="${aE(it.id)}">${bu ? `<img src="${aE(bu)}" alt="">` : ''}</div>`;
 }
 function shopTileHtml(it){
-  const owned = SHOP.owned.includes(it.id), active = it.kind === 'theme' ? SHOP.theme === it.id : (it.kind === 'avatar' ? SHOP.avatar : SHOP.banner) === it.id;
+  const owned = SHOP.owned.includes(it.id), active = it.kind === 'theme' ? SHOP.theme === it.id : effDeco(it.kind) === it.id;
   const tag = active ? 'In use' : owned ? 'Owned' : `${it.price} 🌸`;
   return `<button type="button" class="shop-tile ${active ? 'on' : ''}" data-act="shopOpen" data-id="${aE(it.id)}">
     <div class="shop-tp">${shopPreviewHtml(it)}</div><b>${aE(it.name)}</b><small>${aE(tag)}${SHOP.wishlist.includes(it.id) ? ' · ♥' : ''}</small></button>`;
@@ -3608,7 +3872,7 @@ function openShopItem(id, step){
   document.body.appendChild(ov);
   const paint = (stp)=>{
     const owned = SHOP.owned.includes(id), wished = SHOP.wishlist.includes(id);
-    const active = it.kind === 'theme' ? SHOP.theme === id : (it.kind === 'avatar' ? SHOP.avatar : SHOP.banner) === id;
+    const active = it.kind === 'theme' ? SHOP.theme === id : effDeco(it.kind) === id;
     const t = THEMES[id];
     const colors = it.kind === 'theme' && t ? `<div class="sw-row">${t.sw.map(c=>`<span><i style="background:${c}"></i>${c}</span>`).join('')}</div>` : '';
     let btns;
@@ -3630,8 +3894,11 @@ function openShopItem(id, step){
       if(s === 'close' || s === 'later'){ ov.remove(); renderShop(); }
       else if(s === 'buy'){ b.disabled = true; await shopCall('shop_buy', { item: id }); renderShop(); paint('bought'); }
       else if(s === 'wish'){ await shopCall('wishlist_set', { item: id, want: !SHOP.wishlist.includes(id) }); renderShop(); paint(); }
-      else if(s === 'apply'){ await shopCall('shop_apply', { item: id }); ov.remove(); renderShop(); showToastOk(it.name + ' is on'); }
-      else if(s === 'clear'){ await shopCall('shop_clear', { k: it.kind }); ov.remove(); renderShop(); showToastOk('Taken off'); }
+      else if(s === 'apply'){
+        if(it.kind === 'theme'){ await shopCall('shop_apply', { item: id }); ov.remove(); renderShop(); showToastOk(it.name + ' is on'); }
+        else { stage({ [it.kind === 'avatar' ? 'avatar_deco' : 'banner_deco']: id }); ov.remove(); renderShop(); showToastOk(it.name + ' is ready — press Save to confirm'); }
+      }
+      else if(s === 'clear'){ stage({ [it.kind === 'avatar' ? 'avatar_deco' : 'banner_deco']: null }); ov.remove(); renderShop(); showToast('Press Save to confirm'); }
       else if(s === 'try'){ applyTheme(id); clearTimeout(timer); timer = setTimeout(()=>applyTheme(SHOP.theme), 6000); showToast('Previewing ' + it.name + ' for a few seconds'); }
     }catch(e){ if(msg()) msg().textContent = e.message; }
   });
@@ -3711,14 +3978,49 @@ function inboxOpen(){ return !$a('inboxOverlay').classList.contains('hidden'); }
 function updateInboxBadge(){
   const btn = $a('inboxBtn'), dot = $a('inboxDot'); if(!btn) return;
   btn.classList.toggle('hidden', !acctUsable());
-  const n = (INBOX.counts.notifications || 0) + (INBOX.counts.messages || 0);
-  dot.textContent = n > 99 ? '99+' : n;
-  dot.classList.toggle('hidden', !n);
+  const nb = $a('notifBtn'); if(nb) nb.classList.toggle('hidden', !acctUsable());
+  const m = INBOX.counts.messages || 0;
+  dot.textContent = m > 99 ? '99+' : m;
+  dot.classList.toggle('hidden', !m);
+  const nd = $a('notifDot');
+  if(nd){ const n = INBOX.counts.notifications || 0; nd.textContent = n > 99 ? '99+' : n; nd.classList.toggle('hidden', !n); }
+}
+/* ----- pop-up banners ----- */
+const BANNER = { seen:null, queue:[], showing:false };
+function bannerCheck(list){
+  const ids = new Set(list.map(n=>n.id));
+  if(!BANNER.seen){ BANNER.seen = ids; return; }
+  list.slice().reverse().forEach(n=>{
+    if(BANNER.seen.has(n.id)) return; BANNER.seen.add(n.id);
+    if(n.read) return;
+    if(INBOX.chat && n.kind === 'message' && n.link_id === INBOX.chat.lid && inboxOpen()) return;
+    BANNER.queue.push(n);
+  });
+  bannerNext();
+}
+function bannerNext(){
+  if(BANNER.showing || !BANNER.queue.length) return;
+  const n = BANNER.queue.shift(); BANNER.showing = true;
+  const el = document.createElement('div'); el.className = 'notif-banner'; el.setAttribute('role','status');
+  el.innerHTML = `${avHtml(n.actor || {})}<div style="min-width:0"><b>${aE(notifText(n))}</b><small>Tap to open</small></div>`;
+  document.body.appendChild(el);
+  let gone = false;
+  const close = ()=>{ if(gone) return; gone = true; el.classList.remove('show'); setTimeout(()=>{ el.remove(); BANNER.showing = false; bannerNext(); }, 500); };
+  el.addEventListener('click', async ()=>{
+    close();
+    INBOX.notifs = [n].concat((INBOX.notifs||[]).filter(x=>x.id !== n.id));
+    if(n.kind === 'message' || n.kind === 'link_accepted'){ if(n.link_id){ if(!inboxOpen()) await openInbox('chats'); await refreshLinks().catch(()=>{}); INBOX.solo = false; await openChatView(n.link_id); } return; }
+    if(!inboxOpen()){ await openInbox('notifs'); }
+    await INBOX_ACTIONS.openNotif({ dataset:{ nid:n.id } });
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
+  setTimeout(close, 5000);
 }
 async function inboxTick(){
   if(document.hidden || !acctUsable()) { updateInboxBadge(); return; }
   try{ INBOX.counts = await rpc('inbox_counts'); }catch(e){ /* try later */ }
   updateInboxBadge();
+  try{ const l = (await rpc('list_notifications', { lim: 12 })) || []; bannerCheck(l); }catch(e){}
   if(inboxOpen() && !INBOX.chat){ renderInbox(true); }
 }
 function startInboxTick(){
@@ -3729,7 +4031,9 @@ function startInboxTick(){
 
 /* ---------- open / close ---------- */
 async function openInbox(tab, lid){
+  INBOX.solo = (tab === 'notifs');
   INBOX.tab = tab || INBOX.tab || 'chats';
+  if(INBOX.tab === 'notifs' && !INBOX.solo) INBOX.tab = 'chats';
   INBOX.chat = null;
   $a('inboxOverlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -3786,6 +4090,12 @@ function pplListsHtml(){
   const outgoing = links.filter(l=>l.status === 'pending' && l.direction === 'sent');
   const accepted = links.filter(l=>l.status === 'accepted');
   const fol = (INBOX.follows && INBOX.follows.following) || [];
+  const fed = INBOX.followers || [];
+  const F = INBOX.pplF || 'all';
+  const fold = (k, title, n, inner)=>{
+    const open = F !== 'all' || (INBOX.pplOpen || {})[k];
+    return `<div class="fold-h" data-act="pplFold" data-k="${k}" role="button" tabindex="0" aria-expanded="${open}"><h3>${title} <span class="a-badge">${n}</span></h3><span>${open ? '▾' : '▸'}</span></div>${open ? inner : ''}`;
+  };
   return `
     ${incoming.length ? `<h3>Requests for you <span class="a-badge alert">${incoming.length}</span></h3>` + incoming.map(l=>`
       <div class="a-card">${personHtml(l.other, ' · wants to be your ' + aE(pick(LINK_KINDS, l.kind).toLowerCase()))}
@@ -3795,8 +4105,8 @@ function pplListsHtml(){
     ${outgoing.length ? `<h3>Waiting for an answer</h3>` + outgoing.map(l=>`
       <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS, l.kind)))}
       <div class="a-btns"><button class="a-btn" data-act="pplCancel" data-id="${aE(l.id)}" type="button">Cancel request</button></div></div>`).join('') : ''}
-    <h3>Your connections</h3>
-    ${accepted.length ? accepted.map(l=>`
+    <div class="chips-pick" style="margin-top:14px">${[['all','All'],['conn','Connections'],['fol','Following'],['fed','Followed']].map(([k,l])=>`<button type="button" class="${F === k ? 'on' : ''}" data-act="pplFilter" data-f="${k}">${l}</button>`).join('')}</div>
+    ${F === 'all' || F === 'conn' ? fold('conn', 'Your connections', accepted.length, accepted.length ? accepted.map(l=>`
       <div class="a-card">${personHtml(l.other, ' · ' + aE(pick(LINK_KINDS, l.kind)) + (l.label ? ' · ' + aE(l.label) : ''))}
       ${l.page_pending_for_me ? `<div class="a-msg" style="color:var(--rose)">⏳ A change on your relationship page is waiting for you.</div>` : ''}
       <div class="a-btns">
@@ -3804,22 +4114,28 @@ function pplListsHtml(){
         <button class="a-btn" data-act="pplPage" data-id="${aE(l.id)}" data-page="${aE(l.page_id || '')}" type="button">${l.page_id ? 'Relationship page' : 'Start page'}</button>
         <button class="a-btn" data-act="pplView" data-u="${aE(l.other.username)}" type="button">Profile</button>
         <button class="a-btn link" data-act="pplRemove" data-id="${aE(l.id)}" type="button">Remove</button>
-      </div></div>`).join('') : `<p class="hint">No one yet. Search a username above to add a friend, partner, family member — anyone who uses Kept.</p>`}
-    ${fol.length ? `<h3>Following</h3>` + fol.map(o=>`
+      </div></div>`).join('') : `<p class="hint">No one yet. Search a username above to add a friend, partner, family member — anyone who uses Kept.</p>`) : ''}
+    ${F === 'all' || F === 'fol' ? fold('fol', 'Following', fol.length, fol.length ? fol.map(o=>`
       <div class="a-card">${personHtml(o)}<div class="a-btns">
         <button class="a-btn" data-act="pplView" data-u="${aE(o.username)}" type="button">Profile</button>
-        <button class="a-btn link" data-act="pplUnfollow" data-u="${aE(o.username)}" type="button">Unfollow</button></div></div>`).join('') : ''}`;
+        <button class="a-btn link" data-act="pplUnfollow" data-u="${aE(o.username)}" type="button">Unfollow</button></div></div>`).join('') : `<p class="hint">You aren't following anyone yet.</p>`) : ''}
+    ${F === 'all' || F === 'fed' ? fold('fed', 'Followed (people following you)', fed.length, fed.length ? fed.map(o=>`
+      <div class="a-card">${personHtml(o)}<div class="a-btns">
+        <button class="a-btn" data-act="pplView" data-u="${aE(o.username)}" type="button">Profile</button>
+        <button class="a-btn" data-act="${o.i_follow ? 'pplUnfollow' : 'pplFollow'}" data-u="${aE(o.username)}" data-on="${o.i_follow ? '1' : '0'}" type="button">${o.i_follow ? 'Following ✓' : 'Follow back'}</button></div></div>`).join('') : `<p class="hint">No followers yet.</p>`) : ''}`;
 }
 async function pplRefreshLists(){
   try{ await refreshLinks(); }catch(e){}
   try{ INBOX.follows = await rpc('list_follows'); }catch(e){}
+  try{ INBOX.followers = (await rpc('list_followers')) || []; }catch(e){}
   const box = $a('pplLists'); if(box && INBOX.tab === 'people' && !INBOX.chat) box.innerHTML = pplListsHtml();
   if(!INBOX.chat && inboxOpen()) renderInboxTabsOnly();
 }
+function inboxTabList(mm, reqN){ return INBOX.solo ? [] : [['chats','Chats', mm], ['people','People', reqN], ['feed','Feed', 0]]; }
 function renderInboxTabsOnly(){
   const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
   const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
-  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['feed','Feed', 0], ['notifs','Notifications', nn]].map(([id,l,n])=>
+  $a('inboxTabs').innerHTML = inboxTabList(mm, reqN).map(([id,l,n])=>
     `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
 }
 async function renderInboxPeople(body, quiet){
@@ -3844,10 +4160,10 @@ async function renderInboxPeople(body, quiet){
 async function renderInbox(quiet){
   if(INBOX.chat) return;
   const body = $a('inboxBody');
-  $a('inboxTitle').textContent = 'Inbox';
+  $a('inboxTitle').textContent = INBOX.solo ? 'Notifications' : 'Inbox';
   const nn = INBOX.counts.notifications || 0, mm = INBOX.counts.messages || 0;
   const reqN = (ACCT.links || []).filter(l=>l.status === 'pending' && l.direction === 'received').length;
-  $a('inboxTabs').innerHTML = [['chats','Chats', mm], ['people','People', reqN], ['feed','Feed', 0], ['notifs','Notifications', nn]].map(([id,l,n])=>
+  $a('inboxTabs').innerHTML = inboxTabList(mm, reqN).map(([id,l,n])=>
     `<button class="acct-tab ${INBOX.tab === id ? 'active' : ''}" data-itab="${id}" type="button">${l}${n ? `<span class="acct-dot">${n}</span>` : ''}</button>`).join('');
   if(INBOX.tab === 'people'){ await renderInboxPeople(body, quiet); return; }
   if(INBOX.tab === 'feed'){ if(quiet && body.querySelector('.posts-list')) return; await renderFeed(body); return; }
@@ -3856,14 +4172,7 @@ async function renderInbox(quiet){
     if(INBOX.tab === 'chats'){
       INBOX.summary = (await rpc('chat_summary')) || [];
       if(INBOX.chat || INBOX.tab !== 'chats') return;
-      body.innerHTML = INBOX.summary.length ? INBOX.summary.map(c=>{
-        const o = c.other, last = c.last;
-        const preview = !last ? 'Say hi 👋' : last.deleted ? 'Message deleted' : (last.kind === 'image' ? '📷 Photo' : last.kind === 'gif' ? 'GIF' : last.kind === 'post' ? '🔗 Shared a post' : last.body);
-        return `<div class="a-card chat-row" data-act="openChatRow" data-link="${aE(c.link_id)}">
-          ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b>
-          <span>${last ? (last.mine ? 'You: ' : '') : ''}${aE(preview)}</span></div>
-          <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}</div></div>`;
-      }).join('') : `<p class="hint">No chats yet. Once someone accepts your request, you can message them here.</p>`;
+      chatListPaint(body);
     } else {
       INBOX.notifs = (await rpc('list_notifications', { lim: 60 })) || [];
       if(INBOX.chat || INBOX.tab !== 'notifs') return;
@@ -3883,6 +4192,31 @@ async function renderInbox(quiet){
           : `<p class="hint">Nothing new yet. Likes, comments, shares and reposts of your posts show up here, along with requests and gifts.</p>`);
     }
   }catch(e){ body.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+let _lastEv = null; document.addEventListener('click', e=>{ _lastEv = e; }, true);
+function ev_stop(){ if(_lastEv) _lastEv.stopPropagation(); }
+function chatListPaint(body){
+  if(!$a('chatSearch')){
+    body.innerHTML = `<div class="field" style="margin:0 0 10px"><input type="search" id="chatSearch" maxlength="40" autocomplete="off" placeholder="Search chats by username or nickname…" value="${aE(INBOX.cq || '')}"></div><div id="chatList"></div>`;
+  }
+  const q = (INBOX.cq || '').trim().toLowerCase().replace(/^@/, '');
+  const hit = c=>{
+    if(!q) return true;
+    const o = c.other || {};
+    const hay = [o.username, o.display_name, c.my_nick].concat(c.nicks || [], o.nicknames || []).filter(Boolean).map(x=>String(x).toLowerCase());
+    return hay.some(x=>x.includes(q));
+  };
+  const rows = (INBOX.summary || []).filter(hit);
+  const list = $a('chatList');
+  list.innerHTML = rows.length ? rows.map(c=>{
+    const o = c.other, last = c.last;
+    const preview = !last ? 'Say hi 👋' : last.deleted ? 'Message deleted' : (last.kind === 'image' ? '📷 Photo' : last.kind === 'gif' ? 'GIF' : last.kind === 'post' ? '🔗 Shared a post' : last.kind === 'rel' ? '💞 Shared a relationship page' : last.body);
+    return `<div class="a-card chat-row" data-act="openChatRow" data-link="${aE(c.link_id)}">
+      ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}${c.pinned ? ' <span class="pinmark">📌</span>' : ''}</b>
+      <span>${last ? (last.mine ? 'You: ' : '') : ''}${aE(preview)}</span></div>
+      <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}
+      <button class="pin-btn ${c.pinned ? 'on' : ''}" data-act="pinChat" data-link="${aE(c.link_id)}" data-on="${c.pinned ? '0' : '1'}" type="button" title="${c.pinned ? 'Unpin chat' : 'Pin chat'}" aria-label="${c.pinned ? 'Unpin chat' : 'Pin chat'}">📌</button></div></div>`;
+  }).join('') : (q ? `<p class="hint">No chat matches “${aE(INBOX.cq)}”.</p>` : `<p class="hint">No chats yet. Once someone accepts your request, you can message them here.</p>`);
 }
 function notifText(n){
   const who = (n.actor && (n.actor.display_name || (n.actor.username ? '@' + n.actor.username : ''))) || 'Someone';
@@ -3926,9 +4260,8 @@ function renderChatShell(){
   $a('inboxTitle').textContent = '';
   $a('inboxTabs').innerHTML = `<button class="a-back" data-act="chatBack" type="button" style="padding:8px 12px">← Chats</button>`;
   $a('inboxBody').innerHTML = `
-    <div class="chat-top">${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b><span>@${aE(o.username)}</span></div>
+    <div class="chat-top"><div data-act="chatProfile" style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;flex:1">${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b><span>@${aE(o.username)}</span></div></div>
       <button class="a-btn" data-act="chatPins" type="button" id="pinBtn">📌</button>
-      <button class="a-btn" data-act="chatProfile" type="button">Profile</button>
       ${c.pageId ? `<button class="a-btn" data-act="chatPage" type="button">Us</button>` : ''}</div>
     <div id="chatPins" class="hidden"></div>
     <div id="chatMsgs" class="chat-msgs"></div>
@@ -3986,6 +4319,10 @@ function msgContentHtml(m){
     const a = po.author || {};
     return `<button type="button" class="chat-post" data-act="msgPostOpen" data-id="${aE(m.media)}">${po.thumb ? `<img src="${aE(postUrl(po.thumb))}" alt="">` : ''}<b>${aE(a.display_name || '@' + a.username)}'s post</b><span>${po.visible ? aE(po.snippet || 'Tap to open') : 'Private post'}</span></button>`;
   }
+  if(m.kind === 'rel'){
+    const r = m.rel; if(!r) return '<i class="gone">This page is no longer available</i>';
+    return `<button type="button" class="chat-post" data-act="msgRelOpen" data-id="${aE(r.id)}"><b>💞 ${aE(r.title)}</b><span>${aE(pick(LINK_KINDS, r.kind) || 'Relationship')} page · tap to open</span></button>`;
+  }
   return aE(m.body).replace(/\n/g, '<br>');
 }
 function renderMessages(){
@@ -4000,7 +4337,7 @@ function renderMessages(){
         ${c.picker && c.picker.mid === m.id ? rxPickerHtml(c.picker, m.id) : `<div class="qr">${rxDefaults().map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${aE(e)}" type="button">${aE(e)}</button>`).join('')}<button data-act="rxMore" data-mid="${aE(m.id)}" type="button" aria-label="More reactions">＋</button></div>`}
         ${m.mine && m.kind === 'text' ? `<button data-act="editMsg" data-mid="${aE(m.id)}" type="button">✏️ Edit</button>` : ''}
         <button data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="${m.pinned ? '0' : '1'}" type="button">${m.pinned ? '📌 Unpin' : '📌 Pin'}</button>
-        ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : m.kind === 'post' ? `<button data-act="msgPostOpen" data-id="${aE(m.media)}" type="button">Open post</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
+        ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : m.kind === 'rel' ? `<button data-act="msgRelOpen" data-id="${aE((m.rel||{}).id)}" type="button">Open page</button>` : m.kind === 'post' ? `<button data-act="msgPostOpen" data-id="${aE(m.media)}" type="button">Open post</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
         ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : `<button data-act="reportMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Report</button>`}</div>` : '';
     return `${sep}<div class="msg ${m.mine ? 'mine' : 'theirs'}" data-mid="${aE(m.id)}">
       ${c.editing === m.id && !m.deleted ? editBoxHtml(c) : `<div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>`}
@@ -4097,6 +4434,7 @@ function openImageLightbox(src){
 
 /* ---------- actions ---------- */
 const INBOX_ACTIONS = {
+  async msgRelOpen(el){ const c = INBOX.chat; const lid = c && c.lid; await closeInbox(); openAcctView({ type:'page', id: el.dataset.id }, lid ? 'chat:' + lid : 'chats'); },
   async msgPostOpen(el){ const id = el.dataset.id; await closeInbox(); openAcctView({ type:'post', id }, 'chats'); },
   async openChatRow(el){ await openChatView(el.dataset.link); },
   async pplGoProfile(){ await closeInbox(); openAccountHub('profile'); },
@@ -4121,6 +4459,8 @@ const INBOX_ACTIONS = {
       }catch(e){ msg('ppl-msg', e.message); }
     });
   },
+  async pplFold(el){ INBOX.pplOpen = INBOX.pplOpen || {}; INBOX.pplOpen[el.dataset.k] = !INBOX.pplOpen[el.dataset.k]; const box = $a('pplLists'); if(box) box.innerHTML = pplListsHtml(); },
+  async pplFilter(el){ INBOX.pplF = el.dataset.f; const box = $a('pplLists'); if(box) box.innerHTML = pplListsHtml(); },
   async pplFollow(el){
     await withBtn(el, async ()=>{
       try{ await rpc(el.dataset.on === '1' ? 'unfollow_user' : 'follow_user', { uname: el.dataset.u }); await pplRefreshLists(); pplSearch(INBOX.q); }
@@ -4145,14 +4485,19 @@ const INBOX_ACTIONS = {
     const c = INBOX.chat; if(!c) return; c.menu = null; renderMessages();
     openReport(c.other.username, el.dataset.mid, async blocked=>{ if(blocked){ stopChatPoll(); INBOX.chat = null; await refreshLinks().catch(()=>{}); renderInbox(); inboxTick(); } });
   },
+  async pinChat(el){
+    ev_stop();
+    try{ await rpc('pin_chat', { lid: el.dataset.link, on_: el.dataset.on === '1' }); INBOX.summary = (await rpc('chat_summary')) || []; chatListPaint($a('inboxBody')); }
+    catch(e){ showToast(e.message); }
+  },
   async chatBack(){ stopChatPoll(); INBOX.chat = null; renderInbox(); inboxTick(); },
   async chatProfile(){
     const c = INBOX.chat; const u = c.other.username; await closeInbox();
-    ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u }, 'chats');
+    ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: u }, 'chat:' + c.lid);
   },
   async chatPage(){
     const c = INBOX.chat; const pid = c.pageId; await closeInbox();
-    openAcctView({ type:'page', id: pid }, 'chats');
+    openAcctView({ type:'page', id: pid }, 'chat:' + c.lid);
   },
   async chatPins(){
     const c = INBOX.chat; c.showPins = !c.showPins;
@@ -4210,11 +4555,11 @@ const INBOX_ACTIONS = {
     const n = INBOX.notifs.find(x=>x.id === el.dataset.nid); if(!n) return;
     try{ await rpc('mark_notifications_read', { ids: [n.id] }); }catch(e){}
     inboxTick();
-    if(n.kind === 'link_request'){ INBOX.tab = 'people'; INBOX.q = ''; renderInbox(); }
+    if(n.kind === 'link_request'){ INBOX.solo = false; INBOX.tab = 'people'; INBOX.q = ''; renderInbox(); }
     else if(['gift_received', 'gift_accepted', 'gift_rejected'].includes(n.kind)){ await closeInbox(); openShop('wish'); }
     else if(['post_like', 'post_comment', 'post_repost', 'post_share', 'comment_like'].includes(n.kind)){ await closeInbox(); if(n.data && n.data.post) openAcctView({ type:'post', id: n.data.post }, 'notifs'); else { ACCT.pvTab = 'posts'; openAcctView({ type:'profile', username: (ACCT.profile || {}).username }, 'notifs'); } }
     else if(n.kind === 'followed' && n.actor && n.actor.username){ await closeInbox(); ACCT.pvTab = 'overview'; openAcctView({ type:'profile', username: n.actor.username }, 'notifs'); }
-    else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
+    else if(n.kind === 'link_accepted' || n.kind === 'message'){ if(n.link_id){ INBOX.solo = false; await refreshLinks().catch(()=>{}); await openChatView(n.link_id); } }
     else if(n.page_id){ await closeInbox(); openAcctView({ type:'page', id: n.page_id }, 'notifs'); }
     else renderInbox(true);
   }
@@ -4228,6 +4573,7 @@ function openAcctView(view, from){
 
 function bindInbox(){
   $a('inboxBtn').addEventListener('click', ()=>openInbox('chats'));
+  $a('notifBtn').addEventListener('click', ()=>openInbox('notifs'));
   $a('inboxClose').addEventListener('click', closeInbox);
   $a('inboxOverlay').addEventListener('click', ev=>{ if(ev.target === $a('inboxOverlay')) closeInbox(); });
   $a('inboxTabs').addEventListener('click', ev=>{
@@ -4251,6 +4597,7 @@ function bindInbox(){
   });
   $a('inboxBody').addEventListener('input', ev=>{
     if(ev.target.id === 'chatInput'){ ev.target.style.height = 'auto'; ev.target.style.height = Math.min(ev.target.scrollHeight, 120) + 'px'; }
+    if(ev.target.id === 'chatSearch'){ INBOX.cq = ev.target.value; chatListPaint($a('inboxBody')); }
     if(ev.target.id === 'pplSearch'){ clearTimeout(INBOX.qTimer); const v = ev.target.value; INBOX.qTimer = setTimeout(()=>pplSearch(v), 300); }
     if(ev.target.id === 'gifQuery'){ clearTimeout(INBOX.gifTimer); const q = ev.target.value.trim(); INBOX.gifTimer = setTimeout(()=>searchGifs(q), 350); }
   });
@@ -4355,7 +4702,7 @@ function resizeImage(file, maxDim, q){
   });
 }
 async function uploadProfileImage(kind, file){
-  if(kind === 'avatar' && (ACCT.profile.emoji || '').trim() && !confirm('Use this photo as your avatar instead of your emoji?')) return false;
+  if(kind === 'avatar' && (profView().emoji || '').trim() && !confirm('Use this photo as your avatar instead of your emoji?')) return false;
   const dims = kind === 'avatar' ? [512, 512] : [1500, 500];
   const blob = await cropImage(file, { w:dims[0], h:dims[1], round: kind === 'avatar', title: kind === 'avatar' ? 'Adjust your profile photo' : 'Adjust your banner' });
   if(!blob) return false;
@@ -4363,9 +4710,9 @@ async function uploadProfileImage(kind, file){
   const path = `${currentUser.id}/${kind}-${Date.now()}.jpg`;
   const { error } = await sb.storage.from(AVATAR_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:true });
   if(error) throw new Error(friendlyDbError(error));
-  const old = ACCT.profile[kind + '_path'];
-  queueProfile(kind === 'avatar' ? { avatar_path: path, emoji: '', emoji_bg: null } : { banner_path: path });
-  if(old){ try{ sb.storage.from(AVATAR_BUCKET).remove([old]); }catch(e){} }
+  const prev = DRAFT.f[kind + '_path']; dropUp(prev);
+  DRAFT.up.push(path);
+  stage(kind === 'avatar' ? { avatar_path: path, emoji: null, emoji_bg: null } : { banner_path: path });
   return true;
 }
 
@@ -4578,7 +4925,7 @@ function textBlockHtml(b){
   return b.sp ? `<div class="spoil" data-act="spoilTap">${el}<span class="spoil-l">Spoiler · tap to reveal</span></div>` : el;
 }
 function mediaItemHtml(it){
-  const u = aE(postUrl(it.path));
+  const u = aE(it.file && it.url ? it.url : postUrl(it.path));
   return it.kind === 'video' ? `<video src="${u}" controls preload="metadata" playsinline></video>` : `<img src="${u}" alt="" loading="lazy" data-act="postImg" data-src="${u}">`;
 }
 function imgBlockHtml(b){
@@ -4630,7 +4977,7 @@ function reblogHtml(p){
     <button type="button" class="a-btn link" data-act="postOpen" data-id="${aE(o.id)}">open</button></div>${blocksHtml(o, null, false)}${tagsHtml(o)}</div>`;
 }
 function postMainHtml(p){
-  return `${p.reblog ? blocksHtml(p, p, true) + reblogHtml(p) : blocksHtml(p, p, true)}${tagsHtml(p)}`;
+  return `${postMetaHtml(p)}${p.reblog ? blocksHtml(p, p, true) + reblogHtml(p) : blocksHtml(p, p, true)}${tagsHtml(p)}`;
 }
 function postCardHtml(p){
   POSTS.byId[p.id] = p;
@@ -4645,14 +4992,87 @@ function postCardHtml(p){
 function postActionsHtml(p){
   const id = aE(p.id);
   return `<button type="button" class="${p.liked ? 'on' : ''}" data-act="postLike" data-id="${id}" aria-label="Like">${p.liked ? '♥' : '♡'} ${p.likes || ''}</button>
-    <button type="button" data-act="postComments" data-id="${id}" aria-label="Comments">💬 ${p.comments || ''}</button>
-    <button type="button" data-act="postRepost" data-id="${id}" aria-label="Repost">↻ ${p.reposts || ''}</button>
-    <button type="button" data-act="postShare" data-id="${id}" aria-label="Share">↗</button>
+    ${p.no_comments && !p.mine ? '' : `<button type="button" data-act="postComments" data-id="${id}" aria-label="Comments">💬 ${p.comments || ''}</button>`}
+    ${p.no_share && !p.mine ? '' : `<button type="button" data-act="postRepost" data-id="${id}" aria-label="Repost">↻ ${p.reposts || ''}</button>
+    <button type="button" data-act="postShare" data-id="${id}" aria-label="Share">↗</button>`}
     ${p.mine ? `<button type="button" class="link" data-act="postEdit" data-id="${id}">Edit</button><button type="button" class="link" data-act="postDel" data-id="${id}">Delete</button>` : ''}`;
 }
 function postEl(id){ return document.querySelector(`[data-post="${CSS.escape(id)}"]`); }
 function postPaint(id){ const el = postEl(id), p = POSTS.byId[id]; if(el && p){ const a = el.querySelector('.post-a'); if(a) a.innerHTML = postActionsHtml(p); } }
 function postPaintMain(id){ const el = postEl(id), p = POSTS.byId[id]; if(el && p){ const m = el.querySelector('.post-main'); if(m) m.innerHTML = postMainHtml(p); } }
+
+
+/* ---------- selective friends (shared by posts and relationship pages) ---------- */
+const SEL = { data:null };
+async function loadSel(){ try{ SEL.data = await rpc('get_selective'); }catch(e){} return SEL.data; }
+function selInner(scope){
+  const d = SEL.data; if(!d) return '<p class="hint">Loading…</p>';
+  const chosen = new Set(d[scope] || []), fr = d.friends || [];
+  const other = scope === 'posts' ? 'relationship pages' : 'posts';
+  return (fr.length ? `<div class="chips-pick">${fr.map(f=>`<button type="button" class="${chosen.has(f.username) ? 'on' : ''}" data-act="selTog" data-scope="${scope}" data-u="${aE(f.username)}">${aE(f.display_name || '@' + f.username)}</button>`).join('')}</div>`
+      : `<p class="hint">Only people you're connected with can be on this list. Add someone first.</p>`) +
+    `<div class="a-btns" style="margin:4px 0 0"><button class="a-btn" type="button" data-act="selSyncTog" data-scope="${scope}">${d.sync ? `🔗 Synced with ${other} · Unsync` : `Not synced with ${other} · Sync…`}</button></div>
+     <p class="hint" style="margin:4px 0 0">${d.sync ? `Changes here also change the list for ${other}.` : `This list is only for ${scope === 'posts' ? 'posts' : 'relationship pages'}.`}</p>`;
+}
+function selRepaint(){ document.querySelectorAll('.sel-pick[data-scope]').forEach(el=>{ el.innerHTML = selInner(el.dataset.scope); }); }
+Object.assign(ACTIONS, safeActions({
+  async selTog(el){
+    const sc = el.dataset.scope, u = el.dataset.u;
+    if(!SEL.data) await loadSel();
+    let cur = (SEL.data[sc] || []).slice(); cur = cur.includes(u) ? cur.filter(x=>x !== u) : cur.concat(u);
+    SEL.data = await rpc('set_selective', { sc_: sc, unames: cur }); selRepaint();
+  },
+  async selSyncTog(el){
+    const sc = el.dataset.scope;
+    if(SEL.data && SEL.data.sync){ SEL.data = await rpc('set_selective_sync', { sync:false, from_scope: sc }); selRepaint(); return; }
+    const k = await choiceDialog('Sync the two lists?', 'Posts and relationship pages will share one list of selected friends. Which list should both use from now on?', [['posts','Use my posts list',true],['rels','Use my relationship list'],['no','Cancel']]);
+    if(k === 'no') return;
+    SEL.data = await rpc('set_selective_sync', { sync:true, from_scope: k }); selRepaint();
+  }
+}));
+document.addEventListener('change', ev=>{
+  const t = ev.target;
+  if(t.classList && t.classList.contains('po-aud')){
+    const w = t.closest('.post-opts').querySelector('.po-sel'); w.classList.toggle('hidden', t.value !== 'selective');
+    if(t.value === 'selective') loadSel().then(selRepaint);
+  }
+});
+function postOptsHtml(p){
+  p = p || {};
+  const sched = p.scheduled_at && new Date(p.scheduled_at) > new Date();
+  const showSched = !p.id || sched;
+  const loc = sched ? new Date(new Date(p.scheduled_at).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : '';
+  const aud = p.audience || 'inherit';
+  return `<div class="a-card post-opts"><h3 style="margin:0 0 8px">Post options</h3>
+    <div class="field"><label>Who can see it</label><select class="po-aud">${[['inherit','Same as my profile'],['public','Public'],['friends','Friends only'],['selective','Selected friends'],['private','Private (only me)']].map(([v,l])=>`<option value="${v}" ${aud === v ? 'selected' : ''}>${l}</option>`).join('')}</select></div>
+    <div class="po-sel ${aud === 'selective' ? '' : 'hidden'}"><div class="sel-pick" data-scope="posts">${aud === 'selective' ? selInner('posts') : ''}</div></div>
+    ${showSched ? `<div class="field"><label>Schedule for later <small>(optional)</small></label><input type="datetime-local" class="po-sched" value="${loc}"></div>` : ''}
+    <label class="a-switch"><input type="checkbox" class="po-ns" ${p.no_share ? 'checked' : ''}><span>Lock sharing<small>No reposts or sending it to chats.</small></span></label>
+    <label class="a-switch"><input type="checkbox" class="po-nc" ${p.no_comments ? 'checked' : ''}><span>Lock comments<small>Others can't comment.</small></span></label>
+    <label class="a-switch"><input type="checkbox" class="po-hl" ${p.hide_likes ? 'checked' : ''}><span>Hide like count<small>Others won't see how many likes it has.</small></span></label></div>`;
+}
+function schedVal(root){
+  const i = root.querySelector('.po-sched'); if(!i || !i.value) return null;
+  const d = new Date(i.value); return isNaN(d) ? null : d;
+}
+function postOptsGet(root){
+  const q = x=>root.querySelector(x), d = schedVal(root);
+  return { audience: q('.po-aud').value, sched: d && d.getTime() > Date.now() + 30000 ? d.toISOString() : null,
+    no_share: q('.po-ns').checked, no_comments: q('.po-nc').checked, hide_likes: q('.po-hl').checked };
+}
+function postOptsGetEdit(root){
+  const q = x=>root.querySelector(x), d = schedVal(root), had = !!q('.po-sched');
+  return { aud: q('.po-aud').value, sched: d && d.getTime() > Date.now() + 30000 ? d.toISOString() : null, clear_sched: had && !d,
+    ns: q('.po-ns').checked, nc: q('.po-nc').checked, hl: q('.po-hl').checked };
+}
+function postMetaHtml(p){
+  if(!p.mine) return '';
+  const bits = [];
+  if(p.scheduled_at && new Date(p.scheduled_at) > new Date()) bits.push('⏰ Scheduled for ' + new Date(p.scheduled_at).toLocaleString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }));
+  const a = ({ public:'🌐 Public', friends:'👥 Friends only', selective:'⭐ Selected friends', private:'🔒 Private' })[p.audience]; if(a) bits.push(a);
+  if(p.no_share) bits.push('🚫 sharing locked'); if(p.no_comments) bits.push('💬 comments locked'); if(p.hide_likes) bits.push('♡ likes hidden');
+  return bits.length ? `<div class="post-meta">${bits.join(' · ')}</div>` : '';
+}
 
 /* ----- lists: a profile's posts, the feed, a single post ----- */
 function postsPaint(){
@@ -4669,7 +5089,7 @@ async function postsMore(reset){
     if(reset){ ctx.items = []; ctx.more = true; const l = ctx.root.querySelector('.posts-list'); if(l) l.innerHTML = '<p class="hint">Loading…</p>'; }
     const before = ctx.items.length ? ctx.items[ctx.items.length - 1].created_at : null;
     let rows;
-    if(ctx.kind === 'feed') rows = (await rpc('list_feed', { before, lim: 10 })) || [];
+    if(ctx.kind === 'feed') rows = (await rpc('list_feed', { before, lim: 10, scope: ctx.scope || 'following' })) || [];
     else{
       const r = await rpc('list_posts', { uname: ctx.user, tg: ctx.tag, before, lim: 10 });
       if(!r){ rows = []; ctx.limited = true; } else { ctx.limited = !!r.limited; rows = r.posts || []; }
@@ -4700,13 +5120,50 @@ async function renderFeed(body){
 function renderTabPosts(body){
   const p = ACCT.profile || {};
   if(!p.username){ body.innerHTML = `${setupBanner()}<div class="a-banner alert"><b>Choose a username first.</b> Posts show up under it. <button class="a-btn link" data-tab="profile" type="button">Go to Profile</button></div>`; return; }
-  body.innerHTML = `${setupBanner()}<h3 style="margin-top:0">New post</h3><div class="ed-root"></div><h3>Your posts</h3><div class="posts-root"></div>`;
-  const root = body.querySelector('.posts-root');
-  mountEditor(body.querySelector('.ed-root'), { mode:'new', onDone: post=>{
-    const ctx = POSTS.ctx; if(ctx && ctx.kind === 'profile' && ctx.isMe && !ctx.tag){ ctx.items.unshift(post); postsPaint(); }
-  } });
-  startProfilePosts(p.username, root, true, null);
+  const sub = ACCT.postsSub || 'mine';
+  body.innerHTML = `${setupBanner()}
+    <div class="a-btns" style="margin:0 0 10px"><button class="a-btn primary" data-act="composeOpen" type="button">＋ New post</button></div>
+    <div class="subtabs">${[['mine','Your posts'],['timeline','Other posts'],['find','Find people']].map(([k,l])=>`<button type="button" class="${sub === k ? 'on' : ''}" data-act="postsSub" data-k="${k}">${l}</button>`).join('')}</div>
+    <div id="postsSubBody"></div>`;
+  const box = $a('postsSubBody');
+  if(sub === 'mine'){ box.innerHTML = '<div class="posts-root"></div>'; startProfilePosts(p.username, box.querySelector('.posts-root'), true, null); }
+  else if(sub === 'timeline'){
+    const sc = ACCT.feedScope || 'following';
+    box.innerHTML = `<div class="chips-pick">${[['following','People I follow & friends'],['everyone','Everyone']].map(([k,l])=>`<button type="button" class="${sc === k ? 'on' : ''}" data-act="feedScope" data-k="${k}">${l}</button>`).join('')}</div><div class="posts-root"></div>`;
+    const root = box.querySelector('.posts-root');
+    POSTS.ctx = { kind:'feed', scope: sc, items:[], more:true, busy:false, root, limited:false };
+    root.innerHTML = `<div class="posts-list"></div><div class="posts-more"></div>`;
+    postsMore(true);
+  } else {
+    box.innerHTML = `<p class="hint">Search a username or name. Open a profile to see their posts and add, follow, block or report them.</p>
+      <div class="field"><input type="search" id="postFind" maxlength="30" autocapitalize="none" autocomplete="off" placeholder="Search people…" value="${aE(ACCT.findQ || '')}"></div><div id="postFindOut"></div>`;
+    if(ACCT.findQ) postFind(ACCT.findQ);
+  }
 }
+async function postFind(raw){
+  const out = $a('postFindOut'); if(!out) return;
+  const q = (raw || '').trim().toLowerCase().replace(/^@/, ''); ACCT.findQ = q;
+  if(q.length < 2){ out.innerHTML = q ? '<p class="hint">Keep typing — at least 2 letters.</p>' : ''; return; }
+  const seq = ACCT.findSeq = (ACCT.findSeq || 0) + 1;
+  try{
+    const rs = (await rpc('search_users', { q })) || [];
+    if(seq !== ACCT.findSeq || !$a('postFindOut')) return;
+    out.innerHTML = rs.length ? rs.map(r=>`<div class="a-card">${personHtml(r)}<div class="a-chips" style="margin:8px 0 0">${pplChips(r)}</div>
+      <div class="a-btns"><button class="a-btn primary" data-act="findView" data-u="${aE(r.username)}" type="button">View profile &amp; posts</button></div></div>`).join('')
+      : `<p class="hint">No one found for “${aE(q)}”.</p>`;
+  }catch(e){ if(seq === ACCT.findSeq) out.innerHTML = `<div class="a-msg">${aE(e.message)}</div>`; }
+}
+function renderCompose(body){
+  body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><h3 style="margin:8px 0">New post</h3><div class="ed-root"></div>`;
+  mountEditor(body.querySelector('.ed-root'), { mode:'new', preview:true, label:'Post', keepAfter:true, extraHtml: postOptsHtml(null), extra: postOptsGet,
+    onDone: post=>{ ACCT.tab = 'posts'; ACCT.postsSub = 'mine'; ACCT.view = { type:'post', id: post.id }; acctRender(); } });
+}
+Object.assign(ACTIONS, safeActions({
+  async composeOpen(){ ACCT.tab = 'posts'; ACCT.view = { type:'compose' }; ACCT.returnTo = null; acctRender(); },
+  async postsSub(el){ ACCT.postsSub = el.dataset.k; renderTabPosts($a('acctBody')); },
+  async feedScope(el){ ACCT.feedScope = el.dataset.k; renderTabPosts($a('acctBody')); },
+  async findView(el){ ACCT.pvTab = 'overview'; ACCT.view = { type:'profile', username: el.dataset.u }; ACCT.returnTo = null; acctRender(); }
+}));
 async function renderPostView(body){
   body.innerHTML = `<button class="a-back" data-act="back" type="button">← Back</button><p class="hint">Loading…</p>`;
   try{
@@ -4796,11 +5253,13 @@ function mountEditor(root, opts){
     original: new Set()
   };
   st.blocks.forEach(b=>{ if(b.t === 'img') b.items.forEach(it=>{ if(it.path) st.original.add(it.path); }); });
-  const label = st.mode === 'edit' ? 'Save' : st.mode === 'quote' ? 'Repost' : 'Post';
+  const label = opts.label || (st.mode === 'edit' ? 'Save' : st.mode === 'quote' ? 'Repost' : 'Post');
   root.innerHTML = `<div class="ed a-card"><div class="ed-blocks"></div>
-    <div class="ed-add"><button type="button" class="a-btn" data-e="addText">＋ Text</button><button type="button" class="a-btn" data-e="addImg">🖼 Picture / GIF / video</button><button type="button" class="a-btn" data-e="addLink">🔗 Link</button><button type="button" class="a-btn" data-e="addPoll">📊 Poll</button></div>
-    <input type="text" class="ed-tags" maxlength="200" placeholder="#tags, separated by commas" autocapitalize="none" autocomplete="off" value="${aE(st.tags)}">
-    <div class="a-btns"><button type="button" class="a-btn primary" data-e="submit">${label}</button>${opts.onCancel ? `<button type="button" class="a-btn" data-e="cancel">Cancel</button>` : ''}</div>
+    <div class="ed-add"><button type="button" class="a-btn" data-e="addText">＋ Text</button><button type="button" class="a-btn" data-e="addImg">🖼 Picture / GIF / video</button><button type="button" class="a-btn" data-e="addLink">🔗 Link</button>${opts.noPoll ? '' : '<button type="button" class="a-btn" data-e="addPoll">📊 Poll</button>'}</div>
+    <input type="text" class="ed-tags${opts.noTags ? ' hidden' : ''}" maxlength="200" placeholder="#tags, separated by commas" autocapitalize="none" autocomplete="off" value="${aE(st.tags)}">
+    ${opts.extraHtml || ''}
+    <div class="ed-prev hidden"></div>
+    <div class="a-btns">${opts.preview ? '<button type="button" class="a-btn" data-e="preview">👁 Preview</button>' : ''}<button type="button" class="a-btn primary" data-e="submit">${label}</button>${opts.onCancel ? `<button type="button" class="a-btn" data-e="cancel">Cancel</button>` : ''}</div>
     <input type="file" class="ed-file" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden>
     <div class="a-msg ed-msg"></div></div>`;
   const box = root.querySelector('.ed-blocks'), msgEl = root.querySelector('.ed-msg'), fileIn = root.querySelector('.ed-file');
@@ -4850,6 +5309,16 @@ function mountEditor(root, opts){
     if(e === 'addText'){ st.blocks.push(edNew('text')); paint(); const ta = box.querySelector('.blk:last-child textarea'); if(ta) ta.focus(); }
     else if(e === 'addLink'){ st.blocks.push(edNew('link')); paint(); }
     else if(e === 'addPoll'){ if(st.blocks.filter(x=>x.t === 'poll').length >= 3){ msgEl.textContent = 'Up to 3 polls per post.'; return; } st.blocks.push(edNew('poll')); paint(); }
+    else if(e === 'preview'){
+      const pv = root.querySelector('.ed-prev');
+      if(!pv.classList.contains('hidden')){ pv.classList.add('hidden'); el.textContent = '👁 Preview'; return; }
+      const bl = st.blocks.filter(x=> (x.t === 'text' && x.x.trim()) || x.t === 'img' || (x.t === 'link' && x.url.trim()) || (x.t === 'poll' && x.q.trim()))
+        .map(x=> x.t === 'poll' ? { t:'poll', id:x.id, q:x.q, opts:x.opts.filter(o=>o.trim()) } : x);
+      const me = ACCT.profile || {};
+      const fake = { id:'preview', author: me, created_at: new Date().toISOString(), blocks: bl, tags: splitTags(root.querySelector('.ed-tags').value), preview:true };
+      pv.innerHTML = `<div class="hint" style="margin:6px 0">This is how your post will look.</div><article class="post"><header class="post-h">${avHtml(me)}<div class="who"><b>${aE(me.display_name || '@' + me.username)}</b><span>@${aE(me.username)} · now</span></div></header><div class="post-main">${bl.length ? blocksHtml(fake, null, false) + tagsHtml(fake) : '<p class="hint">Nothing to show yet.</p>'}</div></article>`;
+      pv.classList.remove('hidden'); el.textContent = '✕ Close preview';
+    }
     else if(e === 'addImg'){ st.addTo = null; fileIn.click(); }
     else if(e === 'thAdd'){ st.addTo = i; fileIn.click(); }
     else if(e === 'up') move(i, i - 1);
@@ -4955,14 +5424,16 @@ function mountEditor(root, opts){
       }
       msgEl.textContent = '';
       let post;
-      if(st.mode === 'edit') post = await rpc('edit_post', { pid: st.pid, b:'', tg: tags, blocks: payload });
-      else post = await rpc('create_post', { b:'', tg: tags, m: [], blocks: payload, reblog: st.reblog });
+      if(opts.submit) post = await opts.submit(payload, tags, root);
+      else if(st.mode === 'edit') post = await rpc('edit_post', Object.assign({ pid: st.pid, b:'', tg: tags, blocks: payload }, opts.extraEdit ? opts.extraEdit(root) : {}));
+      else post = await rpc('create_post', Object.assign({ b:'', tg: tags, m: [], blocks: payload, reblog: st.reblog }, opts.extra ? opts.extra(root) : {}));
       if(st.mode === 'edit'){
         const keep = new Set(); payload.forEach(b=>{ if(b.t === 'img') b.items.forEach(i=>keep.add(i.path)); });
         const gone = [...st.original].filter(p=>!keep.has(p)); if(gone.length){ try{ sb.storage.from(POST_BUCKET).remove(gone); }catch(e){} }
       }
-      cleanup();
-      if(st.mode === 'new'){ st.blocks = [edNew('text')]; root.querySelector('.ed-tags').value = ''; paint(); showToastOk('Posted'); }
+      if(st.mode !== 'about') cleanup();
+      if(st.mode === 'about'){ /* keep the editor as is */ }
+      else if(st.mode === 'new'){ if(!opts.keepAfter){ st.blocks = [edNew('text')]; root.querySelector('.ed-tags').value = ''; paint(); } showToastOk(opts.postedMsg || 'Posted'); }
       else if(st.mode === 'quote') showToastOk('Reposted');
       if(opts.onDone) opts.onDone(post);
     }catch(e){
@@ -5067,8 +5538,8 @@ const POST_ACTIONS = safeActions({
     if(from) await closeInbox();
     openAcctView({ type:'profile', username: el.dataset.u }, from);
   },
-  async feedNew(){ await closeInbox(); openAccountHub('posts'); },
-  async goNewPost(){ ACCT.tab = 'posts'; ACCT.view = null; acctRender(); },
+  async feedNew(){ await closeInbox(); openAccountHub('posts'); ACCT.view = { type:'compose' }; acctRender(); },
+  async goNewPost(){ ACCT.tab = 'posts'; ACCT.view = { type:'compose' }; acctRender(); },
   async pollVote(el){
     const id = el.dataset.id;
     const np = await rpc('vote_poll', { pid: id, poll: el.dataset.poll, opt: +el.dataset.i });
@@ -5165,7 +5636,7 @@ const POST_ACTIONS = safeActions({
     const id = btn.dataset.id, p = POSTS.byId[id], el = postEl(id), box = el.querySelector('.post-e');
     if(box.querySelector('.ed')){ box.innerHTML = ''; return; }
     box.innerHTML = '';
-    mountEditor(box, { mode:'edit', pid:id, allowEmpty: !!p.reblog, blocks: legacyToBlocks(p), tags: p.tags || [],
+    mountEditor(box, { mode:'edit', pid:id, allowEmpty: !!p.reblog, blocks: legacyToBlocks(p), tags: p.tags || [], extraHtml: postOptsHtml(p), extraEdit: postOptsGetEdit,
       onCancel: ()=>{ box.innerHTML = ''; },
       onDone: np=>{
         const ctx = POSTS.ctx; if(ctx){ const i = ctx.items.findIndex(x=>x.id === id); if(i >= 0) ctx.items[i] = np; }
@@ -5200,7 +5671,7 @@ function parseBg(v){
 }
 function encBg(b){ return b.mode === 'plain' ? b.c1 : b.mode === 'grad' ? `g:${b.ang}:${b.c1}:${b.c2}` : null; }
 function openEmojiAvatar(){
-  const p = ACCT.profile || {}, cats = emojiCats();
+  const p = profView(), cats = emojiCats();
   const st = { emoji: p.emoji || '🙂', cat: cats[0].id, bg: parseBg(p.emoji_bg) };
   const old = document.getElementById('emoOv'); if(old) old.remove();
   const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'emoOv';
@@ -5245,21 +5716,46 @@ function openEmojiAvatar(){
     else if(t.dataset.g1){ st.bg.c1 = t.dataset.g1; st.bg.c2 = t.dataset.g2; paintBg(); }
     else if(t.dataset.c === 'cancel') close();
     else if(t.dataset.c === 'save'){
-      const cur = ACCT.profile, bg = encBg(st.bg);
+      const cur = profView(), bg = encBg(st.bg);
       if(cur.avatar_path){
-        if(!confirm('Use this emoji as your avatar instead of your photo? Your photo will be removed.')) return;
-        const oldPath = cur.avatar_path; queueProfile({ emoji: st.emoji, emoji_bg: bg, avatar_path: null });
-        try{ sb.storage.from(AVATAR_BUCKET).remove([oldPath]); }catch(e){}
-      }else queueProfile({ emoji: st.emoji, emoji_bg: bg });
-      close(); renderTabProfile($a('acctBody'));
+        if(!confirm('Use this emoji as your avatar instead of your photo? Your photo will be removed once you save.')) return;
+        dropUp(DRAFT.f.avatar_path); stage({ emoji: st.emoji, emoji_bg: bg, avatar_path: null });
+      }else stage({ emoji: st.emoji, emoji_bg: bg });
+      close();
     }
   });
   ov.addEventListener('input', ev=>{ const t = ev.target; if(!t.dataset || !t.dataset.k) return; st.bg[t.dataset.k] = t.dataset.k === 'ang' ? +t.value : t.value; paintPrev(); });
   ov.addEventListener('change', ev=>{ const t = ev.target; if(t.dataset && t.dataset.k === 'ang'){ st.bg.ang = +t.value; paintPrev(); } });
 }
 Object.assign(ACTIONS, safeActions({
+  async pronTog(el){
+    const v = el.dataset.v; let cur = pronList((ACCT.profile||{}).pronouns);
+    cur = cur.includes(v) ? cur.filter(x=>x !== v) : cur.concat(v);
+    queueProfile({ pronouns: cur.join(', ').slice(0, 150) }); renderTabProfile($a('acctBody'));
+  },
+  async pronAdd(){
+    const i = $a('pr-custom'); const v = (i.value || '').trim().replace(/,/g, '/'); if(!v) return;
+    const cur = pronList((ACCT.profile||{}).pronouns); if(!cur.includes(v)) cur.push(v);
+    queueProfile({ pronouns: cur.join(', ').slice(0, 150) }); renderTabProfile($a('acctBody'));
+  },
+  async ageMode(el){ queueProfile({ age_mode: el.dataset.m }); renderTabProfile($a('acctBody')); },
+  async genderPick(el){
+    const v = el.dataset.v;
+    if(v === '__custom'){ ACCT.genderCustom = true; if(GENDERS.includes((ACCT.profile||{}).gender)) queueProfile({ gender: '' }); }
+    else { ACCT.genderCustom = false; queueProfile({ gender: v }); }
+    renderTabProfile($a('acctBody'));
+  },
+  async featAdd(el){
+    const p = ACCT.profile, ids = (p.featured || []).map(f=>f.id);
+    if(ids.length >= 30){ msg('img-msg', 'You can show up to 30 people.'); return; }
+    ACCT.featQ = ''; queueProfile({ featured: featuredSnapshot(ids.concat(el.dataset.id)) }); renderTabProfile($a('acctBody'));
+  },
+  async featDel(el){
+    const ids = (ACCT.profile.featured || []).map(f=>f.id).filter(x=>x !== el.dataset.id);
+    queueProfile({ featured: featuredSnapshot(ids) }); renderTabProfile($a('acctBody'));
+  },
   async pickEmoji(){ openEmojiAvatar(); },
-  async removeEmoji(){ queueProfile({ emoji:'', emoji_bg:null }); renderTabProfile($a('acctBody')); }
+  async removeEmoji(){ stage({ emoji: null, emoji_bg: null }); }
 }));
 
 bindAccountHub();
@@ -5268,7 +5764,7 @@ $a('shopBtn').addEventListener('click', ()=>openShop());
 $a('shopClose').addEventListener('click', closeShop);
 $a('shopOverlay').addEventListener('click', ev=>{ if(ev.target === $a('shopOverlay')) closeShop(); });
 $a('shopBody').addEventListener('click', async ev=>{ const b = ev.target.closest('[data-act]'); if(b && ACTIONS[b.dataset.act]) await ACTIONS[b.dataset.act](b); });
-document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub(acctSignedIn() && !acctIsGuest() && !ACCT.setupError ? (['privacy','security','account'].includes(ACCT.tab) ? ACCT.tab : 'privacy') : undefined));
+document.getElementById('profileBtn').addEventListener('click', ()=>openAccountHub(acctSignedIn() && !acctIsGuest() && !ACCT.setupError ? (['privacy','security','account','app'].includes(ACCT.tab) ? ACCT.tab : 'privacy') : undefined));
 document.getElementById('meChip').addEventListener('click', ()=>openAccountHub(['profile','posts'].includes(ACCT.tab) ? ACCT.tab : 'profile'));
 
 
@@ -7433,6 +7929,60 @@ window.addEventListener('unhandledrejection', ev=>{
   showBootError(m);
 });
 
+
+
+/* ---------- first-run setup: username, name, pronouns ---------- */
+function openSetup(){
+  if(document.getElementById('setupOv')) return;
+  const p = ACCT.profile || {}; let pron = pronList(p.pronouns);
+  const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.id = 'setupOv'; ov.style.zIndex = 9400;
+  const paint = ()=>{
+    ov.innerHTML = `<div class="rep-box" role="dialog" aria-label="Set up your profile" style="max-height:90vh;overflow:auto"><h3>Welcome to Kept 🌿</h3>
+      <p class="hint" style="margin-top:0">Three quick things so people know who you are.</p>
+      <div class="field"><label>Username</label><input type="text" id="su-u" maxlength="20" autocapitalize="none" autocomplete="off" value="${aE(p.username || '')}" ${p.username ? 'readonly' : ''} placeholder="3–20 letters, numbers or _"></div>
+      <div class="field"><label>Name</label><input type="text" id="su-n" maxlength="40" value="${aE(p.display_name || '')}"></div>
+      <div class="field"><label>Pronouns <small>(pick one or more)</small></label>
+        <div class="chips-pick">${PRESET_PRON.map(x=>`<button type="button" class="${pron.includes(x) ? 'on' : ''}" data-v="${aE(x)}">${aE(x)}</button>`).join('')}${pron.filter(x=>!PRESET_PRON.includes(x)).map(x=>`<button type="button" class="on" data-v="${aE(x)}">${aE(x)} ✕</button>`).join('')}</div>
+        <div class="a-row"><input type="text" id="su-c" maxlength="30" placeholder="Custom pronouns"><button class="a-btn" type="button" data-add="1">Add</button></div></div>
+      <div class="a-msg" id="su-msg"></div>
+      <div class="a-btns"><button class="a-btn primary" type="button" data-go="1">Continue</button></div></div>`;
+  };
+  paint(); document.body.appendChild(ov);
+  ov.addEventListener('input', ev=>{ if(ev.target.id === 'su-u') ev.target.value = ev.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''); });
+  ov.addEventListener('click', async ev=>{
+    const t = ev.target.closest('button'); if(!t) return;
+    const keepU = ov.querySelector('#su-u').value, keepN = ov.querySelector('#su-n').value;
+    if(t.dataset.v){ pron = pron.includes(t.dataset.v) ? pron.filter(x=>x !== t.dataset.v) : pron.concat(t.dataset.v); p.username = p.username || keepU; p.display_name = keepN; paint(); return; }
+    if(t.dataset.add){ const v = ov.querySelector('#su-c').value.trim().replace(/,/g, '/'); if(v && !pron.includes(v)) pron.push(v); p.username = p.username || keepU; p.display_name = keepN; paint(); return; }
+    if(t.dataset.go){
+      const m = ov.querySelector('#su-msg'); m.textContent = '';
+      const u = ov.querySelector('#su-u').value.trim().toLowerCase(), n = keepN.trim();
+      if(!n){ m.textContent = 'Please add a name.'; return; }
+      if(!pron.length){ m.textContent = 'Pick your pronouns.'; return; }
+      t.disabled = true;
+      try{
+        if(u !== (ACCT.profile.username || '')){ const bad = await checkUsername(u); if(bad){ m.textContent = bad; t.disabled = false; return; } }
+        const r = await rpc('finish_setup', { u, n, pr: pron.join(', ').slice(0, 150) });
+        Object.assign(ACCT.profile, Array.isArray(r) ? r[0] : r);
+        ov.remove(); updateAcctBadge(); showToastOk('All set — welcome!');
+      }catch(e){ m.textContent = e.message; t.disabled = false; }
+    }
+  });
+}
+
+/* ---------- boot screen ---------- */
+let BOOT_DONE = false;
+function hideBoot(){
+  if(BOOT_DONE) return; BOOT_DONE = true;
+  const b = document.getElementById('bootScreen'); if(!b) return;
+  b.classList.add('gone'); setTimeout(()=>b.remove(), 600);
+}
+setTimeout(hideBoot, 10000);
+(function(){
+  const g = document.getElementById('authGate'); if(!g) return;
+  new MutationObserver(()=>{ if(!g.classList.contains('hidden')) hideBoot(); }).observe(g, { attributes:true, attributeFilter:['class'] });
+})();
+
 async function startApp(){
   document.getElementById('authGate').classList.add('hidden');
   await loadProfileData();
@@ -7446,7 +7996,7 @@ async function startApp(){
   renderStats();
   renderGrid();
   maybeShowOnboardingHints();
-  acctInit().then(()=>loadShop()).catch(()=>{});
+  acctInit().then(()=>{ if(acctUsable() && ACCT.profile && ACCT.profile.setup_done === false) openSetup(); return loadShop(); }).catch(()=>{}).finally(()=>hideBoot());
   setTimeout(handleHash, 1000);
 }
 
