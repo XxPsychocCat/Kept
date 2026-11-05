@@ -472,6 +472,28 @@
   .rel-sliders .sl[data-feelrow]{ grid-template-columns:minmax(90px,150px) 1fr 30px 26px; }
   .sl .feel-x{ flex:none; padding:2px 4px; }
   .ms-row.ms-card{ display:block; }
+
+  #shopOverlay{ z-index:130; }
+  .me-chip .av{ overflow:hidden !important; width:46px; height:46px; }
+  .me-chip .me-t b, .me-chip .me-t small{ display:block; max-width:170px; }
+  .go-chip{ background:var(--moss-soft) !important; color:var(--ink) !important; border:1px solid var(--line) !important; border-radius:999px !important; margin-left:6px; }
+  .go-chip:first-of-type{ margin-left:auto; }
+  .rel-tiles .rt{ color:var(--ink); font-family:inherit; padding:12px 6px 10px; }
+  .rel-tiles .rt .av{ margin:4px auto 8px; }
+  .rel-tiles .rt b{ color:var(--ink); font-weight:600; }
+  .rel-tiles .rt span.k{ display:block; color:var(--ink-soft); }
+  .mquote, .cm-quote{ border-left:3px solid var(--rose); background:rgba(128,128,128,.12); border-radius:6px; padding:3px 8px; margin:0 0 4px; font-size:.76rem; line-height:1.3; cursor:pointer; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:240px; }
+  .cm-quote{ cursor:default; max-width:100%; }
+  .msg.flash .bub{ animation:msgFlash 1.2s ease; }
+  @keyframes msgFlash{ 0%,60%{ box-shadow:0 0 0 3px var(--rose); } 100%{ box-shadow:none; } }
+  .reply-bar, .cm-rbar{ display:flex; align-items:center; gap:8px; padding:6px 12px; font-size:.8rem; color:var(--ink-soft); border-top:1px solid var(--line); }
+  .reply-bar span, .cm-rbar span{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .reply-bar.hidden, .cm-rbar.hidden{ display:none; }
+  .deco-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:8px 0; }
+  .deco-grid button{ border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:8px 4px; font:inherit; font-size:.72rem; cursor:pointer; text-align:center; min-width:0; }
+  .deco-grid button.on{ outline:2px solid var(--moss); }
+  .deco-grid button .av{ margin:4px auto 6px; }
+  .deco-grid .pv-banner{ height:34px; margin:0 0 6px; border-radius:8px; }
 </style>
 <style>
   :root{
@@ -2713,7 +2735,7 @@ function updateAcctTabs(){
   const peopleN = (ACCT.links||[]).filter(l=> (l.status==='pending'&&l.direction==='received') || (l.status==='accepted'&&l.page_pending_for_me)).length;
   $a('acctTabs').innerHTML = tabs.map(([id,label])=>
     `<button class="acct-tab ${ACCT.tab===id && !ACCT.view ? 'active':''}" data-tab="${id}" type="button">${aE(label)}${id==='people'&&peopleN?`<span class="acct-dot">${peopleN}</span>`:''}${id==='profile'&&need-peopleN>0?`<span class="acct-dot">!</span>`:''}</button>`).join('') +
-    (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab" data-go="inbox" type="button" style="margin-left:auto;background:#f3d878;color:#3a3010;border-radius:999px">📥 Inbox</button>` : '');
+    (tabs.some(t=>t[0] === 'posts') ? `<button class="acct-tab go-chip" data-go="shop" type="button">🛍 Shop</button><button class="acct-tab go-chip" data-go="inbox" type="button">📥 Inbox</button>` : '');
 }
 function acctRender(){
   stopPagePoll();
@@ -2883,7 +2905,6 @@ function renderTabPrivacy(body){
     <div class="a-sub" id="countPicks" style="${p.show_counts?'':'display:none'}">
       ${COUNT_KEYS.map(([k,l])=>`<label><input type="checkbox" data-count="${k}" ${k in chosen?'checked':''}> ${aE(l)}</label>`).join('')}
     </div>
-    <div class="field" style="margin-top:6px"><label>Relationship pages on my profile</label><div class="chips-pick">${[['grid4','4 per row'],['full','Full page']].map(([v,l])=>`<button type="button" class="${(p.rels_layout || 'grid4') === v ? 'on' : ''}" data-act="relLayout" data-v="${v}">${l}</button>`).join('')}</div></div>
     ${switchHtml('show_featured','Show the Kept people I picked','Hide them all at once without un-picking. Pick who in the Profile tab.', p.show_featured !== false)}
     ${switchHtml('show_relationships','Show relationship pages I\'ve chosen to display','You pick which pages appear — open a page and turn on "Show on my profile". Each page\'s sharing status also applies.', p.show_relationships)}
     <p class="hint" style="margin-top:14px">Your archive (people, photos, notes) is always private to you. Changes here save automatically.</p>`;
@@ -3011,8 +3032,7 @@ function profileImagesHtml(p){
         ${p.avatar_path ? `<button class="a-btn" data-act="removeAvatar" type="button">Remove photo</button>` : ''}
         <button class="a-btn" data-act="pickEmoji" type="button">${p.emoji && !p.avatar_path ? 'Change emoji' : '😀 Choose an emoji'}</button>
         ${!p.avatar_path && p.emoji ? `<button class="a-btn" data-act="removeEmoji" type="button">Remove emoji</button>` : ''}
-        ${p.avatar_deco ? `<button class="a-btn link" data-act="removeAvDeco" type="button">Take off avatar decoration</button>` : ''}
-        ${p.banner_deco ? `<button class="a-btn link" data-act="removeBnDeco" type="button">Take off banner decoration</button>` : ''}
+        <button class="a-btn" data-act="pickDeco" type="button">✨ Decoration</button>
       </div>
     </div>
     ${Object.keys(DRAFT.f).length ? `<div class="a-banner">You have unsaved changes to your images. Use <b>Save</b> (bottom of the screen) to confirm, or <b>Revert</b> to undo them.</div>` : ''}
@@ -3060,11 +3080,12 @@ function feelRowHtml(f, dis){
     <input type="range" min="0" max="100" data-feelval value="${num01(f.val == null ? 50 : f.val)}" ${dis}><output>${num01(f.val == null ? 50 : f.val)}</output>
     <button class="a-btn link feel-x" data-act="delFeel" type="button" aria-label="Remove" ${dis}>✕</button></div>`;
 }
+function relLayoutPref(){ try{ return localStorage.getItem('kept-rel-layout') === 'full' ? 'full' : 'grid4'; }catch(e){ return 'grid4'; } }
 function relTilesHtml(rels, owner, layout){
   if(layout === 'full') return rels.map(x=>relCardHtml(x, owner)).join('');
   return `<div class="rel-tiles">${rels.map((r, i)=>{
     const s = r.shared || {}, withName = (r.with && (r.with.display_name || r.with.username)) || 'someone';
-    return `<button type="button" class="rt" data-act="relTile" data-i="${i}">${avHtml(r.with || {}, 'md')}<b>${aE(withName)}</b>${aE(s.title || pick(LINK_KINDS, r.kind) || '')}</button>`;
+    return `<button type="button" class="rt" data-act="relTile" data-i="${i}">${avHtml(r.with || {}, 'md')}<b>${aE(withName)}</b><span class="k">${aE(s.title || pick(LINK_KINDS, r.kind) || '')}</span></button>`;
   }).join('')}</div>`;
 }
 function relCardHtml(r, owner){
@@ -3153,7 +3174,7 @@ function renderProfileBody(body){
   } else if(ACCT.pvTab === 'wish'){
     content = '<div class="wl-root"><p class="hint">Loading…</p></div>';
   } else if(ACCT.pvTab === 'rels'){
-    ACCT.pvRels = rels; content = rels.length ? relTilesHtml(rels, r, r.rels_layout || 'grid4') : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
+    ACCT.pvRels = rels; content = rels.length ? `<div class="chips-pick">${[['grid4','4 per row'],['full','Full page']].map(([v,l])=>`<button type="button" class="${relLayoutPref() === v ? 'on' : ''}" data-act="relLayout" data-v="${v}">${l}</button>`).join('')}</div>` + relTilesHtml(rels, r, relLayoutPref()) : `<p class="hint">No relationship pages are shown yet. Open a page and turn on “Show on my profile”.</p>`;
   } else {
     content = feat.length ? featuredCardsHtml(feat) : `<p class="hint">Nobody is shown yet. Pick people from your archive in the Profile tab.</p>`;
     if(r.is_me && r.featured_visible === false) content += `<p class="hint">Hidden from others right now (Privacy tab).</p>`;
@@ -3469,7 +3490,7 @@ const ACTIONS = {
     document.body.appendChild(ov);
     ov.addEventListener('click', ev=>{ if(ev.target === ov || ev.target.closest('[data-k]')) ov.remove(); else { const b = ev.target.closest('[data-act="openPage"]'); if(b){ ov.remove(); } } });
   },
-  async relLayout(el){ queueProfile({ rels_layout: el.dataset.v }); renderTabPrivacy($a('acctBody')); },
+  async relLayout(el){ try{ localStorage.setItem('kept-rel-layout', el.dataset.v); }catch(e){} acctRender(); },
   async relSend(){
     const pg = ACCT.page; if(!pg) return;
     try{ await rpc('send_message', { lid: pg.link_id, k:'rel', b:'', m: pg.id }); showToastOk('Sent to ' + (pg.other.display_name || '@' + pg.other.username)); await closeAccountHub(); openInbox('chats', pg.link_id); }
@@ -3665,8 +3686,11 @@ function bindAccountHub(){
   $a('acctClose').addEventListener('click', closeAccountHub);
   ov.addEventListener('click', ev=>{ if(ev.target === ov) closeAccountHub(); });
   $a('acctTabs').addEventListener('click', async ev=>{
-    const g = ev.target.closest('[data-go="inbox"]');
-    if(g){ if(!(await draftGuard())) return; await closeAccountHub(); openInbox('chats'); return; }
+    const g = ev.target.closest('[data-go]');
+    if(g){
+      if(g.dataset.go === 'shop'){ openShop(); return; }
+      if(!(await draftGuard())) return; await closeAccountHub(); openInbox('chats'); return;
+    }
     const b = ev.target.closest('[data-tab]'); if(!b) return;
     await flushProfile();
     ACCT.tab = b.dataset.tab; ACCT.view = null; acctRender();
@@ -4267,6 +4291,7 @@ function renderChatShell(){
     <div id="chatMsgs" class="chat-msgs"></div>
     <div id="chatGif" class="hidden"></div>
     <div class="a-msg" id="chatErr" style="margin:0 12px"></div>
+    <div class="reply-bar hidden" id="chatReplyBar"></div>
     <div class="chat-compose">
       <button class="a-btn" data-act="chatImg" type="button" aria-label="Send a picture">📷</button>
       <button class="a-btn" data-act="chatGif" type="button" aria-label="Send a GIF">GIF</button>
@@ -4325,6 +4350,17 @@ function msgContentHtml(m){
   }
   return aE(m.body).replace(/\n/g, '<br>');
 }
+function replyQuoteHtml(r, c){
+  const who = r.mine ? 'You' : (c.other.display_name || '@' + c.other.username);
+  const t = r.deleted ? 'Deleted message' : r.kind === 'text' ? r.body : r.kind === 'image' ? '📷 Picture' : r.kind === 'gif' ? 'GIF' : r.kind === 'post' ? '🔗 Post' : '💞 Relationship page';
+  return `<div class="mquote" data-act="jumpMsg" data-mid="${aE(r.id)}">↪ ${aE(who)}: ${aE(t)}</div>`;
+}
+function paintReplyBar(){
+  const c = INBOX.chat, b = $a('chatReplyBar'); if(!b) return;
+  if(!c || !c.replyTo){ b.classList.add('hidden'); b.innerHTML = ''; return; }
+  b.classList.remove('hidden');
+  b.innerHTML = `<span>↩ Replying to <b>${aE(c.replyTo.name)}</b>: ${aE(c.replyTo.text)}</span><button class="a-btn link" data-act="replyX" type="button">✕</button>`;
+}
 function renderMessages(){
   const c = INBOX.chat, box = $a('chatMsgs'); if(!c || !box) return;
   let lastDay = '';
@@ -4335,12 +4371,13 @@ function renderMessages(){
     const rx = (m.reactions || []).length ? `<div class="rx">${m.reactions.map(r=>`<button class="rxc ${r.mine ? 'mine' : ''}" data-act="react" data-mid="${aE(m.id)}" data-e="${aE(r.emoji)}" type="button">${aE(r.emoji)} ${r.count > 1 ? aE(r.count) : ''}</button>`).join('')}</div>` : '';
     const menu = c.menu === m.id && !m.deleted ? `<div class="mmenu">
         ${c.picker && c.picker.mid === m.id ? rxPickerHtml(c.picker, m.id) : `<div class="qr">${rxDefaults().map(e=>`<button data-act="react" data-mid="${aE(m.id)}" data-e="${aE(e)}" type="button">${aE(e)}</button>`).join('')}<button data-act="rxMore" data-mid="${aE(m.id)}" type="button" aria-label="More reactions">＋</button></div>`}
+        <button data-act="replyMsg" data-mid="${aE(m.id)}" type="button">↩ Reply</button>
         ${m.mine && m.kind === 'text' ? `<button data-act="editMsg" data-mid="${aE(m.id)}" type="button">✏️ Edit</button>` : ''}
         <button data-act="pinMsg" data-mid="${aE(m.id)}" data-pin="${m.pinned ? '0' : '1'}" type="button">${m.pinned ? '📌 Unpin' : '📌 Pin'}</button>
         ${m.kind === 'text' ? `<button data-act="copyMsg" data-mid="${aE(m.id)}" type="button">Copy</button>` : m.kind === 'rel' ? `<button data-act="msgRelOpen" data-id="${aE((m.rel||{}).id)}" type="button">Open page</button>` : m.kind === 'post' ? `<button data-act="msgPostOpen" data-id="${aE(m.media)}" type="button">Open post</button>` : `<button data-act="viewMsg" data-mid="${aE(m.id)}" type="button">View</button>`}
         ${m.mine ? `<button data-act="delMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Delete</button>` : `<button data-act="reportMsg" data-mid="${aE(m.id)}" type="button" style="color:var(--rose)">Report</button>`}</div>` : '';
     return `${sep}<div class="msg ${m.mine ? 'mine' : 'theirs'}" data-mid="${aE(m.id)}">
-      ${c.editing === m.id && !m.deleted ? editBoxHtml(c) : `<div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${msgContentHtml(m)}</div>`}
+      ${c.editing === m.id && !m.deleted ? editBoxHtml(c) : `<div class="bub ${m.kind !== 'text' && !m.deleted ? 'media' : ''}" data-act="msgMenu" data-mid="${aE(m.id)}">${m.pinned ? '<span class="pinmark">📌</span>' : ''}${m.reply && !m.deleted ? replyQuoteHtml(m.reply, c) : ''}${msgContentHtml(m)}</div>`}
       ${rx}${menu}<div class="mtime">${aE(d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }))}${m.edited && !m.deleted ? ' · edited' : ''}</div></div>`;
   }).join('');
   box.innerHTML = (c.hasMore && c.msgs.length >= 60 ? `<button class="a-btn link" data-act="loadEarlier" type="button" style="align-self:center">Load earlier messages</button>` : '')
@@ -4402,7 +4439,10 @@ async function sendChat(kind, body, media){
   const c = INBOX.chat; if(!c) return;
   const err = $a('chatErr'); if(err) err.textContent = '';
   try{
-    await rpc('send_message', { lid: c.lid, k: kind, b: body || '', m: media || '' });
+    const args = { lid: c.lid, k: kind, b: body || '', m: media || '' };
+    if(c.replyTo) args.reply = c.replyTo.id;
+    await rpc('send_message', args);
+    c.replyTo = null; paintReplyBar();
     c.atBottom = true;
     await pollChat(false);
     return true;
@@ -4532,6 +4572,18 @@ const INBOX_ACTIONS = {
     const c = INBOX.chat; c.menu = null;
     try{ await rpc('pin_message', { mid: el.dataset.mid, pin: el.dataset.pin === '1' }); }catch(e){ $a('chatErr').textContent = e.message; }
     c.sig = ''; await pollChat(false); renderMessages(); if(c.showPins) loadPins();
+  },
+  async replyMsg(el){
+    const c = INBOX.chat, m = c && c.msgs.find(x=>x.id === el.dataset.mid); if(!m) return;
+    const t = m.kind === 'text' ? m.body : m.kind === 'image' ? '📷 Picture' : m.kind === 'gif' ? 'GIF' : m.kind === 'post' ? '🔗 Post' : '💞 Relationship page';
+    c.replyTo = { id: m.id, name: m.mine ? 'yourself' : (c.other.display_name || '@' + c.other.username), text: String(t).slice(0, 60) };
+    c.menu = null; renderMessages(); paintReplyBar(); const i = $a('chatInput'); if(i) i.focus();
+  },
+  async replyX(){ const c = INBOX.chat; if(c){ c.replyTo = null; paintReplyBar(); } },
+  async jumpMsg(el){
+    const box = $a('chatMsgs'); const t = box && box.querySelector(`.msg[data-mid="${CSS.escape(el.dataset.mid)}"]`);
+    if(!t){ showToast('That message is further up — load earlier messages.'); return; }
+    t.scrollIntoView({ block:'center', behavior:'smooth' }); t.classList.add('flash'); setTimeout(()=>t.classList.remove('flash'), 1300);
   },
   async copyMsg(el){
     const c = INBOX.chat; const m = c.msgs.find(x=>x.id === el.dataset.mid); c.menu = null;
@@ -5462,15 +5514,16 @@ function commentHtml(c){
   if(c.kind === 'image') inner = `<img src="${aE(postUrl(c.media))}" alt="" data-act="postImg" data-src="${aE(postUrl(c.media))}">`;
   else if(c.kind === 'gif' && /^https:\/\//.test(c.media)) inner = `<img src="${aE(c.media)}" alt="GIF" data-act="postImg" data-src="${aE(c.media)}">`;
   else inner = `<span class="cm-t">${aE(c.body)}</span>`;
-  const acts = [];
+  const acts = [`<button type="button" data-act="cmReply" data-id="${aE(c.id)}" data-name="${aE(a.display_name || '@' + a.username)}">reply</button>`];
   if(c.can_like) acts.push(`<button type="button" class="${c.liked ? 'on' : ''}" data-act="cmLike" data-id="${aE(c.id)}">${c.liked ? '♥' : '♡'}${c.likes ? ' ' + c.likes : ''}</button>`);
   else if(c.likes) acts.push(`<button type="button" disabled>♥ ${c.likes}</button>`);
   if(c.can_edit) acts.push(`<button type="button" data-act="cmEdit" data-id="${aE(c.id)}">edit</button>`);
   if(c.can_share) acts.push(`<button type="button" data-act="cmShare" data-id="${aE(c.id)}">share</button>`);
   if(c.can_delete) acts.push(`<button type="button" class="cm-x" data-act="cmDel" data-id="${aE(c.id)}">delete</button>`);
-  return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}${c.edited ? ' · edited' : ''}</small></b>${inner}
+  return `<div class="cm-item" data-cm="${aE(c.id)}">${avHtml(a)}<div class="cm-b"><b>${aE(a.display_name || '@' + a.username)} <small style="font-weight:400;color:var(--ink-soft)">${aE(relTime(c.created_at))}${c.edited ? ' · edited' : ''}</small></b>${c.reply ? `<div class="cm-quote">↪ ${aE((c.reply.author || {}).display_name || '@' + (c.reply.author || {}).username)}: ${aE(c.reply.kind === 'text' ? c.reply.body : c.reply.kind === 'gif' ? 'GIF' : '📷 Picture')}</div>` : ''}${inner}
     ${acts.length ? `<div class="cm-acts">${acts.join('')}</div>` : ''}</div></div>`;
 }
+function cmReplyClear(post){ delete post.dataset.reply; const b = post.querySelector('.cm-rbar'); if(b){ b.classList.add('hidden'); b.innerHTML = ''; } }
 async function cmLoad(post){
   const id = post.dataset.post, box = post.querySelector('.post-c'), list = box.querySelector('.cm-list'); if(!list) return;
   const rows = (await rpc('list_comments', { pid: id })) || [];
@@ -5480,7 +5533,10 @@ async function cmLoad(post){
 async function cmAfter(post, kind, body, media){
   const msgEl = post.querySelector('.cm-msg'); msgEl.textContent = '';
   try{
-    await rpc('add_comment', { pid: post.dataset.post, k: kind, b: body || '', m: media || '' });
+    const args = { pid: post.dataset.post, k: kind, b: body || '', m: media || '' };
+    if(post.dataset.reply) args.reply = post.dataset.reply;
+    await rpc('add_comment', args);
+    cmReplyClear(post);
     await cmLoad(post); return true;
   }catch(e){ msgEl.textContent = e.message; if(kind === 'image' && media){ try{ sb.storage.from(POST_BUCKET).remove([media]); }catch(x){} } return false; }
 }
@@ -5520,6 +5576,14 @@ function sharePanelHtml(id){
     <div class="a-msg sh-msg"></div></div>`;
 }
 const POST_ACTIONS = safeActions({
+  async cmReply(el){
+    const post = el.closest('.post'); if(!post) return;
+    post.dataset.reply = el.dataset.id;
+    const b = post.querySelector('.cm-rbar'); b.classList.remove('hidden');
+    b.innerHTML = `<span>Replying to <b>${aE(el.dataset.name)}</b></span><button class="a-btn link" data-act="cmReplyX" type="button">✕</button>`;
+    const i = post.querySelector('.cm-in'); if(i) i.focus();
+  },
+  async cmReplyX(el){ cmReplyClear(el.closest('.post')); },
   async postImg(el){ openImageLightbox(el.dataset.src); },
   async spoilTap(el){ if(!el.classList.contains('open')) el.classList.add('open'); },
   async carNav(el){ const tr = el.closest('.car').querySelector('.car-track'); tr.scrollBy({ left: (+el.dataset.d) * tr.clientWidth, behavior:'smooth' }); },
@@ -5591,7 +5655,7 @@ const POST_ACTIONS = safeActions({
     const post = btn.closest('.post'), box = post.querySelector('.post-c');
     if(box.innerHTML){ box.innerHTML = ''; return; }
     box.innerHTML = `<div class="cm-list"><p class="hint">Loading…</p></div>
-      <div class="cm-compose"><input type="text" class="cm-in" maxlength="1000" placeholder="Add a comment…" autocomplete="off">
+      <div class="cm-rbar hidden"></div><div class="cm-compose"><input type="text" class="cm-in" maxlength="1000" placeholder="Add a comment…" autocomplete="off">
         <button class="a-btn" data-act="cmImg" type="button" aria-label="Add a picture">📷</button><button class="a-btn" data-act="cmGif" type="button">GIF</button>
         <button class="a-btn primary" data-act="cmSend" type="button">Send</button><input type="file" class="cm-file" accept="image/*" hidden></div>
       <div class="cm-gif hidden"></div><div class="a-msg cm-msg"></div>`;
@@ -5755,6 +5819,7 @@ Object.assign(ACTIONS, safeActions({
     queueProfile({ featured: featuredSnapshot(ids) }); renderTabProfile($a('acctBody'));
   },
   async pickEmoji(){ openEmojiAvatar(); },
+  async pickDeco(){ openDecoPicker(); },
   async removeEmoji(){ stage({ emoji: null, emoji_bg: null }); }
 }));
 
@@ -7930,6 +7995,39 @@ window.addEventListener('unhandledrejection', ev=>{
 });
 
 
+
+
+async function openDecoPicker(){
+  if(!SHOP.loaded){ try{ await loadShop(); }catch(e){ showToast(e.message); return; } }
+  const ov = document.createElement('div'); ov.className = 'rep-ov'; ov.style.zIndex = 9400;
+  const paint = ()=>{
+    const v = profView();
+    const sect = (kind, title)=>{
+      const items = SHOP.items.filter(i=>i.kind === kind), own = items.filter(i=>SHOP.owned.includes(i.id)), sale = items.filter(i=>!SHOP.owned.includes(i.id));
+      const cur = effDeco(kind);
+      const prev = i=> kind === 'avatar' ? avHtml({ deco: i && i.id, emoji: v.emoji || '🙂', avatar: v.avatar_path, emoji_bg: v.emoji_bg }, 'md') : `<div class="pv-banner" ${i ? `data-deco="${aE(i.id)}"` : ''}></div>`;
+      return `<h3 style="margin:14px 0 2px">${title}</h3>
+        <div class="deco-grid"><button type="button" class="${!cur ? 'on' : ''}" data-k="${kind}" data-id="">${prev(null)}None</button>
+        ${own.map(i=>`<button type="button" class="${cur === i.id ? 'on' : ''}" data-k="${kind}" data-id="${aE(i.id)}">${prev(i)}${aE(i.name)}</button>`).join('')}</div>
+        ${own.length ? '' : '<p class="hint" style="margin:0">You do not own any yet.</p>'}
+        ${sale.length ? `<p class="hint" style="margin:8px 0 0">You might like</p><div class="deco-grid">${sale.map(i=>`<button type="button" data-shop="${kind}" data-id="${aE(i.id)}">${prev(i)}${aE(i.name)}<br><b>${aE(i.price)} 🌸</b></button>`).join('')}</div>` : ''}`;
+    };
+    ov.innerHTML = `<div class="rep-box" role="dialog" aria-label="Decorations" style="max-height:88vh;overflow:auto"><h3 style="margin:0">Decorations</h3>
+      <p class="hint" style="margin:4px 0 0">Pick one to try it. It only goes live when you press Save.</p>
+      ${sect('avatar', 'Avatar decoration')}${sect('banner', 'Banner decoration')}
+      <div class="a-btns"><button class="a-btn primary" data-x="shop" type="button">🛍 Visit the shop</button><button class="a-btn" data-x="close" type="button">Done</button></div></div>`;
+  };
+  paint(); document.body.appendChild(ov);
+  ov.addEventListener('click', ev=>{
+    if(ev.target === ov){ ov.remove(); return; }
+    const x = ev.target.closest('[data-x]');
+    if(x){ ov.remove(); if(x.dataset.x === 'shop') openShop(); return; }
+    const sh = ev.target.closest('[data-shop]');
+    if(sh){ ov.remove(); openShop(sh.dataset.shop); return; }
+    const b = ev.target.closest('[data-k]'); if(!b) return;
+    stage({ [b.dataset.k === 'avatar' ? 'avatar_deco' : 'banner_deco']: b.dataset.id || null }); paint();
+  });
+}
 
 /* ---------- first-run setup: username, name, pronouns ---------- */
 function openSetup(){
