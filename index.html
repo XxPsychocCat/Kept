@@ -504,6 +504,13 @@
   .pinmark svg{ vertical-align:-2px; }
   .cm-acts .rp{ color:var(--rose); }
   .chat-row .pinmark{ position:static !important; display:inline-block; margin-left:6px; color:var(--moss); }
+
+  .pin-btn{ color:var(--moss); }
+  .notif-banner .av{ width:32px !important; height:32px !important; min-width:32px; font-size:1rem; border-radius:50%; overflow:hidden; flex:none; display:flex; align-items:center; justify-content:center; background:var(--paper-dark); }
+  .notif-banner{ touch-action:pan-x; user-select:none; }
+  .notif-banner b{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .nsel-box{ width:20px; height:20px; border:2px solid var(--line); border-radius:6px; flex:none; display:flex; align-items:center; justify-content:center; font-size:.8rem; color:var(--paper); }
+  .nsel-box.on{ background:var(--ink); border-color:var(--ink); }
 </style>
 <style>
   :root{
@@ -4051,7 +4058,16 @@ function bannerNext(){
     await INBOX_ACTIONS.openNotif({ dataset:{ nid:n.id } });
   });
   requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('show')));
-  setTimeout(close, 5000);
+  let sy = null, dy = 0, moved = false;
+  const dragEnd = ()=>{ if(sy === null) return; const d = dy; sy = null; el.style.transition = ''; if(d < -24){ el.style.transform = ''; close(); } else { el.style.transform = ''; } };
+  el.addEventListener('pointerdown', e=>{ sy = e.clientY; dy = 0; moved = false; el.style.transition = 'none'; try{ el.setPointerCapture(e.pointerId); }catch(x){} });
+  el.addEventListener('pointermove', e=>{ if(sy === null) return; dy = Math.min(0, e.clientY - sy); if(dy < -4) moved = true; el.style.transform = `translate(-50%, ${dy}px)`; });
+  el.addEventListener('pointerup', dragEnd); el.addEventListener('pointercancel', dragEnd);
+  el.addEventListener('wheel', e=>{ if(e.deltaY > 8) close(); }, { passive:true });
+  el.addEventListener('click', e=>{ if(moved){ e.stopImmediatePropagation(); e.preventDefault(); moved = false; } }, true);
+  const onScroll = ()=>{ close(); window.removeEventListener('scroll', onScroll, true); };
+  setTimeout(()=>window.addEventListener('scroll', onScroll, true), 700);
+  setTimeout(()=>{ window.removeEventListener('scroll', onScroll, true); close(); }, 5000);
 }
 async function inboxTick(){
   if(document.hidden || !acctUsable()) { updateInboxBadge(); return; }
@@ -4218,12 +4234,17 @@ async function renderInbox(quiet){
       const acts = INBOX.notifs.filter(n=>n.kind !== 'message');
       const unM = stacks.filter(n=>!n.read).length, unA = acts.filter(n=>!n.read).length;
       if(!INBOX.nseg) INBOX.nseg = (unM > unA ? 'msgs' : 'posts');
-      const row = n=>`<div class="a-card chat-row ${n.read ? '' : 'unread'}" data-act="openNotif" data-nid="${aE(n.id)}">
-          ${avHtml(n.actor)}<div class="who"><b>${aE(notifText(n))}</b><span>${aE(relTime(n.created_at))}</span></div>${n.read ? '' : '<i class="udot"></i>'}</div>`;
+      const keyOf = n=> INBOX.nseg === 'msgs' ? 'L:' + (n.link_id || (n.actor && n.actor.username)) : 'N:' + n.id;
+      INBOX.nsel = INBOX.nsel || new Set();
+      const sel = !!INBOX.nselOn;
+      const row = n=>`<div class="a-card chat-row ${n.read ? '' : 'unread'}" data-act="${sel ? 'nselTog' : 'openNotif'}" data-nid="${aE(n.id)}" data-k="${aE(keyOf(n))}">
+          ${sel ? `<span class="nsel-box ${INBOX.nsel.has(keyOf(n)) ? 'on' : ''}">${INBOX.nsel.has(keyOf(n)) ? '✓' : ''}</span>` : ''}${avHtml(n.actor)}<div class="who"><b>${aE(notifText(n))}</b><span>${aE(relTime(n.created_at))}</span></div>${n.read ? '' : '<i class="udot"></i>'}</div>`;
       const list = INBOX.nseg === 'msgs' ? stacks : acts;
       body.innerHTML = `<div class="nseg"><button type="button" class="${INBOX.nseg === 'posts' ? 'on' : ''}" data-act="nseg" data-s="posts">Posts &amp; activity${unA ? ` <span class="acct-dot">${unA}</span>` : ''}</button>
           <button type="button" class="${INBOX.nseg === 'msgs' ? 'on' : ''}" data-act="nseg" data-s="msgs">Messages${unM ? ` <span class="acct-dot">${unM}</span>` : ''}</button></div>` +
-        (list.some(n=>!n.read) ? `<div class="a-btns" style="margin:0 0 10px"><button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button></div>` : '') +
+        (list.length ? `<div class="a-btns" style="margin:0 0 10px">${sel
+            ? `<button class="a-btn danger" data-act="nDelSel" type="button" ${INBOX.nsel.size ? '' : 'disabled'}>Delete selected (${INBOX.nsel.size})</button><button class="a-btn" data-act="nSelOff" type="button">Cancel</button>`
+            : `${list.some(n=>!n.read) ? '<button class="a-btn" data-act="markAllRead" type="button">Mark all as read</button>' : ''}<button class="a-btn" data-act="nSelOn" type="button">Select</button><button class="a-btn danger" data-act="nDelAll" type="button">Delete all</button>`}</div>` : '') +
         (list.length ? list.map(row).join('')
           : INBOX.nseg === 'msgs' ? `<p class="hint">No new messages. When someone writes to you, they show up here, one spot per person.</p>`
           : `<p class="hint">Nothing new yet. Likes, comments, shares and reposts of your posts show up here, along with requests and gifts.</p>`);
@@ -4250,7 +4271,7 @@ function chatListPaint(body){
     const o = c.other, last = c.last;
     const preview = !last ? 'Say hi 👋' : last.deleted ? 'Message deleted' : (last.kind === 'image' ? '📷 Photo' : last.kind === 'gif' ? 'GIF' : last.kind === 'post' ? '🔗 Shared a post' : last.kind === 'rel' ? '💞 Shared a relationship page' : last.body);
     return `<div class="a-card chat-row" data-act="openChatRow" data-link="${aE(c.link_id)}">
-      ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}${c.pinned ? ` <span class="pinmark">${starSvg(true)}</span>` : ''}</b>
+      ${avHtml(o)}<div class="who"><b>${aE(o.display_name || '@' + o.username)}</b>
       <span>${last ? (last.mine ? 'You: ' : '') : ''}${aE(preview)}</span></div>
       <div class="chat-meta">${last ? aE(relTime(last.created_at)) : ''}${c.unread ? `<b class="pill-dot">${aE(c.unread)}</b>` : ''}
       <button class="pin-btn ${c.pinned ? 'on' : ''}" data-act="pinChat" data-link="${aE(c.link_id)}" data-on="${c.pinned ? '0' : '1'}" type="button" title="${c.pinned ? 'Unpin chat' : 'Pin chat'}" aria-label="${c.pinned ? 'Unpin chat' : 'Pin chat'}">${starSvg(!!c.pinned)}</button></div></div>`;
@@ -4615,7 +4636,23 @@ const INBOX_ACTIONS = {
   },
   async viewMsg(el){ const img = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); INBOX.chat.menu = null; renderMessages(); const i2 = document.querySelector(`#chatMsgs [data-mid="${el.dataset.mid}"] img.cimg`); if(i2 && i2.src) openImageLightbox(i2.src); },
   async loadEarlier(){ await loadEarlier(); },
-  async nseg(el){ INBOX.nseg = el.dataset.s; renderInbox(true); },
+  async nseg(el){ INBOX.nseg = el.dataset.s; INBOX.nselOn = false; INBOX.nsel = new Set(); renderInbox(true); },
+  async nSelOn(){ INBOX.nselOn = true; INBOX.nsel = new Set(); renderInbox(true); },
+  async nSelOff(){ INBOX.nselOn = false; INBOX.nsel = new Set(); renderInbox(true); },
+  async nselTog(el){ const k = el.dataset.k; INBOX.nsel = INBOX.nsel || new Set(); if(INBOX.nsel.has(k)) INBOX.nsel.delete(k); else INBOX.nsel.add(k); renderInbox(true); },
+  async nDelSel(){
+    const keys = [...(INBOX.nsel || [])]; if(!keys.length) return;
+    if(!confirm(`Delete ${keys.length} notification${keys.length > 1 ? 's' : ''}?`)) return;
+    const ids = keys.filter(k=>k[0] === 'N').map(k=>k.slice(2)), links = keys.filter(k=>k[0] === 'L').map(k=>k.slice(2)).filter(x=>/^[0-9a-f-]{36}$/.test(x));
+    try{ await rpc('delete_notifications', { ids: ids.length ? ids : null, links: links.length ? links : null }); INBOX.nselOn = false; INBOX.nsel = new Set(); await inboxTick(); renderInbox(true); showToastOk('Deleted'); }
+    catch(e){ showToast(e.message); }
+  },
+  async nDelAll(){
+    const m = INBOX.nseg === 'msgs';
+    if(!confirm(m ? 'Delete all message notifications?' : 'Delete all post and activity notifications?')) return;
+    try{ await rpc('delete_notifications', { scope: m ? 'msgs' : 'posts' }); await inboxTick(); renderInbox(true); showToastOk('Deleted'); }
+    catch(e){ showToast(e.message); }
+  },
   async markAllRead(){ try{ const ids = (INBOX.notifs || []).filter(n=>(INBOX.nseg === 'msgs') === (n.kind === 'message')).map(n=>n.id); await rpc('mark_notifications_read', { ids }); }catch(e){} await inboxTick(); renderInbox(true); },
   async openNotif(el){
     const n = INBOX.notifs.find(x=>x.id === el.dataset.nid); if(!n) return;
